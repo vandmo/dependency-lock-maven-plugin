@@ -2,6 +2,8 @@
 
 Maven plugin that makes sure that Maven dependency are not accidentaly changed.
 
+Locking: `mvn se.vandmo:dependency-lock-maven-plugin:lock`
+
 ```xml
 <build>
   <plugins>
