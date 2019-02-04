@@ -1,4 +1,4 @@
-package se.vandmo.textchecker.maven;
+package se.vandmo.dependencylock.maven;
 
 import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
@@ -7,11 +7,12 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
 
 
 @Mojo(
   name = "lock",
-  requiresDependencyResolution = ResolutionScope.COMPILE)
+  requiresDependencyResolution = ResolutionScope.TEST)
 public final class LockMojo extends AbstractMojo {
 
   @Parameter(
@@ -20,12 +21,15 @@ public final class LockMojo extends AbstractMojo {
     readonly = true)
   private File baseFolder;
 
+  @Parameter(
+    defaultValue="${project}",
+    required = true,
+    readonly = true)
+  private MavenProject project;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    try {
-    } catch (Exception ex) {
-      throw new RuntimeException(ex);
-    }
+    project.getArtifacts().forEach(artifact -> System.out.println(artifact));
   }
 
 }
