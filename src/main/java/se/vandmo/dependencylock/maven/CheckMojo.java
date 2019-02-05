@@ -41,7 +41,7 @@ public final class CheckMojo extends AbstractMojo {
     Artifacts actualDependencies = Artifacts.from(project.getArtifacts());
     Artifacts.Diff diff = lockedDependencies.compareWith(actualDependencies);
     if (diff.equals()) {
-      getLog().info("Dependencies are the same");
+      getLog().info("Actual dependencies matches locked dependencies");
     } else {
       diff.logTo(getLog());
       throw new MojoExecutionException("Dependencies differ");
