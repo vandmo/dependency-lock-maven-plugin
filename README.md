@@ -2,7 +2,17 @@
 
 Maven plugin that makes sure that Maven dependency are not accidentaly changed.
 
-Locking: `mvn se.vandmo:dependency-lock-maven-plugin:lock`
+Locking
+-------
+`mvn se.vandmo:dependency-lock-maven-plugin:lock`
+will create a _dependencies-lock.json_ file.
+
+You should then commit that file to you source control of choice.
+
+Validating
+----------
+The following snippet in your _pom.xml_ file will make sure that the actual
+dependencies are the same as in the _dependencies-lock.json_ file.
 
 ```xml
 <build>
