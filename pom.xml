@@ -37,7 +37,7 @@
 
   <profiles>
     <profile>
-      <id>gpg.sign</id>
+      <id>sign</id>
       <build>
         <plugins>
           <plugin>

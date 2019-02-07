@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+mvn versions:set \
+  --batch-mode \
+  --define newVersion=${TRAVIS_TAG}
+
+tasks/decrypt
+
+gpg2 --keyring=${TRAVIS_BUILD_DIR}/pubring.gpg --no-default-keyring --import signingkey.asc
+gpg2 --allow-secret-key-import --keyring=${TRAVIS_BUILD_DIR}/secring.gpg --no-default-keyring --import signingkey.asc || true
+
+mvn clean deploy \
+  --batch-mode \
+  --settings maven-settings.xml \
+  --activate-profiles sign \
+  --define gpg.executable=gpg2 \
+  --define gpg.keyname=C7AA2633536003D8ED48EC25FE0351A38802A913 \
+  --define gpg.publicKeyring=${TRAVIS_BUILD_DIR}/pubring.gpg \
+  --define gpg.secretKeyring=${TRAVIS_BUILD_DIR}/secring.gpg \
+  --define maven.skip.install=true \
+  --define maven.test.skip=true

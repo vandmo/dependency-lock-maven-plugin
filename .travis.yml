@@ -2,19 +2,13 @@ language: java
 cache:
   directories:
   - $HOME/.m2
-before_install:
-- bash deployment/decrypt.bash
 install: true
-script: >
-  mvn clean verify
-  --file pom.xml
-  --batch-mode
-  --activate-profiles analyze
+script: tasks/build
 deploy:
   provider: script
   on:
     tags: true
-  script: bash deployment/deploy.bash
+  script: tasks/deploy
 env:
   global:
   - SONATYPE_USERNAME=vandmo

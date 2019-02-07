@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+openssl aes-256-cbc -K $encrypted_812b91b6592e_key -iv $encrypted_812b91b6592e_iv -in signingkey.asc.enc -out signingkey.asc -d
