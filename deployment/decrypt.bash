@@ -1,3 +1,6 @@
 set -euxo pipefail
 
-echo "${PASSPHRASE}" | gpg --passphrase-fd 0 deployment/signingkey.asc.gpg
+openssl aes-256-cbc \
+  -k "${PASSPHRASE}" \
+  -in deployment/signingkey.asc.enc \
+  -out deployment/signingkey.asc -d
