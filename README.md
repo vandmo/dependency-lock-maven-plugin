@@ -1,7 +1,7 @@
 # dependency-lock-maven-plugin
 
 [![Build Status](https://travis-ci.com/vandmo/dependency-lock-maven-plugin.svg?branch=master)](https://travis-ci.com/vandmo/dependency-lock-maven-plugin)
-![usefuleness 100%](https://img.shields.io/badge/usefulness-100%25-green.svg)
+![usefuleness 100%](https://img.shields.io/badge/usefulness-100%25-success.svg)
 
 Maven plugin that makes sure that Maven dependency are not accidentaly changed.
 
