@@ -114,6 +114,19 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>se.vandmo</groupId>
+        <artifactId>dependency-lock-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <id>check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>2.2.1</version>

@@ -1,0 +1,196 @@
+{
+  "dependencies" : [ {
+    "groupId" : "aopalliance",
+    "artifactId" : "aopalliance",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "com.fasterxml.jackson.core",
+    "artifactId" : "jackson-annotations",
+    "version" : "2.9.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "com.fasterxml.jackson.core",
+    "artifactId" : "jackson-core",
+    "version" : "2.9.8",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "com.fasterxml.jackson.core",
+    "artifactId" : "jackson-databind",
+    "version" : "2.9.8",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "com.google.guava",
+    "artifactId" : "guava",
+    "version" : "18.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "javax.annotation",
+    "artifactId" : "jsr250-api",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "javax.enterprise",
+    "artifactId" : "cdi-api",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "javax.inject",
+    "artifactId" : "javax.inject",
+    "version" : "1",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven.plugin-tools",
+    "artifactId" : "maven-plugin-annotations",
+    "version" : "3.4",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-aether-provider",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-artifact",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-builder-support",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-core",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-model-builder",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-model",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-plugin-api",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-repository-metadata",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-settings-builder",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.apache.maven",
+    "artifactId" : "maven-settings",
+    "version" : "3.3.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-classworlds",
+    "version" : "2.5.2",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-component-annotations",
+    "version" : "1.5.5",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-interpolation",
+    "version" : "1.21",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-utils",
+    "version" : "3.0.20",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-api",
+    "version" : "1.0.2.v20150114",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-impl",
+    "version" : "1.0.2.v20150114",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-spi",
+    "version" : "1.0.2.v20150114",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.aether",
+    "artifactId" : "aether-util",
+    "version" : "1.0.2.v20150114",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.sisu",
+    "artifactId" : "org.eclipse.sisu.inject",
+    "version" : "0.3.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.eclipse.sisu",
+    "artifactId" : "org.eclipse.sisu.plexus",
+    "version" : "0.3.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.sonatype.plexus",
+    "artifactId" : "plexus-cipher",
+    "version" : "1.4",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.sonatype.plexus",
+    "artifactId" : "plexus-sec-dispatcher",
+    "version" : "1.3",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.sonatype.sisu",
+    "artifactId" : "sisu-guice",
+    "version" : "3.2.5",
+    "scope" : "compile",
+    "type" : "jar",
+    "classifier" : "no_aop"
+  } ]
+}
