@@ -43,7 +43,7 @@ Tips
 Adding the following in _~/.m2/settings.xml_ will allow you to write `mvn dependency-lock:lock`
 
 ```xml
- <pluginGroups>
-   <pluginGroup>se.vandmo</pluginGroup>
- </pluginGroups>
+<pluginGroups>
+  <pluginGroup>se.vandmo</pluginGroup>
+</pluginGroups>
 ```
