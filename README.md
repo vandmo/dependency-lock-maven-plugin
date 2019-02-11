@@ -37,3 +37,13 @@ dependencies are the same as in the _dependencies-lock.json_ file.
   </plugins>
 </build>
 ```
+
+Tips
+----
+Adding the following in _~/.m2/settings.xml_ will allow you to write `mvn dependency-lock:lock`
+
+```xml
+ <pluginGroups>
+   <pluginGroup>se.vandmo</pluginGroup>
+ </pluginGroups>
+```
