@@ -37,9 +37,9 @@ public final class CheckMojo extends AbstractMojo {
       getLog().error("No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:lock'");
       return;
     }
-    Artifacts lockedDependencies = lockFile.read();
+    LockedDependencies lockedDependencies = lockFile.read();
     Artifacts actualDependencies = Artifacts.from(project.getArtifacts());
-    Artifacts.Diff diff = lockedDependencies.compareWith(actualDependencies);
+    LockedDependencies.Diff diff = lockedDependencies.compareWith(actualDependencies, project.getVersion());
     if (diff.equals()) {
       getLog().info("Actual dependencies matches locked dependencies");
     } else {

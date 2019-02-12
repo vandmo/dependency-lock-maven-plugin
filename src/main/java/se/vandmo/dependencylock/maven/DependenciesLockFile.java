@@ -1,9 +1,9 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.util.Collections.singletonMap;
-import static java.util.Optional.ofNullable;
+import static se.vandmo.dependencylock.maven.JsonUtils.readJson;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -36,29 +36,16 @@ public final class DependenciesLockFile {
     }
   }
 
-  public Artifacts read() {
-    List<Artifact> artifacts = new ArrayList<>();
-    Json json = readJson();
-    json.dependencies.forEach(dependency -> {
-      artifacts.add(new Artifact(
-          dependency.groupId,
-          dependency.artifactId,
-          dependency.version,
-          dependency.scope,
-          dependency.type,
-          ofNullable(dependency.classifier)));
-    });
-    return new Artifacts(artifacts);
-  }
-
-  private Json readJson() throws UncheckedIOException {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-      return objectMapper.readValue(file, Json.class);
-    } catch (IOException ex) {
-      throw new UncheckedIOException(ex);
+  public LockedDependencies read() {
+    JsonNode json = readJson(file);
+    if (!json.isObject()) {
+      throw new IllegalStateException("Expected top level type to be an object");
     }
+    JsonNode dependencies = json.get("dependencies");
+    if (dependencies == null || !dependencies.isArray()) {
+      throw new IllegalStateException("Expected a property named 'dependencies' of type array");
+    }
+    return LockedDependencies.fromJson(dependencies);
   }
 
   private static Map<String, Object> asJson(Artifacts artifacts) {
@@ -80,18 +67,6 @@ public final class DependenciesLockFile {
 
   public boolean exists() {
     return file.exists();
-  }
-
-  public static final class Json {
-    public List<Dependency> dependencies;
-    public static class Dependency {
-      public String groupId;
-      public String artifactId;
-      public String version;
-      public String scope;
-      public String type;
-      public String classifier;
-    }
   }
 
 }

@@ -48,6 +48,12 @@
     "scope" : "compile",
     "type" : "jar"
   }, {
+    "groupId" : "org.apache.commons",
+    "artifactId" : "commons-lang3",
+    "version" : "3.7",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
     "groupId" : "org.apache.maven.plugin-tools",
     "artifactId" : "maven-plugin-annotations",
     "version" : "3.4",
