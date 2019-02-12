@@ -5,62 +5,74 @@ import static se.vandmo.dependencylock.maven.JsonUtils.getStringValue;
 import static se.vandmo.dependencylock.maven.JsonUtils.possiblyGetStringValue;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Objects;
-import java.util.Optional;
 
 public final class LockedDependency implements Comparable<LockedDependency> {
 
-  public final String groupId;
-  public final String artifactId;
+  public final ArtifactIdentifier identifier;
   public final LockedVersion version;
   public final String scope;
   public final String type;
-  public final Optional<String> classifier;
 
   private LockedDependency(
-      String groupId,
-      String artifactId,
+      ArtifactIdentifier identifier,
       LockedVersion version,
       String scope,
-      String type,
-      Optional<String> classifier) {
-    this.groupId = requireNonNull(groupId);
-    this.artifactId = requireNonNull(artifactId);
+      String type) {
+    this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
-    this.classifier = requireNonNull(classifier);
   }
 
   public static LockedDependency fromJson(JsonNode json) {
     return new LockedDependency(
-        getStringValue(json, "groupId"),
-        getStringValue(json, "artifactId"),
+        new ArtifactIdentifier(
+            getStringValue(json, "groupId"),
+            getStringValue(json, "artifactId"),
+            possiblyGetStringValue(json, "classifier")),
         LockedVersion.fromJson(json.get("version")),
         getStringValue(json, "scope"),
-        getStringValue(json, "type"),
-        possiblyGetStringValue(json, "classifier"));
+        getStringValue(json, "type"));
   }
 
   public static LockedDependency from(Artifact artifact) {
     return new LockedDependency(
-        artifact.groupId,
-        artifact.artifactId,
+        artifact.identifier,
         LockedVersion.fromVersion(artifact.version),
         artifact.scope,
-        artifact.type,
-        artifact.classifier
+        artifact.type
+    );
+  }
+
+  public JsonNode asJson() {
+    ObjectNode json = JsonNodeFactory.instance.objectNode();
+    json.put("groupId", identifier.groupId);
+    json.put("artifactId", identifier.artifactId);
+    json.set("version", version.asJson());
+    json.put("scope", scope);
+    json.put("type", type);
+    identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
+    return json;
+  }
+
+  public LockedDependency withVersion(LockedVersion version) {
+    return new LockedDependency(
+        identifier,
+        version,
+        scope,
+        type
     );
   }
 
   public boolean matches(Artifact artifact, String projectVersion) {
     return
-        groupId.equals(artifact.groupId) &&
-        artifactId.equals(artifact.artifactId) &&
+        identifier.equals(artifact.identifier) &&
         version.matches(artifact.version, projectVersion) &&
         scope.equals(artifact.scope) &&
-        type.equals(artifact.type) &&
-        classifier.equals(artifact.classifier);
+        type.equals(artifact.type);
   }
 
   @Override
@@ -70,28 +82,21 @@ public final class LockedDependency implements Comparable<LockedDependency> {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb
-        .append(groupId)
-        .append(':').append(artifactId)
+    return new StringBuilder()
+        .append(identifier)
         .append(':').append(version)
         .append(':').append(scope)
-        .append(':').append(type);
-    classifier.ifPresent(actualClassifier -> {
-      sb.append(':').append(actualClassifier);
-    });
-    return sb.toString();
+        .append(':').append(type)
+        .toString();
   }
 
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 17 * hash + Objects.hashCode(this.groupId);
-    hash = 17 * hash + Objects.hashCode(this.artifactId);
+    hash = 17 * hash + Objects.hashCode(this.identifier);
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
     hash = 17 * hash + Objects.hashCode(this.type);
-    hash = 17 * hash + Objects.hashCode(this.classifier);
     return hash;
   }
 
@@ -107,10 +112,7 @@ public final class LockedDependency implements Comparable<LockedDependency> {
       return false;
     }
     final LockedDependency other = (LockedDependency) obj;
-    if (!Objects.equals(this.groupId, other.groupId)) {
-      return false;
-    }
-    if (!Objects.equals(this.artifactId, other.artifactId)) {
+    if (!Objects.equals(this.identifier, other.identifier)) {
       return false;
     }
     if (!Objects.equals(this.version, other.version)) {
@@ -120,9 +122,6 @@ public final class LockedDependency implements Comparable<LockedDependency> {
       return false;
     }
     if (!Objects.equals(this.type, other.type)) {
-      return false;
-    }
-    if (!Objects.equals(this.classifier, other.classifier)) {
       return false;
     }
     return true;

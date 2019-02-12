@@ -23,9 +23,9 @@ public final class Artifacts {
     return new Artifacts(artifacts.stream().map(Artifact::from).collect(toList()));
   }
 
-  public Optional<Artifact> byGroupIdAndArtifactId(String groupId, String artifactId) {
+  public Optional<Artifact> by(ArtifactIdentifier identifier) {
     for (Artifact artifact : artifacts) {
-      if (artifact.groupId.equals(groupId) && artifact.artifactId.equals(artifactId)) {
+      if (identifier.equals(artifact.identifier)) {
         return Optional.of(artifact);
       }
     }

@@ -1,17 +1,12 @@
 package se.vandmo.dependencylock.maven;
 
-import static java.util.Collections.singletonMap;
 import static se.vandmo.dependencylock.maven.JsonUtils.readJson;
+import static se.vandmo.dependencylock.maven.JsonUtils.writeJson;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public final class DependenciesLockFile {
@@ -26,16 +21,6 @@ public final class DependenciesLockFile {
     return new DependenciesLockFile(new File(basedir, "dependencies-lock.json"));
   }
 
-  public void write(Artifacts artifacts) {
-    try {
-      new ObjectMapper()
-          .writerWithDefaultPrettyPrinter()
-          .writeValue(file, asJson(artifacts));
-    } catch (IOException ex) {
-      throw new UncheckedIOException(ex);
-    }
-  }
-
   public LockedDependencies read() {
     JsonNode json = readJson(file);
     if (!json.isObject()) {
@@ -48,21 +33,10 @@ public final class DependenciesLockFile {
     return LockedDependencies.fromJson(dependencies);
   }
 
-  private static Map<String, Object> asJson(Artifacts artifacts) {
-    List<Map<String, String>> list = new ArrayList<>();
-    artifacts.artifacts.stream().sorted().forEach(artifact -> list.add(asJson(artifact)));
-    return singletonMap("dependencies", list);
-  }
-
-  private static Map<String, String> asJson(Artifact artifact) {
-    Map<String, String> m = new LinkedHashMap<>();
-    m.put("groupId", artifact.groupId);
-    m.put("artifactId", artifact.artifactId);
-    m.put("version", artifact.version);
-    m.put("scope", artifact.scope);
-    m.put("type", artifact.type);
-    artifact.classifier.ifPresent(actualClassifier -> m.put("classifier", actualClassifier));
-    return m;
+  public void write(LockedDependencies lockedDependencies) {
+    ObjectNode json = JsonNodeFactory.instance.objectNode();
+    json.set("dependencies", lockedDependencies.asJson());
+    writeJson(file, json);
   }
 
   public boolean exists() {

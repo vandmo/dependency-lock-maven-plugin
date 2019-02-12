@@ -4,10 +4,14 @@ import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class LockedVersion implements Comparable<LockedVersion> {
+
+  public static final LockedVersion USE_MINE = new LockedVersion(Optional.empty(), true);
 
   public final Optional<String> version;
   public final boolean useMine;
@@ -42,6 +46,15 @@ public final class LockedVersion implements Comparable<LockedVersion> {
 
   public static LockedVersion fromVersion(String version) {
     return new LockedVersion(Optional.of(requireNonNull(version)), false);
+  }
+
+  public JsonNode asJson() {
+    if (useMine) {
+      ObjectNode json = JsonNodeFactory.instance.objectNode();
+      json.put("use-mine", true);
+      return json;
+    }
+    return JsonNodeFactory.instance.textNode(version.get());
   }
 
   @Override

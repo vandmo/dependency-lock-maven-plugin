@@ -6,6 +6,8 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.ROOT;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,12 +36,37 @@ public final class LockedDependencies {
     return new LockedDependencies(emptyList());
   }
 
+  public JsonNode asJson() {
+    ArrayNode json = JsonNodeFactory.instance.arrayNode();
+    for (LockedDependency lockedDependency : lockedDependencies) {
+      json.add(lockedDependency.asJson());
+    }
+    return json;
+  }
+
   public LockedDependencies updateWith(Artifacts artifacts) {
     List<LockedDependency> updatedLockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
-      updatedLockedDependencies.add(LockedDependency.from(artifact));
+      updatedLockedDependencies.add(getLockedDependency(artifact));
     }
     return new LockedDependencies(unmodifiableList(updatedLockedDependencies));
+  }
+
+  private LockedDependency getLockedDependency(Artifact artifact) {
+    LockedDependency lockedDependency = LockedDependency.from(artifact);
+    Optional<LockedVersion> possiblyExistingVersion = getExistingVersion(artifact.identifier);
+    if (possiblyExistingVersion.isPresent()) {
+      if (possiblyExistingVersion.get().useMine) {
+        return lockedDependency.withVersion(LockedVersion.USE_MINE);
+      }
+    }
+    return lockedDependency;
+  }
+
+  private Optional<LockedVersion> getExistingVersion(ArtifactIdentifier identifier) {
+    return
+        by(identifier)
+            .map(lockedDependency -> lockedDependency.version);
   }
 
   public Diff compareWith(Artifacts artifacts, String projectVersion) {
@@ -47,7 +74,7 @@ public final class LockedDependencies {
     List<String> different = new ArrayList<>();
     List<String> added = new ArrayList<>();
     for (LockedDependency lockedDependency : lockedDependencies) {
-      Optional<Artifact> otherArtifact = artifacts.byGroupIdAndArtifactId(lockedDependency.groupId, lockedDependency.artifactId);
+      Optional<Artifact> otherArtifact = artifacts.by(lockedDependency.identifier);
       if (!otherArtifact.isPresent()) {
         missing.add(lockedDependency.toString());
       } else if (!lockedDependency.matches(otherArtifact.get(), projectVersion)) {
@@ -55,16 +82,16 @@ public final class LockedDependencies {
       }
     }
     for (Artifact otherArtifact : artifacts.artifacts) {
-      if (!byGroupIdAndArtifactId(otherArtifact.groupId, otherArtifact.artifactId).isPresent()) {
+      if (!by(otherArtifact.identifier).isPresent()) {
         added.add(otherArtifact.toString());
       }
     }
     return new Diff(missing, different, added);
   }
 
-  public Optional<LockedDependency> byGroupIdAndArtifactId(String groupId, String artifactId) {
+  public Optional<LockedDependency> by(ArtifactIdentifier identifier) {
     for (LockedDependency lockedDependency : lockedDependencies) {
-      if (lockedDependency.groupId.equals(groupId) && lockedDependency.artifactId.equals(artifactId)) {
+      if (lockedDependency.identifier.equals(identifier)) {
         return Optional.of(lockedDependency);
       }
     }

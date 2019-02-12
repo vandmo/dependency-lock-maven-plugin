@@ -4,40 +4,34 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public final class Artifact implements Comparable<Artifact> {
 
-  public final String groupId;
-  public final String artifactId;
+  public final ArtifactIdentifier identifier;
   public final String version;
   public final String scope;
   public final String type;
-  public final Optional<String> classifier;
 
   public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
     return new Artifact(
-        artifact.getGroupId(),
-        artifact.getArtifactId(),
+        new ArtifactIdentifier(
+            artifact.getGroupId(),
+            artifact.getArtifactId(),
+            ofNullable(artifact.getClassifier())),
         artifact.getVersion(),
         artifact.getScope(),
-        artifact.getType(),
-        ofNullable(artifact.getClassifier()));
+        artifact.getType());
   }
 
   Artifact(
-      String groupId,
-      String artifactId,
+      ArtifactIdentifier identifier,
       String version,
       String scope,
-      String type,
-      Optional<String> classifier) {
-    this.groupId = requireNonNull(groupId);
-    this.artifactId = requireNonNull(artifactId);
+      String type) {
+    this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
-    this.classifier = requireNonNull(classifier);
   }
 
   @Override
@@ -49,26 +43,20 @@ public final class Artifact implements Comparable<Artifact> {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb
-        .append(groupId)
-        .append(':').append(artifactId)
+        .append(identifier.toString())
         .append(':').append(version)
         .append(':').append(scope)
         .append(':').append(type);
-    classifier.ifPresent(actualClassifier -> {
-      sb.append(':').append(actualClassifier);
-    });
     return sb.toString();
   }
 
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 17 * hash + Objects.hashCode(this.groupId);
-    hash = 17 * hash + Objects.hashCode(this.artifactId);
+    hash = 17 * hash + Objects.hashCode(this.identifier);
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
     hash = 17 * hash + Objects.hashCode(this.type);
-    hash = 17 * hash + Objects.hashCode(this.classifier);
     return hash;
   }
 
@@ -84,10 +72,7 @@ public final class Artifact implements Comparable<Artifact> {
       return false;
     }
     final Artifact other = (Artifact) obj;
-    if (!Objects.equals(this.groupId, other.groupId)) {
-      return false;
-    }
-    if (!Objects.equals(this.artifactId, other.artifactId)) {
+    if (!Objects.equals(this.identifier, other.identifier)) {
       return false;
     }
     if (!Objects.equals(this.version, other.version)) {
@@ -97,9 +82,6 @@ public final class Artifact implements Comparable<Artifact> {
       return false;
     }
     if (!Objects.equals(this.type, other.type)) {
-      return false;
-    }
-    if (!Objects.equals(this.classifier, other.classifier)) {
       return false;
     }
     return true;

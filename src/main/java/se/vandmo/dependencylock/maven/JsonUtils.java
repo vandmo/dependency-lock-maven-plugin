@@ -35,4 +35,14 @@ public final class JsonUtils {
     }
   }
 
+  public static void writeJson(File file, JsonNode json) {
+    try {
+      new ObjectMapper()
+          .writerWithDefaultPrettyPrinter()
+          .writeValue(file, json);
+    } catch (IOException ex) {
+      throw new UncheckedIOException(ex);
+    }
+  }
+
 }

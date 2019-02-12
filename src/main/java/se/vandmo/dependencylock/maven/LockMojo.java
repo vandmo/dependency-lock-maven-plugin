@@ -30,7 +30,18 @@ public final class LockMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    DependenciesLockFile.fromBasedir(basedir).write(Artifacts.from(project.getArtifacts()));
+    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir);
+    LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFile);
+    LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(Artifacts.from(project.getArtifacts()));
+    lockFile.write(lockedDependencies);
+  }
+
+  private LockedDependencies getExistingLockedDependencies(DependenciesLockFile lockFile) {
+    if (lockFile.exists()) {
+      return lockFile.read();
+    } else {
+      return LockedDependencies.empty();
+    }
   }
 
 }
