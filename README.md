@@ -12,6 +12,10 @@ will create a _dependencies-lock.json_ file.
 
 You should then commit that file to you source control of choice.
 
+If some dependencies are part of the same multi-module project you might want those dependencies to be the same version as the artifact where the dependencies are locked.
+You can achieve this by editing the _dependencies-lock.json_ and change `"version" : "1.2.3"` to `"version": { "use-mine": true }`.
+That change will be retained the next time you run the lock goal.
+
 Validating
 ----------
 The following snippet in your _pom.xml_ file will make sure that the actual
