@@ -51,3 +51,19 @@ Adding the following in _~/.m2/settings.xml_ will allow you to write `mvn depend
   <pluginGroup>se.vandmo</pluginGroup>
 </pluginGroups>
 ```
+
+Goals
+-----
+### check
+Checks that actual dependencies matches the lock file. Fails the build if there
+is no match.
+Expects a lock file to exist.
+
+### format
+Formats the lock file.
+This can be useful after manually editing the lock file to make sure future
+changes does not reformat the edits.
+
+### lock
+Creates a lock file from the actual dependencies.
+Considers some values in the existing lock file.

@@ -39,6 +39,10 @@ public final class DependenciesLockFile {
     writeJson(file, json);
   }
 
+  public void format() {
+    write(read());
+  }
+
   public boolean exists() {
     return file.exists();
   }
