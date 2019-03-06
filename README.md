@@ -26,7 +26,7 @@ dependencies are the same as in the _dependencies-lock.json_ file.
   <plugins>
     <plugin>
       <groupId>se.vandmo</groupId>
-      <artifactId>dependency-check-maven-plugin</artifactId>
+      <artifactId>dependency-lock-maven-plugin</artifactId>
       <version>use latest version</version>
       <executions>
         <execution>
