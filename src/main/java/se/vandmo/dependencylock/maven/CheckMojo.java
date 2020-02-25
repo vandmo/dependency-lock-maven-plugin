@@ -30,9 +30,12 @@ public final class CheckMojo extends AbstractMojo {
     readonly = true)
   private MavenProject project;
 
+  @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
+  private String filename;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir);
+    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
     if (!lockFile.exists()) {
       getLog().error("No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:lock'");
       return;

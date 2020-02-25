@@ -11,14 +11,16 @@ import java.io.File;
 
 public final class DependenciesLockFile {
 
+  public static final String DEFAULT_FILENAME = "dependencies-lock.json";
+
   private final File file;
 
   private DependenciesLockFile(File file) {
     this.file = file;
   }
 
-  public static DependenciesLockFile fromBasedir(File basedir) {
-    return new DependenciesLockFile(new File(basedir, "dependencies-lock.json"));
+  public static DependenciesLockFile fromBasedir(File basedir, String filename) {
+    return new DependenciesLockFile(new File(basedir, filename));
   }
 
   public LockedDependencies read() {

@@ -28,9 +28,12 @@ public final class LockMojo extends AbstractMojo {
     readonly = true)
   private MavenProject project;
 
+  @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
+  private String filename;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir);
+    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
     LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFile);
     LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(Artifacts.from(project.getArtifacts()));
     lockFile.write(lockedDependencies);
