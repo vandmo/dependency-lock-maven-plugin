@@ -20,9 +20,12 @@ public final class FormatMojo extends AbstractMojo {
     readonly = true)
   private File basedir;
 
+  @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
+  private String filename;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    DependenciesLockFile.fromBasedir(basedir).format();
+    DependenciesLockFile.fromBasedir(basedir, filename).format();
   }
 
 }
