@@ -8,19 +8,19 @@
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-annotations",
-    "version" : "2.12.1",
+    "version" : "2.12.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-core",
-    "version" : "2.12.1",
+    "version" : "2.12.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-databind",
-    "version" : "2.12.1",
+    "version" : "2.12.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -87,31 +87,31 @@
   }, {
     "groupId" : "org.apache.maven.plugin-tools",
     "artifactId" : "maven-plugin-annotations",
-    "version" : "3.6.0",
+    "version" : "3.6.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-api",
-    "version" : "1.4.1",
+    "version" : "1.6.2",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-impl",
-    "version" : "1.4.1",
+    "version" : "1.6.2",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-spi",
-    "version" : "1.4.1",
+    "version" : "1.6.2",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-util",
-    "version" : "1.4.1",
+    "version" : "1.6.2",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -123,25 +123,25 @@
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-artifact",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-builder-support",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-core",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-model-builder",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -159,25 +159,25 @@
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-repository-metadata",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-resolver-provider",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings-builder",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings",
-    "version" : "3.6.3",
+    "version" : "3.8.1",
     "scope" : "compile",
     "type" : "jar"
   }, {
