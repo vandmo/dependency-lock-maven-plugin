@@ -8,19 +8,19 @@
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-annotations",
-    "version" : "2.12.3",
+    "version" : "2.13.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-core",
-    "version" : "2.12.3",
+    "version" : "2.13.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "com.fasterxml.jackson.core",
     "artifactId" : "jackson-databind",
-    "version" : "2.12.3",
+    "version" : "2.13.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -44,7 +44,7 @@
   }, {
     "groupId" : "com.google.inject",
     "artifactId" : "guice",
-    "version" : "4.2.1",
+    "version" : "4.2.2",
     "scope" : "compile",
     "type" : "jar",
     "classifier" : "no_aop"
@@ -57,7 +57,7 @@
   }, {
     "groupId" : "commons-io",
     "artifactId" : "commons-io",
-    "version" : "2.5",
+    "version" : "2.6",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -93,55 +93,55 @@
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-api",
-    "version" : "1.6.2",
+    "version" : "1.6.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-impl",
-    "version" : "1.6.2",
+    "version" : "1.6.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-spi",
-    "version" : "1.6.2",
+    "version" : "1.6.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.resolver",
     "artifactId" : "maven-resolver-util",
-    "version" : "1.6.2",
+    "version" : "1.6.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven.shared",
     "artifactId" : "maven-shared-utils",
-    "version" : "3.2.1",
+    "version" : "3.3.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-artifact",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-builder-support",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-core",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-model-builder",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -159,25 +159,25 @@
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-repository-metadata",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-resolver-provider",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings-builder",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings",
-    "version" : "3.8.1",
+    "version" : "3.8.3",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -190,6 +190,12 @@
     "groupId" : "org.codehaus.mojo",
     "artifactId" : "animal-sniffer-annotations",
     "version" : "1.14",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-cipher",
+    "version" : "2.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -207,19 +213,25 @@
   }, {
     "groupId" : "org.codehaus.plexus",
     "artifactId" : "plexus-interpolation",
-    "version" : "1.25",
+    "version" : "1.26",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.codehaus.plexus",
+    "artifactId" : "plexus-sec-dispatcher",
+    "version" : "2.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.codehaus.plexus",
     "artifactId" : "plexus-utils",
-    "version" : "3.2.1",
+    "version" : "3.3.0",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.eclipse.sisu",
     "artifactId" : "org.eclipse.sisu.inject",
-    "version" : "0.3.4",
+    "version" : "0.3.5",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -231,19 +243,7 @@
   }, {
     "groupId" : "org.slf4j",
     "artifactId" : "slf4j-api",
-    "version" : "1.7.29",
-    "scope" : "compile",
-    "type" : "jar"
-  }, {
-    "groupId" : "org.sonatype.plexus",
-    "artifactId" : "plexus-cipher",
-    "version" : "1.4",
-    "scope" : "compile",
-    "type" : "jar"
-  }, {
-    "groupId" : "org.sonatype.plexus",
-    "artifactId" : "plexus-sec-dispatcher",
-    "version" : "1.4",
+    "version" : "1.7.32",
     "scope" : "compile",
     "type" : "jar"
   } ]
