@@ -14,7 +14,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - run: |
+      - run: >
           mvn --batch-mode
           --update-snapshots
           --activate-profiles analyze
