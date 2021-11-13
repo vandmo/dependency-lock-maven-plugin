@@ -16,6 +16,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
+          cache: 'maven'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_CENTRAL_TOKEN
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - id: version
         uses: actions/github-script@v4
@@ -32,4 +38,10 @@ jobs:
       - run: >
           mvn --batch-mode
           versions:set
-          --define newVersion=${{steps.set_version.outputs.no-dash}}
+          --define newVersion=${{ steps.set_version.outputs.no-dash }}
+
+      - run: mvn --batch-mode --activate-profiles sign deploy
+        env:
+          MAVEN_USERNAME: vandmo
+          MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
