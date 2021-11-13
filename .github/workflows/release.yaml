@@ -23,7 +23,7 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
-      - id: version
+      - id: find-version
         uses: actions/github-script@v4
         with:
           script: |
@@ -38,7 +38,7 @@ jobs:
       - run: >
           mvn --batch-mode
           versions:set
-          --define newVersion=${{ steps.set_version.outputs.no-dash }}
+          --define newVersion=${{ steps.find-version.outputs.no-dash }}
 
       - run: mvn --batch-mode --activate-profiles sign deploy
         env:
