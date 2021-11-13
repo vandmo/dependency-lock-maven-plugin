@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -euxo pipefail
-
-tasks/decrypt
-
-mvn clean verify \
-  --batch-mode \
-  --activate-profiles analyze
