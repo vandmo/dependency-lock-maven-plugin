@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
+import org.apache.maven.plugin.logging.Log;
 
 
 public final class DependenciesLockFile {
@@ -23,7 +24,7 @@ public final class DependenciesLockFile {
     return new DependenciesLockFile(new File(basedir, filename));
   }
 
-  public LockedDependencies read() {
+  public LockedDependencies read(Log log) {
     JsonNode json = readJson(file);
     if (!json.isObject()) {
       throw new IllegalStateException("Expected top level type to be an object");
@@ -32,7 +33,7 @@ public final class DependenciesLockFile {
     if (dependencies == null || !dependencies.isArray()) {
       throw new IllegalStateException("Expected a property named 'dependencies' of type array");
     }
-    return LockedDependencies.fromJson(dependencies);
+    return LockedDependencies.fromJson(dependencies, log);
   }
 
   public void write(LockedDependencies lockedDependencies) {
@@ -41,8 +42,8 @@ public final class DependenciesLockFile {
     writeJson(file, json);
   }
 
-  public void format() {
-    write(read());
+  public void format(Log log) {
+    write(read(log));
   }
 
   public boolean exists() {

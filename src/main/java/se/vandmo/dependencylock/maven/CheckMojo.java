@@ -1,15 +1,17 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.util.Arrays.asList;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import java.io.File;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
 
 
 @Mojo(
@@ -33,16 +35,20 @@ public final class CheckMojo extends AbstractMojo {
   @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
   private String filename;
 
+  @Parameter
+  private String[] useMyVersionFor = new String[0];
+
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+  public void execute() throws MojoExecutionException {
     DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
     if (!lockFile.exists()) {
       getLog().error("No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:lock'");
       return;
     }
-    LockedDependencies lockedDependencies = lockFile.read();
+    ArtifactFilter useMyVersionForFilter = new StrictPatternIncludesArtifactFilter(asList(useMyVersionFor));
+    LockedDependencies lockedDependencies = lockFile.read(getLog());
     Artifacts actualDependencies = Artifacts.from(project.getArtifacts());
-    LockedDependencies.Diff diff = lockedDependencies.compareWith(actualDependencies, project.getVersion());
+    LockedDependencies.Diff diff = lockedDependencies.compareWith(actualDependencies, project.getVersion(), useMyVersionForFilter);
     if (diff.equals()) {
       getLog().info("Actual dependencies matches locked dependencies");
     } else {

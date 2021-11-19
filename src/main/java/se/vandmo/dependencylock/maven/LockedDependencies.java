@@ -11,17 +11,20 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
 
   public final List<LockedDependency> lockedDependencies;
+  private final Log log;
 
-  private LockedDependencies(List<LockedDependency> lockedDependencies) {
+  private LockedDependencies(List<LockedDependency> lockedDependencies, Log log) {
     this.lockedDependencies = lockedDependencies;
+    this.log = log;
   }
 
-  public static LockedDependencies fromJson(JsonNode json) {
+  public static LockedDependencies fromJson(JsonNode json, Log log) {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
@@ -29,11 +32,19 @@ public final class LockedDependencies {
     for (JsonNode entry : json) {
       lockedDependencies.add(LockedDependency.fromJson(entry));
     }
-    return new LockedDependencies(unmodifiableList(lockedDependencies));
+    return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }
 
-  public static LockedDependencies empty() {
-    return new LockedDependencies(emptyList());
+  public static LockedDependencies empty(Log log) {
+    return new LockedDependencies(emptyList(), log);
+  }
+
+  public static LockedDependencies from(Artifacts artifacts, Log log) {
+    List<LockedDependency> lockedDependencies = new ArrayList<>();
+    for (Artifact artifact : artifacts.artifacts) {
+      lockedDependencies.add(LockedDependency.from(artifact));
+    }
+    return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }
 
   public JsonNode asJson() {
@@ -47,12 +58,12 @@ public final class LockedDependencies {
   public LockedDependencies updateWith(Artifacts artifacts) {
     List<LockedDependency> updatedLockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
-      updatedLockedDependencies.add(getLockedDependency(artifact));
+      updatedLockedDependencies.add(maybeChangeTo_UseMine(artifact));
     }
-    return new LockedDependencies(unmodifiableList(updatedLockedDependencies));
+    return new LockedDependencies(unmodifiableList(updatedLockedDependencies), log);
   }
 
-  private LockedDependency getLockedDependency(Artifact artifact) {
+  private LockedDependency maybeChangeTo_UseMine(Artifact artifact) {
     LockedDependency lockedDependency = LockedDependency.from(artifact);
     Optional<LockedVersion> possiblyExistingVersion = getExistingVersion(artifact.identifier);
     if (possiblyExistingVersion.isPresent()) {
@@ -69,16 +80,21 @@ public final class LockedDependencies {
             .map(lockedDependency -> lockedDependency.version);
   }
 
-  public Diff compareWith(Artifacts artifacts, String projectVersion) {
+  public Diff compareWith(Artifacts artifacts, String projectVersion, ArtifactFilter useMyVersionForFilter) {
     List<String> missing = new ArrayList<>();
     List<String> different = new ArrayList<>();
     List<String> added = new ArrayList<>();
     for (LockedDependency lockedDependency : lockedDependencies) {
-      Optional<Artifact> otherArtifact = artifacts.by(lockedDependency.identifier);
-      if (!otherArtifact.isPresent()) {
+      Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
+      if (!possiblyOtherArtifact.isPresent()) {
         missing.add(lockedDependency.toString());
-      } else if (!lockedDependency.matches(otherArtifact.get(), projectVersion)) {
-        different.add(format(ROOT, "Expected %s but found %s", lockedDependency.toString(), otherArtifact.get().toString()));
+      } else {
+        Artifact otherArtifact = possiblyOtherArtifact.get();
+        LockedDependency possiblyChangedLockedDependency = maybeChangeTo_UseMine(
+            useMyVersionForFilter, lockedDependency, otherArtifact);
+        if (!possiblyChangedLockedDependency.matches(otherArtifact, projectVersion)) {
+          different.add(format(ROOT, "Expected %s but found %s", lockedDependency, otherArtifact));
+        }
       }
     }
     for (Artifact otherArtifact : artifacts.artifacts) {
@@ -87,6 +103,16 @@ public final class LockedDependencies {
       }
     }
     return new Diff(missing, different, added);
+  }
+
+  private LockedDependency maybeChangeTo_UseMine(ArtifactFilter useMyVersionForFilter,
+      LockedDependency lockedDependency, Artifact otherArtifact) {
+    if (useMyVersionForFilter.include(otherArtifact.toMavenArtifact())) {
+      log.info(format(ROOT,"Using my version for %s", otherArtifact));
+      return lockedDependency.withVersion(LockedVersion.USE_MINE);
+    } else {
+      return lockedDependency;
+    }
   }
 
   public Optional<LockedDependency> by(ArtifactIdentifier identifier) {

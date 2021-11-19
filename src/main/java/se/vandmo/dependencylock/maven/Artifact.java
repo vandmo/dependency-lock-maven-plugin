@@ -23,6 +23,10 @@ public final class Artifact implements Comparable<Artifact> {
         artifact.getType());
   }
 
+  public org.apache.maven.artifact.Artifact toMavenArtifact() {
+    return new MavenArtifact(this);
+  }
+
   Artifact(
       ArtifactIdentifier identifier,
       String version,

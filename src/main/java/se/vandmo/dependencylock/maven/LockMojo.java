@@ -4,8 +4,6 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
@@ -32,7 +30,8 @@ public final class LockMojo extends AbstractMojo {
   private String filename;
 
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+  public void execute() {
+    getLog().warn("The 'lock' goal is deprecated, use 'create-lock-file' instead.");
     DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
     LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFile);
     LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(Artifacts.from(project.getArtifacts()));
@@ -41,9 +40,9 @@ public final class LockMojo extends AbstractMojo {
 
   private LockedDependencies getExistingLockedDependencies(DependenciesLockFile lockFile) {
     if (lockFile.exists()) {
-      return lockFile.read();
+      return lockFile.read(getLog());
     } else {
-      return LockedDependencies.empty();
+      return LockedDependencies.empty(getLog());
     }
   }
 
