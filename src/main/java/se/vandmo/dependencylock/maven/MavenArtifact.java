@@ -3,6 +3,7 @@ package se.vandmo.dependencylock.maven;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.handler.ArtifactHandler;
@@ -250,5 +251,22 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
   @Override
   public int compareTo(Artifact artifact) {
     throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    MavenArtifact that = (MavenArtifact) o;
+    return delegate.equals(that.delegate);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(delegate);
   }
 }

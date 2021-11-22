@@ -69,8 +69,8 @@
   }, {
     "groupId" : "commons-io",
     "artifactId" : "commons-io",
-    "version" : "2.6",
-    "scope" : "compile",
+    "version" : "2.11.0",
+    "scope" : "test",
     "type" : "jar"
   }, {
     "groupId" : "javax.annotation",
@@ -256,6 +256,12 @@
     "groupId" : "org.eclipse.sisu",
     "artifactId" : "org.eclipse.sisu.plexus",
     "version" : "0.3.5",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "org.freemarker",
+    "artifactId" : "freemarker",
+    "version" : "2.3.31",
     "scope" : "compile",
     "type" : "jar"
   }, {

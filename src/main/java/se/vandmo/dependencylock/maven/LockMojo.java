@@ -2,43 +2,32 @@ package se.vandmo.dependencylock.maven;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
-import java.io.File;
-import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 
 @Mojo(
   name = "lock",
   requiresDependencyResolution = TEST)
-public final class LockMojo extends AbstractMojo {
-
-  @Parameter(
-    defaultValue = "${basedir}",
-    required = true,
-    readonly = true)
-  private File basedir;
-
-  @Parameter(
-    defaultValue="${project}",
-    required = true,
-    readonly = true)
-  private MavenProject project;
-
-  @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
-  private String filename;
+public final class LockMojo extends AbstractDependencyLockMojo {
 
   @Override
-  public void execute() {
+  public void execute() throws MojoFailureException {
     getLog().warn("The 'lock' goal is deprecated, use 'create-lock-file' instead.");
-    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
-    LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFile);
-    LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(Artifacts.from(project.getArtifacts()));
-    lockFile.write(lockedDependencies);
+    switch (format()) {
+      case json:
+        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson
+            .from(lockFile());
+        LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFileJson);
+        LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(projectDependencies());
+        lockFileJson.write(lockedDependencies);
+        break;
+      default:
+        throw new MojoFailureException("Only supported for json lock files, use create-lock-file instead");
+    }
   }
 
-  private LockedDependencies getExistingLockedDependencies(DependenciesLockFile lockFile) {
+  private LockedDependencies getExistingLockedDependencies(DependenciesLockFileJson lockFile) {
     if (lockFile.exists()) {
       return lockFile.read(getLog());
     } else {

@@ -7,7 +7,7 @@
 
 
   <name>Dependency Lock Maven Plugin</name>
-  <description>Maven plugin that makes sure that Maven dependency are not accidentaly changed.</description>
+  <description>Maven plugin that makes sure that Maven dependency are not accidentally changed.</description>
   <url>https://github.com/vandmo/dependency-check-maven-plugin</url>
 
   <groupId>se.vandmo</groupId>
@@ -137,6 +137,11 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <version>2.3.31</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
@@ -146,10 +151,34 @@
       <artifactId>maven-common-artifact-filters</artifactId>
       <version>3.2.0</version>
     </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <version>3.2.2</version>
+        <configuration>
+          <addTestClassPath>true</addTestClassPath>
+          <streamLogs>true</streamLogs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>

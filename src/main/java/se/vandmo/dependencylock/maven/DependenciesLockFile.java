@@ -1,18 +1,16 @@
 package se.vandmo.dependencylock.maven;
 
-import static se.vandmo.dependencylock.maven.JsonUtils.readJson;
-import static se.vandmo.dependencylock.maven.JsonUtils.writeJson;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
-import org.apache.maven.plugin.logging.Log;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 
 public final class DependenciesLockFile {
-
-  public static final String DEFAULT_FILENAME = "dependencies-lock.json";
 
   private final File file;
 
@@ -24,30 +22,28 @@ public final class DependenciesLockFile {
     return new DependenciesLockFile(new File(basedir, filename));
   }
 
-  public LockedDependencies read(Log log) {
-    JsonNode json = readJson(file);
-    if (!json.isObject()) {
-      throw new IllegalStateException("Expected top level type to be an object");
+  public Reader reader() {
+    try {
+      return new FileReader(file);
+    } catch (FileNotFoundException e) {
+      throw new UncheckedIOException(e);
     }
-    JsonNode dependencies = json.get("dependencies");
-    if (dependencies == null || !dependencies.isArray()) {
-      throw new IllegalStateException("Expected a property named 'dependencies' of type array");
-    }
-    return LockedDependencies.fromJson(dependencies, log);
   }
 
-  public void write(LockedDependencies lockedDependencies) {
-    ObjectNode json = JsonNodeFactory.instance.objectNode();
-    json.set("dependencies", lockedDependencies.asJson());
-    writeJson(file, json);
-  }
-
-  public void format(Log log) {
-    write(read(log));
+  public Writer writer() {
+    file.getParentFile().mkdirs();
+    try {
+      return new FileWriter(file);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public boolean exists() {
     return file.exists();
   }
 
+  public String filename() {
+    return file.getAbsolutePath();
+  }
 }

@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.util.Objects;
+import org.apache.maven.model.Dependency;
 
 public final class Artifact implements Comparable<Artifact> {
 
@@ -11,6 +12,7 @@ public final class Artifact implements Comparable<Artifact> {
   public final String version;
   public final String scope;
   public final String type;
+  public final boolean optional;
 
   public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
     return new Artifact(
@@ -21,7 +23,21 @@ public final class Artifact implements Comparable<Artifact> {
             ofNullable(artifact.getType())),
         artifact.getVersion(),
         artifact.getScope(),
-        artifact.getType());
+        artifact.getType(),
+        artifact.isOptional());
+  }
+
+  public static Artifact from(Dependency dependency) {
+    return new Artifact(
+        new ArtifactIdentifier(
+            dependency.getGroupId(),
+            dependency.getArtifactId(),
+            ofNullable(dependency.getClassifier()),
+            ofNullable(dependency.getType())),
+        dependency.getVersion(),
+        dependency.getScope(),
+        dependency.getType(),
+        dependency.isOptional());
   }
 
   public org.apache.maven.artifact.Artifact toMavenArtifact() {
@@ -32,11 +48,13 @@ public final class Artifact implements Comparable<Artifact> {
       ArtifactIdentifier identifier,
       String version,
       String scope,
-      String type) {
+      String type,
+      boolean optional) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
+    this.optional = optional;
   }
 
   @Override

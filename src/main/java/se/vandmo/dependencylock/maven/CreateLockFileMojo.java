@@ -1,39 +1,32 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.util.Locale.ROOT;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
-import java.io.File;
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
 
 
 @Mojo(
   name = "create-lock-file",
   requiresDependencyResolution = TEST)
-public final class CreateLockFileMojo extends AbstractMojo {
-
-  @Parameter(
-    defaultValue = "${basedir}",
-    required = true,
-    readonly = true)
-  private File basedir;
-
-  @Parameter(
-    defaultValue="${project}",
-    required = true,
-    readonly = true)
-  private MavenProject project;
-
-  @Parameter(defaultValue = DependenciesLockFile.DEFAULT_FILENAME)
-  private String filename;
+public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() {
-    DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
-    LockedDependencies lockedDependencies = LockedDependencies.from(Artifacts.from(project.getArtifacts()), getLog());
-    lockFile.write(lockedDependencies);
+    DependenciesLockFile lockFile = lockFile();
+    getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
+    switch (format()) {
+      case json:
+        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile);
+        LockedDependencies lockedDependencies = LockedDependencies.from(projectDependencies(), getLog());
+        lockFileJson.write(lockedDependencies);
+        break;
+      case pom:
+        PomIO.writePom(lockFile, pomMinimums(), projectDependencies());
+        break;
+      default:
+        throw new RuntimeException("This should not happen!");
+    }
   }
 
 }

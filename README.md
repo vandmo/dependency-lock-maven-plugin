@@ -11,6 +11,7 @@ This Maven plugin  enables you to:
 * Make sure dependencies are not accidentally changed
 * Track changes to dependencies in your SCM
 * Enable vulnerability scanning in all your dependencies, including transitive ones
+* Enable Dependabot Security Alerts for transitive dependencies
 
 It is a bit like `mvn dependency:list` but the output is intended to be tracked by you SCM
 and the _check_ goal makes sure you don't forget to update the file.
@@ -21,6 +22,8 @@ Locking
 will create a file named _dependencies-lock.json_ by default.
 
 You should then commit that file to your source control of choice.
+
+Choose between JSON format and POM XML format. The latter is more verbose but will be detected by Dependabot Security Alerts.
 
 Validating
 ----------
@@ -73,6 +76,11 @@ Example:
   <dependency>org.myorg:myapplication-helpers</dependency>
 </useMyVersionFor>
 ```
+
+### format
+Which lock file format to use, defaults to _json_.
+* _json_, lock file in JSON format, default filename is dependency-lock.json
+* _pom_, lock file in POM XML format, default filename is .dependeny-lock/pom.xml
 
 Goals
 -----

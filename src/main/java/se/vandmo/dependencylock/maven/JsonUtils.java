@@ -4,9 +4,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.util.Optional;
 
 public final class JsonUtils {
@@ -27,19 +28,19 @@ public final class JsonUtils {
     return Optional.of(getStringValue(json, fieldName));
   }
 
-  public static JsonNode readJson(File file) {
+  public static JsonNode readJson(Reader reader) {
     try {
-      return new ObjectMapper().readTree(file);
+      return new ObjectMapper().readTree(reader);
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
   }
 
-  public static void writeJson(File file, JsonNode json) {
+  public static void writeJson(Writer writer, JsonNode json) {
     try {
       new ObjectMapper()
           .writerWithDefaultPrettyPrinter()
-          .writeValue(file, json);
+          .writeValue(writer, json);
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
