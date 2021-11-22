@@ -17,7 +17,8 @@ public final class Artifact implements Comparable<Artifact> {
         new ArtifactIdentifier(
             artifact.getGroupId(),
             artifact.getArtifactId(),
-            ofNullable(artifact.getClassifier())),
+            ofNullable(artifact.getClassifier()),
+            ofNullable(artifact.getType())),
         artifact.getVersion(),
         artifact.getScope(),
         artifact.getType());
