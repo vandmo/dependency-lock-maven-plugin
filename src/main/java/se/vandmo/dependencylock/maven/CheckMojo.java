@@ -42,8 +42,8 @@ public final class CheckMojo extends AbstractMojo {
   public void execute() throws MojoExecutionException {
     DependenciesLockFile lockFile = DependenciesLockFile.fromBasedir(basedir, filename);
     if (!lockFile.exists()) {
-      getLog().error("No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:lock'");
-      return;
+      throw new MojoExecutionException(
+          "No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:lock'");
     }
     ArtifactFilter useMyVersionForFilter = new StrictPatternIncludesArtifactFilter(asList(useMyVersionFor));
     LockedDependencies lockedDependencies = lockFile.read(getLog());
