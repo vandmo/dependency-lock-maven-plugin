@@ -58,6 +58,22 @@ Adding the following in _~/.m2/settings.xml_ will allow you to write `mvn depend
 </pluginGroups>
 ```
 
+Configuration
+-------------
+### filename
+The filename of the lock file.
+
+### useMyVersionFor
+Used to specify which dependencies should have the same version as the main module.
+
+Example:
+```xml
+<useMyVersionFor>
+  <dependency>org.myorg:myapplication-controllers-*</dependency>
+  <dependency>org.myorg:myapplication-helpers</dependency>
+</useMyVersionFor>
+```
+
 Goals
 -----
 ### check
