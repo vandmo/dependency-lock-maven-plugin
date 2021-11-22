@@ -32,7 +32,8 @@ public final class LockedDependency implements Comparable<LockedDependency> {
         new ArtifactIdentifier(
             getStringValue(json, "groupId"),
             getStringValue(json, "artifactId"),
-            possiblyGetStringValue(json, "classifier")),
+            possiblyGetStringValue(json, "classifier"),
+            possiblyGetStringValue(json, "type")),
         LockedVersion.fromJson(json.get("version")),
         getStringValue(json, "scope"),
         getStringValue(json, "type"));
