@@ -1,10 +1,16 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
@@ -24,7 +30,7 @@ public final class DependenciesLockFileAccessor {
 
   public Reader reader() {
     try {
-      return new FileReader(file);
+      return new InputStreamReader(new FileInputStream(file), UTF_8);
     } catch (FileNotFoundException e) {
       throw new UncheckedIOException(e);
     }
@@ -33,7 +39,7 @@ public final class DependenciesLockFileAccessor {
   public Writer writer() {
     file.getParentFile().mkdirs();
     try {
-      return new FileWriter(file);
+      return new OutputStreamWriter(new FileOutputStream(file), UTF_8);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
