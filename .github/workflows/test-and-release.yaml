@@ -18,7 +18,7 @@ jobs:
       - run: >
           mvn --batch-mode
           --update-snapshots
-          --activate-profiles analyze
+          --activate-profiles analyze,its
           verify
           com.github.spotbugs:spotbugs-maven-plugin:4.4.2:spotbugs
           com.github.spotbugs:spotbugs-maven-plugin:4.4.2:check --define spotbugs.excludeFilterFile=spotbugs-suppressions.xml
