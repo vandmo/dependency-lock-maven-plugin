@@ -8,7 +8,7 @@
 
   <name>Dependency Lock Maven Plugin</name>
   <description>Maven plugin that makes sure that Maven dependency are not accidentally changed.</description>
-  <url>https://github.com/vandmo/dependency-check-maven-plugin</url>
+  <url>https://github.com/vandmo/dependency-lock-maven-plugin</url>
 
   <groupId>se.vandmo</groupId>
   <artifactId>dependency-lock-maven-plugin</artifactId>
