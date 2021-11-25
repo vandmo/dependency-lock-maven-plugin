@@ -17,7 +17,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     switch (format()) {
       case json:
         DependenciesLockFileJson lockFileJson = DependenciesLockFileJson
-            .from(lockFile());
+            .from(lockFile(), getLog());
         LockedDependencies existingLockedDependencies = getExistingLockedDependencies(lockFileJson);
         LockedDependencies lockedDependencies = existingLockedDependencies.updateWith(projectDependencies());
         lockFileJson.write(lockedDependencies);
@@ -29,7 +29,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
 
   private LockedDependencies getExistingLockedDependencies(DependenciesLockFileJson lockFile) {
     if (lockFile.exists()) {
-      return lockFile.read(getLog());
+      return lockFile.read();
     } else {
       return LockedDependencies.empty(getLog());
     }

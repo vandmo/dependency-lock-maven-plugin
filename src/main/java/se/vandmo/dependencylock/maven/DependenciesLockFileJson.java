@@ -14,20 +14,22 @@ import java.io.Writer;
 import org.apache.maven.plugin.logging.Log;
 
 
-public final class DependenciesLockFileJson {
+public final class DependenciesLockFileJson implements DependenciesLockFile {
 
-  private final DependenciesLockFile dependenciesLockFile;
+  private final DependenciesLockFileAccessor dependenciesLockFile;
+  private final Log log;
 
-  private DependenciesLockFileJson(DependenciesLockFile dependenciesLockFile) {
+  private DependenciesLockFileJson(DependenciesLockFileAccessor dependenciesLockFile, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
+    this.log = log;
   }
 
-  public static DependenciesLockFileJson from(DependenciesLockFile dependenciesLockFile) {
-    return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile));
+  public static DependenciesLockFileJson from(DependenciesLockFileAccessor dependenciesLockFile, Log log) {
+    return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
   }
 
-  public LockedDependencies read(Log log) {
-    JsonNode json = read();
+  public LockedDependencies read() {
+    JsonNode json = readJsonNode();
     if (!json.isObject()) {
       throw new IllegalStateException("Expected top level type to be an object");
     }
@@ -38,12 +40,16 @@ public final class DependenciesLockFileJson {
     return LockedDependencies.fromJson(dependencies, log);
   }
 
-  private JsonNode read() {
+  private JsonNode readJsonNode() {
     try (Reader reader = dependenciesLockFile.reader()) {
       return readJson(reader);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public void write(Artifacts projectDependencies) {
+    write(LockedDependencies.from(projectDependencies, log));
   }
 
   public void write(LockedDependencies lockedDependencies) {
@@ -54,10 +60,6 @@ public final class DependenciesLockFileJson {
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
-  }
-
-  public void format(Log log) {
-    write(read(log));
   }
 
   public boolean exists() {

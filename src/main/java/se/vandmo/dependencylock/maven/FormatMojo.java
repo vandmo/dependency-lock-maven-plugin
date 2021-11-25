@@ -18,9 +18,8 @@ public final class FormatMojo extends AbstractDependencyLockMojo {
         + "Use 'create-lock-file' instead and avoid editing the lock file.");
     switch (format()) {
       case json:
-        DependenciesLockFileJson
-            .from(lockFile())
-            .format(getLog());
+        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile(), getLog());
+        lockFileJson.write(lockFileJson.read());
         break;
       default:
         throw new MojoFailureException("Can only format json lock files");

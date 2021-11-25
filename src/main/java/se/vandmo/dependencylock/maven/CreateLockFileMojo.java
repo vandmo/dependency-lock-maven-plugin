@@ -13,16 +13,17 @@ public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() {
-    DependenciesLockFile lockFile = lockFile();
+    DependenciesLockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
       case json:
-        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile);
+        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
         LockedDependencies lockedDependencies = LockedDependencies.from(projectDependencies(), getLog());
         lockFileJson.write(lockedDependencies);
         break;
       case pom:
-        PomIO.writePom(lockFile, pomMinimums(), projectDependencies());
+        DependenciesLockFilePom lockFilePom = DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
+        lockFilePom.write(projectDependencies());
         break;
       default:
         throw new RuntimeException("This should not happen!");

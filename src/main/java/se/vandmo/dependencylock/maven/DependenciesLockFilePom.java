@@ -1,9 +1,9 @@
 package se.vandmo.dependencylock.maven;
 
 import static freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER;
+import static java.util.Objects.requireNonNull;
 
 import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
@@ -20,17 +20,39 @@ import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 
-public final class PomIO {
+public final class DependenciesLockFilePom implements DependenciesLockFile {
 
-  public static final Version VERSION = Configuration.VERSION_2_3_31;
+  private static final Version VERSION = Configuration.VERSION_2_3_31;
 
-  private PomIO() {}
+  private final DependenciesLockFileAccessor dependenciesLockFile;
+  private final PomMinimums pomMinimums;
+  private final Log log;
 
-  public static void writePom(DependenciesLockFile file, PomMinimums pomMinimums, Artifacts projectDependencies) {
+  private DependenciesLockFilePom(
+      DependenciesLockFileAccessor dependenciesLockFile,
+      PomMinimums pomMinimums,
+      Log log) {
+    this.dependenciesLockFile = dependenciesLockFile;
+    this.pomMinimums = pomMinimums;
+    this.log = log;
+  }
+
+  public static DependenciesLockFilePom from(
+      DependenciesLockFileAccessor dependenciesLockFile,
+      PomMinimums pomMinimums,
+      Log log) {
+    return new DependenciesLockFilePom(
+        requireNonNull(dependenciesLockFile),
+        requireNonNull(pomMinimums),
+        requireNonNull(log));
+  }
+
+  @Override
+  public void write(Artifacts projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
-      try (Writer writer = file.writer()) {
+      try (Writer writer = dependenciesLockFile.writer()) {
         template.process(makeDataModel(pomMinimums, projectDependencies), writer);
       }
     } catch (IOException | TemplateException e) {
@@ -49,7 +71,7 @@ public final class PomIO {
 
   private static Configuration createConfiguration() {
     Configuration cfg = new Configuration(VERSION);
-    cfg.setClassForTemplateLoading(PomIO.class, "");
+    cfg.setClassForTemplateLoading(DependenciesLockFilePom.class, "");
     cfg.setDefaultEncoding("UTF-8");
     cfg.setTemplateExceptionHandler(RETHROW_HANDLER);
     cfg.setLogTemplateExceptions(false);
@@ -65,9 +87,10 @@ public final class PomIO {
     return builder.build();
   }
 
-  public static LockedDependencies readPom(DependenciesLockFile lockFile, Log log) {
+  @Override
+  public LockedDependencies read() {
     MavenXpp3Reader pomReader = new MavenXpp3Reader();
-    try (Reader reader = lockFile.reader()) {
+    try (Reader reader = dependenciesLockFile.reader()) {
       Model pom = pomReader.read(reader);
       Artifacts artifacts = Artifacts.from(pom.getDependencies());
       return LockedDependencies.from(artifacts, log);

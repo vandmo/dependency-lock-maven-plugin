@@ -26,15 +26,8 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   @Parameter
   private LockFileFormat format = LockFileFormat.json;
 
-  DependenciesLockFile lockFile() {
-    return DependenciesLockFile.fromBasedir(basedir, getLockFilename());
-  }
-
-  private String getLockFilename() {
-    if (filename != null) {
-      return filename;
-    }
-    return format.defaultFilename();
+  DependenciesLockFileAccessor lockFile() {
+    return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
   Artifacts projectDependencies() {
