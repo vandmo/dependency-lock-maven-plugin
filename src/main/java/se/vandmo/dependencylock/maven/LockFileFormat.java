@@ -12,7 +12,7 @@ public enum LockFileFormat {
     }
 
     @Override
-    DependenciesLockFile dependenciesLockFile_from(
+    public DependenciesLockFile dependenciesLockFile_from(
         DependenciesLockFileAccessor dependenciesLockFileAccessor,
         PomMinimums pomMinimums,
         Log log) {
@@ -27,7 +27,7 @@ public enum LockFileFormat {
     }
 
     @Override
-    DependenciesLockFile dependenciesLockFile_from(
+    public DependenciesLockFile dependenciesLockFile_from(
         DependenciesLockFileAccessor dependenciesLockFileAccessor,
         PomMinimums pomMinimums,
         Log log) {
@@ -48,7 +48,7 @@ public enum LockFileFormat {
     return DependenciesLockFileAccessor.fromBasedir(basedir, getLockFilename(filename));
   }
 
-  abstract DependenciesLockFile dependenciesLockFile_from(
+  public abstract DependenciesLockFile dependenciesLockFile_from(
       DependenciesLockFileAccessor dependenciesLockFileAccessor,
       PomMinimums pomMinimums,
       Log log);

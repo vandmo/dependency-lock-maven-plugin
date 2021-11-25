@@ -1,9 +1,10 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.mojos;
 
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
+import se.vandmo.dependencylock.maven.DependenciesLockFileJson;
 
 
 @Mojo(

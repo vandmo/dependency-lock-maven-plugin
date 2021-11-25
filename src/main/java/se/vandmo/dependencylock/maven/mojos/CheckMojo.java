@@ -1,4 +1,4 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.mojos;
 
 import static java.util.Arrays.asList;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
@@ -9,6 +9,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
+import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockedDependencies;
 
 
 @Mojo(

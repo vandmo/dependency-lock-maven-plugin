@@ -1,9 +1,13 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.mojos;
 
 import java.io.File;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockFileFormat;
+import se.vandmo.dependencylock.maven.PomMinimums;
 
 
 public abstract class AbstractDependencyLockMojo extends AbstractMojo {
