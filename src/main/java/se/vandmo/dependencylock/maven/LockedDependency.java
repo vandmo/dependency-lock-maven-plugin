@@ -91,6 +91,15 @@ public final class LockedDependency implements Comparable<LockedDependency> {
         .toString();
   }
 
+  public String toResolvedString(String projectVersion) {
+    return new StringBuilder()
+        .append(identifier)
+        .append(':').append(version.resolveWithProjectVersion(projectVersion))
+        .append(':').append(scope)
+        .append(':').append(type)
+        .toString();
+  }
+
   @Override
   public int hashCode() {
     int hash = 7;
@@ -127,5 +136,4 @@ public final class LockedDependency implements Comparable<LockedDependency> {
     }
     return true;
   }
-
 }

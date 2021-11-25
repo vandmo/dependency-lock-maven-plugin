@@ -74,6 +74,14 @@ public final class LockedVersion implements Comparable<LockedVersion> {
     return sb.toString();
   }
 
+  public String resolveWithProjectVersion(String projectVersion) {
+    if (useMine) {
+      return projectVersion;
+    } else {
+      return version.get();
+    }
+  }
+
   @Override
   public int hashCode() {
     int hash = 7;
@@ -107,5 +115,4 @@ public final class LockedVersion implements Comparable<LockedVersion> {
     String resolvedVersion = useMine ? projectVersion : this.version.get();
     return resolvedVersion.equals(version);
   }
-
 }

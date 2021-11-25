@@ -87,13 +87,13 @@ public final class LockedDependencies {
     for (LockedDependency lockedDependency : lockedDependencies) {
       Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
       if (!possiblyOtherArtifact.isPresent()) {
-        missing.add(lockedDependency.toString());
+        missing.add(lockedDependency.toResolvedString(projectVersion));
       } else {
         Artifact otherArtifact = possiblyOtherArtifact.get();
         LockedDependency possiblyChangedLockedDependency = maybeChangeTo_UseMine(
             useMyVersionForFilter, lockedDependency, otherArtifact);
         if (!possiblyChangedLockedDependency.matches(otherArtifact, projectVersion)) {
-          different.add(format(ROOT, "Expected %s but found %s", lockedDependency, otherArtifact));
+          different.add(format(ROOT, "Expected %s but found %s", lockedDependency.toResolvedString(projectVersion), otherArtifact));
         }
       }
     }
