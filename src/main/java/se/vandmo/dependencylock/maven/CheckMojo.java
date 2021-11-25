@@ -1,5 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
