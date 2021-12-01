@@ -141,31 +141,31 @@
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-artifact",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-builder-support",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-core",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-model-builder",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-model",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
@@ -177,25 +177,25 @@
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-repository-metadata",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-resolver-provider",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings-builder",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
     "groupId" : "org.apache.maven",
     "artifactId" : "maven-settings",
-    "version" : "3.8.3",
+    "version" : "3.8.4",
     "scope" : "compile",
     "type" : "jar"
   }, {
