@@ -1,6 +1,4 @@
 #!/bin/bash
+set -eux -o pipefail
 
-set -euxo pipefail
-
-mvn se.vandmo:dependency-lock-maven-plugin:lock
-
+mvn se.vandmo:dependency-lock-maven-plugin:0.23:create-lock-file

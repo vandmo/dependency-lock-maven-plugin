@@ -245,7 +245,10 @@
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
-        <version>0.13</version>
+        <version>0.23</version>
+        <configuration>
+          <format>pom</format>
+        </configuration>
         <executions>
           <execution>
             <id>check</id>
