@@ -47,11 +47,11 @@ jobs:
         with:
           script: |
             const tag = context.ref.substring(10)
-            const no_v = tag.replace('release-', '')
-            const dash_index = no_v.lastIndexOf('-')
-            const no_dash = (dash_index > -1) ? no_v.substring(0, dash_index) : no_v
+            const no_release = tag.replace('release-', '')
+            const dash_index = no_release.lastIndexOf('-')
+            const no_dash = (dash_index > -1) ? no_release.substring(0, dash_index) : no_release
             core.setOutput('tag', tag)
-            core.setOutput('no-v', no_v)
+            core.setOutput('no-release', no_release)
             core.setOutput('no-dash', no_dash)
 
       - run: >
