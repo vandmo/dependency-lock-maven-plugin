@@ -17,7 +17,7 @@ assertThat(buildLog, containsInRelativeOrder(
         "[ERROR] Missing dependencies:",
         "[ERROR]   io.netty:netty-buffer:jar:4.1.65.Final:compile:jar",
         "[ERROR]   io.netty:netty-common:jar:4.1.65.Final:compile:jar",
-        "[ERROR]   io.netty:netty-resolver:jar:4.1.65.Final:compile:jar",
+        "[ERROR]   io.netty:netty-resolver:jar:0-SNAPSHOT:compile:jar",
         "[ERROR]   io.netty:netty-transport-native-epoll:linux-x86_64:jar:4.1.65.Final:compile:jar",
         "[ERROR]   io.netty:netty-transport-native-unix-common:jar:4.1.65.Final:compile:jar",
         "[ERROR]   io.netty:netty-transport:jar:4.1.65.Final:compile:jar",

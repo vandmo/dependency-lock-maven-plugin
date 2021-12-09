@@ -93,7 +93,7 @@ public final class LockedDependencies {
         LockedDependency possiblyChangedLockedDependency = maybeChangeTo_UseMine(
             useMyVersionForFilter, lockedDependency, otherArtifact);
         if (!possiblyChangedLockedDependency.matches(otherArtifact, projectVersion)) {
-          different.add(format(ROOT, "Expected %s but found %s", lockedDependency.toResolvedString(projectVersion), otherArtifact));
+          different.add(format(ROOT, "Expected %s but found %s", possiblyChangedLockedDependency.toResolvedString(projectVersion), otherArtifact));
         }
       }
     }
