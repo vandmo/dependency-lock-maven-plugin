@@ -24,10 +24,14 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     readonly = true)
   private MavenProject project;
 
-  @Parameter
+  @Parameter(
+      property = "dependencyLock.filename"
+  )
   private String filename;
 
-  @Parameter
+  @Parameter(
+      property = "dependencyLock.format"
+  )
   private LockFileFormat format = LockFileFormat.json;
 
   DependenciesLockFileAccessor lockFile() {
