@@ -1,8 +1,10 @@
 # dependency-lock-maven-plugin
 
-[![Build Status](https://travis-ci.com/vandmo/dependency-lock-maven-plugin.svg?branch=master)](https://travis-ci.com/vandmo/dependency-lock-maven-plugin)
-![usefulness 100%](https://img.shields.io/badge/usefulness-100%25-success.svg)
-![Latest Version](https://img.shields.io/maven-central/v/se.vandmo/dependency-lock-maven-plugin)
+[![Build Status](https://img.shields.io/github/workflow/status/vandmo/dependency-lock-maven-plugin/Test%20and%20Release?label=Build)](https://github.com/vandmo/dependency-lock-maven-plugin/actions/workflows/test-and-release.yaml)
+[![usefulness 100%](https://img.shields.io/badge/usefulness-100%25-success.svg?label=Usefulness)](https://www.google.com/search?q=pasta+machine)
+[![Maven Central](https://img.shields.io/maven-central/v/se.vandmo/dependency-lock-maven-plugin.svg?label=Maven%20Central)](https://search.maven.org/artifact/se.vandmo/dependency-lock-maven-plugin)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
+
 
 Maven only requires you to specify versions of dependencies that you use directly.
 Transitive dependencies aren't visible in the pom.xml and their version is chosen in a seemingly random way.
