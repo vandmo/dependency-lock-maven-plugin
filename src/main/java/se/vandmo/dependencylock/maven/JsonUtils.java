@@ -41,6 +41,7 @@ public final class JsonUtils {
       new ObjectMapper()
           .writerWithDefaultPrettyPrinter()
           .writeValue(writer, json);
+      writer.write(System.lineSeparator());
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
