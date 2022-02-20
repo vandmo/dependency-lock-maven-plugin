@@ -96,6 +96,12 @@
             <artifactId>maven-invoker-plugin</artifactId>
             <version>3.2.2</version>
             <configuration>
+              <projectsDirectory>src/it/projects</projectsDirectory>
+              <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+              <settingsFile>src/it/mrm/settings.xml</settingsFile>
+              <filterProperties>
+                <mrm.repository.url>${mrm.repository.url}</mrm.repository.url>
+              </filterProperties>
               <addTestClassPath>true</addTestClassPath>
               <streamLogs>true</streamLogs>
             </configuration>
@@ -108,6 +114,27 @@
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>mrm-maven-plugin</artifactId>
+            <version>1.2.0</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>start</goal>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <repositories>
+                <mockRepo>
+                  <source>src/it/mrm/repository</source>
+                </mockRepo>
+                <proxyRepo />
+              </repositories>
+            </configuration>
           </plugin>
         </plugins>
       </build>
