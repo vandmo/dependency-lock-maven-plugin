@@ -1,0 +1,15 @@
+{
+  "dependencies" : [ {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "leaf",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar"
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "with-dependency",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar"
+  } ]
+}

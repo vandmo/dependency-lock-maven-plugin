@@ -2,6 +2,7 @@ package se.vandmo.dependencylock.maven;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -39,6 +40,7 @@ public final class JsonUtils {
   public static void writeJson(Writer writer, JsonNode json) {
     try {
       new ObjectMapper()
+          .disable(Feature.AUTO_CLOSE_TARGET)
           .writerWithDefaultPrettyPrinter()
           .writeValue(writer, json);
       writer.write(System.lineSeparator());
