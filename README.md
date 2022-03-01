@@ -9,7 +9,7 @@
 Maven only requires you to specify versions of dependencies that you use directly.
 Transitive dependencies aren't visible in the pom.xml and their version is chosen in a seemingly random way.
 
-This Maven plugin  enables you to:
+This Maven plugin enables you to:
 * Review exactly which dependencies you have, including transitive ones
 * Make sure dependencies are not accidentally changed
 * Track changes to dependencies in your SCM
@@ -123,3 +123,17 @@ Considers some values in the existing lock file.~~
 
 ### create-lock-file
 Creates a lock file from the actual dependencies.
+
+Notes
+-----
+### Dependabot Updates won't work
+Dependabot Updates currently creates a single PR for each change.
+If you use pom format and merge all PRs from Dependabot then that combined build might work, but each single PR will fail.
+There are feature requests for combined PRs for Dependabot which, if implemented, could make a combined PR work.
+Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
+
+### Deprecations and backwards compatibility
+Version 1.x will be released in a  near future. That release will remove support for the __format__ and __lock__ goals. Specifically it is the possibility to edit the JSON lock file that will be removed.
+I don't like breaking backwards compatibility but keeping those goals makes it harder to develop some new, much needed, features.
+I plan on continuing on the 1.x version forever and keep backwards compatibility forever as well.
+I will create 0.x releases on demand as well if needed.
