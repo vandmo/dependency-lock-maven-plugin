@@ -1,7 +1,6 @@
 import org.apache.commons.io.FileUtils
 
 import static java.nio.charset.StandardCharsets.UTF_8
-import static java.util.Arrays.asList
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.containsInRelativeOrder
 import static org.hamcrest.core.IsIterableContaining.hasItem

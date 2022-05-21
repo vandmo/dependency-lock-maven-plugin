@@ -1,7 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.lang.String.format;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.ROOT;
 
@@ -11,6 +10,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.logging.Log;
 
@@ -35,10 +35,6 @@ public final class LockedDependencies {
     return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }
 
-  public static LockedDependencies empty(Log log) {
-    return new LockedDependencies(emptyList(), log);
-  }
-
   public static LockedDependencies from(Artifacts artifacts, Log log) {
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
@@ -55,64 +51,52 @@ public final class LockedDependencies {
     return json;
   }
 
-  public LockedDependencies updateWith(Artifacts artifacts) {
-    List<LockedDependency> updatedLockedDependencies = new ArrayList<>();
-    for (Artifact artifact : artifacts.artifacts) {
-      updatedLockedDependencies.add(maybeChangeTo_UseMine(artifact));
-    }
-    return new LockedDependencies(unmodifiableList(updatedLockedDependencies), log);
+  public Diff compareWith(Artifacts artifacts, String projectVersion, ArtifactFilter useMyVersionForFilter) {
+    LockFileExpectationsDiff expectationsDiff = new LockFileExpectationsDiff(artifacts, projectVersion, useMyVersionForFilter);
+    List<String> unexpected = findUnexpected(artifacts);
+    return new Diff(expectationsDiff, unexpected);
   }
 
-  private LockedDependency maybeChangeTo_UseMine(Artifact artifact) {
-    LockedDependency lockedDependency = LockedDependency.from(artifact);
-    Optional<LockedVersion> possiblyExistingVersion = getExistingVersion(artifact.identifier);
-    if (possiblyExistingVersion.isPresent()) {
-      if (possiblyExistingVersion.get().useMine) {
-        return lockedDependency.withVersion(LockedVersion.USE_MINE);
+  private final class LockFileExpectationsDiff {
+    private List<String> missing = new ArrayList<>();
+    private List<String> different = new ArrayList<>();
+    private LockFileExpectationsDiff(Artifacts artifacts, String projectVersion, ArtifactFilter useMyVersionForFilter) {
+      for (LockedDependency lockedDependency : lockedDependencies) {
+        Predicate<Artifact> expectedDependency = resolve(useMyVersionForFilter, lockedDependency, projectVersion);
+        Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
+        if (!possiblyOtherArtifact.isPresent()) {
+          missing.add(expectedDependency.toString());
+        } else {
+          Artifact otherArtifact = possiblyOtherArtifact.get();
+          if (!expectedDependency.test(otherArtifact)) {
+            different.add(format(ROOT, "Expected %s but found %s", expectedDependency, otherArtifact));
+          }
+        }
       }
+    }
+  }
+
+  private List<String> findUnexpected(Artifacts artifacts) {
+    List<String> unexpected = new ArrayList<>();
+    for (Artifact otherArtifact : artifacts.artifacts) {
+      if (!by(otherArtifact.identifier).isPresent()) {
+        unexpected.add(otherArtifact.toString());
+      }
+    }
+    return unexpected;
+  }
+
+  private Predicate<Artifact> resolve(ArtifactFilter useMyVersionForFilter, LockedDependency lockedDependency, String projectVersion) {
+    boolean shouldUseMyVersion = shouldUseMyVersion(lockedDependency, useMyVersionForFilter);
+    if (shouldUseMyVersion) {
+      log.info(format(ROOT,"Using my version for %s", lockedDependency));
+      return lockedDependency.withMyVersion(projectVersion);
     }
     return lockedDependency;
   }
 
-  private Optional<LockedVersion> getExistingVersion(ArtifactIdentifier identifier) {
-    return
-        by(identifier)
-            .map(lockedDependency -> lockedDependency.version);
-  }
-
-  public Diff compareWith(Artifacts artifacts, String projectVersion, ArtifactFilter useMyVersionForFilter) {
-    List<String> missing = new ArrayList<>();
-    List<String> different = new ArrayList<>();
-    List<String> added = new ArrayList<>();
-    for (LockedDependency lockedDependency : lockedDependencies) {
-      Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
-      if (!possiblyOtherArtifact.isPresent()) {
-        missing.add(lockedDependency.toResolvedString(projectVersion));
-      } else {
-        Artifact otherArtifact = possiblyOtherArtifact.get();
-        LockedDependency possiblyChangedLockedDependency = maybeChangeTo_UseMine(
-            useMyVersionForFilter, lockedDependency, otherArtifact);
-        if (!possiblyChangedLockedDependency.matches(otherArtifact, projectVersion)) {
-          different.add(format(ROOT, "Expected %s but found %s", possiblyChangedLockedDependency.toResolvedString(projectVersion), otherArtifact));
-        }
-      }
-    }
-    for (Artifact otherArtifact : artifacts.artifacts) {
-      if (!by(otherArtifact.identifier).isPresent()) {
-        added.add(otherArtifact.toString());
-      }
-    }
-    return new Diff(missing, different, added);
-  }
-
-  private LockedDependency maybeChangeTo_UseMine(ArtifactFilter useMyVersionForFilter,
-      LockedDependency lockedDependency, Artifact otherArtifact) {
-    if (useMyVersionForFilter.include(otherArtifact.toMavenArtifact())) {
-      log.info(format(ROOT,"Using my version for %s", otherArtifact));
-      return lockedDependency.withVersion(LockedVersion.USE_MINE);
-    } else {
-      return lockedDependency;
-    }
+  private boolean shouldUseMyVersion(LockedDependency lockedDependency, ArtifactFilter useMyVersionForFilter) {
+    return (useMyVersionForFilter.include(lockedDependency.toArtifact().toMavenArtifact()));
   }
 
   public Optional<LockedDependency> by(ArtifactIdentifier identifier) {
@@ -128,9 +112,9 @@ public final class LockedDependencies {
     private final List<String> missing;
     private final List<String> different;
     private final List<String> added;
-    private Diff(List<String> missing, List<String> different, List<String> added) {
-      this.missing = missing;
-      this.different = different;
+    private Diff(LockFileExpectationsDiff lockFileExpectationsDiff, List<String> added) {
+      this.missing = lockFileExpectationsDiff.missing;
+      this.different = lockFileExpectationsDiff.different;
       this.added = added;
     }
     public boolean equals() {

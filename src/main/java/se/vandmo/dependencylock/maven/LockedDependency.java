@@ -8,17 +8,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Objects;
+import java.util.function.Predicate;
 
-public final class LockedDependency implements Comparable<LockedDependency> {
+public final class LockedDependency implements Comparable<LockedDependency>, Predicate<Artifact> {
 
   public final ArtifactIdentifier identifier;
-  public final LockedVersion version;
+  public final String version;
   public final String scope;
   public final String type;
 
   private LockedDependency(
       ArtifactIdentifier identifier,
-      LockedVersion version,
+      String version,
       String scope,
       String type) {
     this.identifier = requireNonNull(identifier);
@@ -34,7 +35,7 @@ public final class LockedDependency implements Comparable<LockedDependency> {
             getStringValue(json, "artifactId"),
             possiblyGetStringValue(json, "classifier"),
             possiblyGetStringValue(json, "type")),
-        LockedVersion.fromJson(json.get("version")),
+        getStringValue(json, "version"),
         getStringValue(json, "scope"),
         getStringValue(json, "type"));
   }
@@ -42,7 +43,7 @@ public final class LockedDependency implements Comparable<LockedDependency> {
   public static LockedDependency from(Artifact artifact) {
     return new LockedDependency(
         artifact.identifier,
-        LockedVersion.fromVersion(artifact.version),
+        artifact.version,
         artifact.scope,
         artifact.type
     );
@@ -52,26 +53,28 @@ public final class LockedDependency implements Comparable<LockedDependency> {
     ObjectNode json = JsonNodeFactory.instance.objectNode();
     json.put("groupId", identifier.groupId);
     json.put("artifactId", identifier.artifactId);
-    json.set("version", version.asJson());
+    json.put("version", version);
     json.put("scope", scope);
     json.put("type", type);
     identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
     return json;
   }
 
-  public LockedDependency withVersion(LockedVersion version) {
-    return new LockedDependency(
-        identifier,
-        version,
-        scope,
-        type
-    );
+  public Artifact toArtifact() {
+    return Artifact
+        .builder()
+        .artifactIdentifier(identifier)
+        .version(version)
+        .scope(scope)
+        .type(type)
+        .build();
   }
 
-  public boolean matches(Artifact artifact, String projectVersion) {
+  @Override
+  public boolean test(Artifact artifact) {
     return
         identifier.equals(artifact.identifier) &&
-        version.matches(artifact.version, projectVersion) &&
+        version.matches(artifact.version) &&
         scope.equals(artifact.scope) &&
         type.equals(artifact.type);
   }
@@ -86,15 +89,6 @@ public final class LockedDependency implements Comparable<LockedDependency> {
     return new StringBuilder()
         .append(identifier)
         .append(':').append(version)
-        .append(':').append(scope)
-        .append(':').append(type)
-        .toString();
-  }
-
-  public String toResolvedString(String projectVersion) {
-    return new StringBuilder()
-        .append(identifier)
-        .append(':').append(version.resolveWithProjectVersion(projectVersion))
         .append(':').append(scope)
         .append(':').append(type)
         .toString();
@@ -135,5 +129,36 @@ public final class LockedDependency implements Comparable<LockedDependency> {
       return false;
     }
     return true;
+  }
+
+  public WithMyVersion withMyVersion(String myVersion) {
+    return new WithMyVersion(myVersion);
+  }
+
+  public final class WithMyVersion implements Predicate<Artifact>{
+
+    private final String myVersion;
+
+    private WithMyVersion(String myVersion) {
+      this.myVersion = myVersion;
+    }
+
+    public String toString() {
+      return new StringBuilder()
+          .append(identifier)
+          .append(':').append(myVersion)
+          .append(':').append(scope)
+          .append(':').append(type)
+          .toString();
+    }
+
+    @Override
+    public boolean test(Artifact artifact) {
+      return
+          identifier.equals(artifact.identifier) &&
+          version.matches(myVersion) &&
+          scope.equals(artifact.scope) &&
+          type.equals(artifact.type);
+    }
   }
 }
