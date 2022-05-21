@@ -44,16 +44,16 @@
     <commons-io.version>2.11.0</commons-io.version>
     <commons-lang3.version>3.12.0</commons-lang3.version>
     <freemarker.version>2.3.31</freemarker.version>
-    <guava.version>31.0.1-jre</guava.version>
+    <guava.version>31.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <junit.version>4.13.2</junit.version>
-    <maven-artifact.version>3.8.4</maven-artifact.version>
+    <maven-artifact.version>3.8.5</maven-artifact.version>
     <maven-common-artifact-filters.version>3.2.0</maven-common-artifact-filters.version>
-    <maven-core.version>3.8.4</maven-core.version>
-    <maven-model.version>3.8.4</maven-model.version>
+    <maven-core.version>3.8.5</maven-core.version>
+    <maven-model.version>3.8.5</maven-model.version>
     <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
-    <maven-plugin-api.version>3.8.4</maven-plugin-api.version>
-    <plexus-utils.version>3.4.1</plexus-utils.version>
+    <maven-plugin-api.version>3.8.5</maven-plugin-api.version>
+    <plexus-utils.version>3.4.2</plexus-utils.version>
 
     <!-- BOMs -->
     <jackson-bom.version>2.13.3</jackson-bom.version>
