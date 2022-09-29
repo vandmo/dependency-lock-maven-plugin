@@ -88,12 +88,12 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   @Override
-  public LockedDependencies read() {
+  public LockedDependencies read(boolean enableIntegrityChecking) {
     MavenXpp3Reader pomReader = new MavenXpp3Reader();
     try (Reader reader = dependenciesLockFile.reader()) {
       Model pom = pomReader.read(reader);
       Artifacts artifacts = Artifacts.from(pom.getDependencies());
-      return LockedDependencies.from(artifacts, log);
+      return LockedDependencies.from(artifacts, log, enableIntegrityChecking);
     } catch (IOException | XmlPullParserException e) {
       throw new RuntimeException(e);
     }

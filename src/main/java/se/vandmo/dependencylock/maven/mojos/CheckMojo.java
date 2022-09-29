@@ -27,6 +27,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() throws MojoExecutionException {
+    updateDependencyIntegrityCheckingValue();
     DependenciesLockFileAccessor lockFile = lockFile();
     if (!lockFile.exists()) {
       throw new MojoExecutionException(
@@ -36,7 +37,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     ArtifactFilter ignoreFilter = new StrictPatternIncludesArtifactFilter(asList(ignore));
     LockedDependencies lockedDependencies = format()
         .dependenciesLockFile_from(lockFile, pomMinimums(), getLog())
-        .read();
+        .read(dependencyIntegrityChecking());
     Filters filters = Filters.builder().useMyVersionForFilter(useMyVersionForFilter).ignoreFilter(ignoreFilter).build();
     LockedDependencies.Diff diff = lockedDependencies.compareWith(projectDependencies(), projectVersion(), filters);
     if (diff.equals()) {

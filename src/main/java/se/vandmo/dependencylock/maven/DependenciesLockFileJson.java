@@ -28,7 +28,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
   }
 
-  public LockedDependencies read() {
+  public LockedDependencies read(boolean enableIntegrityChecking) {
     JsonNode json = readJsonNode();
     if (!json.isObject()) {
       throw new IllegalStateException("Expected top level type to be an object");
@@ -37,7 +37,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     if (dependencies == null || !dependencies.isArray()) {
       throw new IllegalStateException("Expected a property named 'dependencies' of type array");
     }
-    return LockedDependencies.fromJson(dependencies, log);
+    return LockedDependencies.fromJson(dependencies, log, enableIntegrityChecking);
   }
 
   private JsonNode readJsonNode() {
@@ -49,7 +49,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
   }
 
   public void write(Artifacts projectDependencies) {
-    write(LockedDependencies.from(projectDependencies, log));
+    write(LockedDependencies.from(projectDependencies, log, false));
   }
 
   public void write(LockedDependencies lockedDependencies) {
