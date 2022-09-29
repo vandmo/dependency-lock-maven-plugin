@@ -24,21 +24,21 @@ public final class LockedDependencies {
     this.log = log;
   }
 
-  public static LockedDependencies fromJson(JsonNode json, Log log) {
+  public static LockedDependencies fromJson(JsonNode json, Log log, boolean enableIntegrityChecking) {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (JsonNode entry : json) {
-      lockedDependencies.add(LockedDependency.fromJson(entry));
+      lockedDependencies.add(LockedDependency.fromJson(entry, enableIntegrityChecking));
     }
     return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }
 
-  public static LockedDependencies from(Artifacts artifacts, Log log) {
+  public static LockedDependencies from(Artifacts artifacts, Log log, boolean integrityCheck) {
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
-      lockedDependencies.add(LockedDependency.from(artifact));
+      lockedDependencies.add(LockedDependency.from(artifact, integrityCheck));
     }
     return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }

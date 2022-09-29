@@ -1,18 +1,39 @@
 package se.vandmo.dependencylock.maven;
 
+import com.google.common.io.BaseEncoding;
+import com.google.common.io.Files;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
-import java.util.Objects;
-import org.apache.maven.model.Dependency;
-
 public final class Artifact implements Comparable<Artifact> {
+  private static final Log LOGGER = new SystemStreamLog();
+  private static final MessageDigest SHA256_DIGEST;
+
+  static {
+    try {
+      SHA256_DIGEST = MessageDigest.getInstance("SHA-256");
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   public final ArtifactIdentifier identifier;
   public final String version;
   public final String scope;
   public final String type;
   public final boolean optional;
+  public final Optional<String> sha256sum;
 
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
@@ -56,8 +77,25 @@ public final class Artifact implements Comparable<Artifact> {
       this.version = version;
       this.scope = scope;
     }
-    public FinalBuilderStage type(String type) {
-      return new FinalBuilderStage(artifactIdentifier, version, scope, requireNonNull(type));
+    public Sha256SumBuilderStage type(String type) {
+      return new Sha256SumBuilderStage(artifactIdentifier, version, scope, requireNonNull(type));
+    }
+  }
+
+  public static final class Sha256SumBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+    private final String version;
+    private final String scope;
+    private final String type;
+    private Sha256SumBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type) {
+      this.artifactIdentifier = artifactIdentifier;
+      this.version = version;
+      this.scope = scope;
+      this.type = type;
+    }
+
+    public FinalBuilderStage sha256sum(Optional<String> sha256sum) {
+      return new FinalBuilderStage(artifactIdentifier, version, scope, type, requireNonNull(sha256sum));
     }
   }
 
@@ -66,28 +104,36 @@ public final class Artifact implements Comparable<Artifact> {
     private final String version;
     private final String scope;
     private final String type;
-    private FinalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type) {
+    private final Optional<String> sha256sum;
+    private FinalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type, Optional<String> sha256sum) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
       this.type = type;
+      this.sha256sum = sha256sum;
     }
     public Artifact build() {
-      return new Artifact(artifactIdentifier, version, scope, type, false);
+      return new Artifact(artifactIdentifier, version, scope, type, false, sha256sum);
     }
   }
 
-  public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
-    return new Artifact(
-        new ArtifactIdentifier(
-            artifact.getGroupId(),
-            artifact.getArtifactId(),
-            ofNullable(artifact.getClassifier()),
-            ofNullable(artifact.getType())),
-        artifact.getVersion(),
-        artifact.getScope(),
-        artifact.getType(),
-        artifact.isOptional());
+  public static Artifact from(org.apache.maven.artifact.Artifact artifact, boolean enableIntegrityChecking) {
+    try {
+      LOGGER.debug(String.format("Locking artifact: %s (file: %s)", artifact, artifact.getFile()));
+      return new Artifact(
+          new ArtifactIdentifier(
+              artifact.getGroupId(),
+              artifact.getArtifactId(),
+              ofNullable(artifact.getClassifier()),
+              ofNullable(artifact.getType())),
+          artifact.getVersion(),
+          artifact.getScope(),
+          artifact.getType(),
+          artifact.isOptional(),
+              enableIntegrityChecking ? Optional.of(BaseEncoding.base16().encode(SHA256_DIGEST.digest(Files.toByteArray(artifact.getFile())))): Optional.empty());
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   public static Artifact from(Dependency dependency) {
@@ -100,7 +146,8 @@ public final class Artifact implements Comparable<Artifact> {
         dependency.getVersion(),
         dependency.getScope(),
         dependency.getType(),
-        dependency.isOptional());
+        dependency.isOptional(),
+            Optional.empty());
   }
 
   public org.apache.maven.artifact.Artifact toMavenArtifact() {
@@ -112,12 +159,14 @@ public final class Artifact implements Comparable<Artifact> {
       String version,
       String scope,
       String type,
-      boolean optional) {
+      boolean optional,
+      Optional<String> sha256sum) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
     this.optional = optional;
+    this.sha256sum = sha256sum;
   }
 
   @Override
@@ -132,7 +181,8 @@ public final class Artifact implements Comparable<Artifact> {
         .append(identifier.toString())
         .append(':').append(version)
         .append(':').append(scope)
-        .append(':').append(type);
+        .append(':').append(type)
+        .append('@').append(sha256sum.orElse("NO_CHECKSUM"));
     return sb.toString();
   }
 

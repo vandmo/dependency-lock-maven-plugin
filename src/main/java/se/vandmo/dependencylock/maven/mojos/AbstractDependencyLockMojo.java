@@ -34,12 +34,30 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   )
   private LockFileFormat format = LockFileFormat.json;
 
+  @Parameter(
+     property = "dependencyLock.integrityChecking"
+  )
+  private boolean dependencyIntegrityChecking = false;
+
+  /**
+   * Update {@link #dependencyIntegrityChecking} to false if {@link #format} is set to {@link LockFileFormat#pom} since
+   * we can't store integrity information in a pom.
+   */
+  protected final void updateDependencyIntegrityCheckingValue() {
+    if (format == LockFileFormat.pom) {
+        if (dependencyIntegrityChecking) {
+            getLog().warn("Dependency integrity checking disabled because format is POM. Use JSON format if you want integrity verification.");
+        }
+        dependencyIntegrityChecking = false;
+    }
+  }
+
   DependenciesLockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
   Artifacts projectDependencies() {
-    return Artifacts.from(project.getArtifacts());
+    return Artifacts.from(project.getArtifacts(), dependencyIntegrityChecking());
   }
 
   PomMinimums pomMinimums() {
@@ -52,5 +70,9 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
   LockFileFormat format() {
     return format;
+  }
+
+  boolean dependencyIntegrityChecking() {
+      return dependencyIntegrityChecking;
   }
 }

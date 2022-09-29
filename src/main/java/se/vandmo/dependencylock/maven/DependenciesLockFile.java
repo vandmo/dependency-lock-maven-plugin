@@ -4,5 +4,5 @@ public interface DependenciesLockFile {
 
   void write(Artifacts projectDependencies);
 
-  LockedDependencies read();
+  LockedDependencies read(boolean enableIntegrityChecking);
 }

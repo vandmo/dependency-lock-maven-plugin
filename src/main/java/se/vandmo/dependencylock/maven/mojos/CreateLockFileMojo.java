@@ -17,12 +17,13 @@ public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() {
+    updateDependencyIntegrityCheckingValue();
     DependenciesLockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
       case json:
         DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
-        LockedDependencies lockedDependencies = LockedDependencies.from(projectDependencies(), getLog());
+        LockedDependencies lockedDependencies = LockedDependencies.from(projectDependencies(), getLog(), dependencyIntegrityChecking());
         lockFileJson.write(lockedDependencies);
         break;
       case pom:
