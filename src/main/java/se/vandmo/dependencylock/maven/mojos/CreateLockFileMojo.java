@@ -17,7 +17,6 @@ public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() {
-    updateDependencyIntegrityCheckingValue();
     DependenciesLockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {

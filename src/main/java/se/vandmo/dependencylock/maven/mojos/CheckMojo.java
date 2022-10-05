@@ -27,7 +27,6 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() throws MojoExecutionException {
-    updateDependencyIntegrityCheckingValue();
     DependenciesLockFileAccessor lockFile = lockFile();
     if (!lockFile.exists()) {
       throw new MojoExecutionException(
