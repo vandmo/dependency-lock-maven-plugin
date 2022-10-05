@@ -20,6 +20,12 @@ public final class Artifact implements Comparable<Artifact> {
   private static final Log LOGGER = new SystemStreamLog();
   private static final MessageDigest SHA256_DIGEST;
 
+  /**
+   * The current algorithm that is being used. If this doesn't match an error will be thrown and dependency files need
+   * to be regenerated.
+   */
+  public static final String ALGORITHM_HEADER = "sha256:";
+
   static {
     try {
       SHA256_DIGEST = MessageDigest.getInstance("SHA-256");
@@ -33,7 +39,7 @@ public final class Artifact implements Comparable<Artifact> {
   public final String scope;
   public final String type;
   public final boolean optional;
-  public final Optional<String> sha256sum;
+  public final Optional<String> checksum;
 
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
@@ -77,25 +83,25 @@ public final class Artifact implements Comparable<Artifact> {
       this.version = version;
       this.scope = scope;
     }
-    public Sha256SumBuilderStage type(String type) {
-      return new Sha256SumBuilderStage(artifactIdentifier, version, scope, requireNonNull(type));
+    public ChecksumBuilderStage type(String type) {
+      return new ChecksumBuilderStage(artifactIdentifier, version, scope, requireNonNull(type));
     }
   }
 
-  public static final class Sha256SumBuilderStage {
+  public static final class ChecksumBuilderStage {
     private final ArtifactIdentifier artifactIdentifier;
     private final String version;
     private final String scope;
     private final String type;
-    private Sha256SumBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type) {
+    private ChecksumBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
       this.type = type;
     }
 
-    public FinalBuilderStage sha256sum(Optional<String> sha256sum) {
-      return new FinalBuilderStage(artifactIdentifier, version, scope, type, requireNonNull(sha256sum));
+    public FinalBuilderStage checksum(Optional<String> checksum) {
+      return new FinalBuilderStage(artifactIdentifier, version, scope, type, requireNonNull(checksum));
     }
   }
 
@@ -104,16 +110,16 @@ public final class Artifact implements Comparable<Artifact> {
     private final String version;
     private final String scope;
     private final String type;
-    private final Optional<String> sha256sum;
-    private FinalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type, Optional<String> sha256sum) {
+    private final Optional<String> checksum;
+    private FinalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope, String type, Optional<String> checksum) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
       this.type = type;
-      this.sha256sum = sha256sum;
+      this.checksum = checksum;
     }
     public Artifact build() {
-      return new Artifact(artifactIdentifier, version, scope, type, false, sha256sum);
+      return new Artifact(artifactIdentifier, version, scope, type, false, checksum);
     }
   }
 
@@ -130,7 +136,7 @@ public final class Artifact implements Comparable<Artifact> {
           artifact.getScope(),
           artifact.getType(),
           artifact.isOptional(),
-              enableIntegrityChecking ? Optional.of(BaseEncoding.base16().encode(SHA256_DIGEST.digest(Files.toByteArray(artifact.getFile())))): Optional.empty());
+              enableIntegrityChecking ? Optional.of(ALGORITHM_HEADER + BaseEncoding.base16().encode(SHA256_DIGEST.digest(Files.toByteArray(artifact.getFile())))): Optional.empty());
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -160,13 +166,13 @@ public final class Artifact implements Comparable<Artifact> {
       String scope,
       String type,
       boolean optional,
-      Optional<String> sha256sum) {
+      Optional<String> checksum) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
     this.optional = optional;
-    this.sha256sum = sha256sum;
+    this.checksum = checksum;
   }
 
   @Override
@@ -182,7 +188,7 @@ public final class Artifact implements Comparable<Artifact> {
         .append(':').append(version)
         .append(':').append(scope)
         .append(':').append(type)
-        .append('@').append(sha256sum.orElse("NO_CHECKSUM"));
+        .append('@').append(checksum.orElse("NO_CHECKSUM"));
     return sb.toString();
   }
 
