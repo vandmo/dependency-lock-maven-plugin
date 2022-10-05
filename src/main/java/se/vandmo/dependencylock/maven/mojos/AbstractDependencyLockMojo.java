@@ -39,19 +39,6 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   )
   private boolean dependencyIntegrityChecking = false;
 
-  /**
-   * Update {@link #dependencyIntegrityChecking} to false if {@link #format} is set to {@link LockFileFormat#pom} since
-   * we can't store integrity information in a pom.
-   */
-  protected final void updateDependencyIntegrityCheckingValue() {
-    if (format == LockFileFormat.pom) {
-        if (dependencyIntegrityChecking) {
-            getLog().warn("Dependency integrity checking disabled because format is POM. Use JSON format if you want integrity verification.");
-        }
-        dependencyIntegrityChecking = false;
-    }
-  }
-
   DependenciesLockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
