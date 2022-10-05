@@ -1,5 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Objects.requireNonNull;
 import static se.vandmo.dependencylock.maven.JsonUtils.getStringValue;
 import static se.vandmo.dependencylock.maven.JsonUtils.possiblyGetStringValue;
@@ -7,6 +8,8 @@ import static se.vandmo.dependencylock.maven.JsonUtils.possiblyGetStringValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -17,19 +20,22 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
   public final String version;
   public final String scope;
   public final String type;
-  public final Optional<String> sha256sum;
+  public final Optional<String> checksum;
 
   private LockedDependency(
       ArtifactIdentifier identifier,
       String version,
       String scope,
       String type,
-      Optional<String> sha256sum) {
+      Optional<String> checksum) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.type = requireNonNull(type);
-    this.sha256sum = requireNonNull(sha256sum);
+    this.checksum = requireNonNull(checksum);
+
+    this.checksum.ifPresent(value -> checkArgument(StringUtils.startsWith(value, Artifact.ALGORITHM_HEADER),
+      "Encountered unsupported checksum format, consider using a later version of this plugin", Artifact.ALGORITHM_HEADER, value));
   }
 
   public static LockedDependency fromJson(JsonNode json, boolean enableIntegrityChecking) {
@@ -42,7 +48,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         getStringValue(json, "version"),
         getStringValue(json, "scope"),
         getStringValue(json, "type"),
-        enableIntegrityChecking ? possiblyGetStringValue(json, "sha256sum") : Optional.empty());
+        enableIntegrityChecking ? possiblyGetStringValue(json, "checksum") : Optional.empty());
   }
 
   public static LockedDependency from(Artifact artifact, boolean integrityCheck) {
@@ -51,7 +57,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         artifact.version,
         artifact.scope,
         artifact.type,
-        integrityCheck ? artifact.sha256sum : Optional.empty()
+        integrityCheck ? artifact.checksum : Optional.empty()
     );
   }
 
@@ -62,7 +68,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     json.put("version", version);
     json.put("scope", scope);
     json.put("type", type);
-    sha256sum.ifPresent(sum -> json.put("sha256sum", sum));
+    checksum.ifPresent(sum -> json.put("checksum", sum));
     identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
     return json;
   }
@@ -74,7 +80,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         .version(version)
         .scope(scope)
         .type(type)
-        .sha256sum(sha256sum)
+        .checksum(checksum)
         .build();
   }
 
@@ -85,7 +91,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         version.matches(artifact.version) &&
         scope.equals(artifact.scope) &&
         type.equals(artifact.type) &&
-        sha256sum.equals(artifact.sha256sum);
+        checksum.equals(artifact.checksum);
   }
 
   public boolean differsOnlyByChecksum(Artifact artifact) {
@@ -108,7 +114,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         .append(':').append(version)
         .append(':').append(scope)
         .append(':').append(type)
-        .append('@').append(sha256sum.orElse("NO_CHECKSUM"))
+        .append('@').append(checksum.orElse("NO_CHECKSUM"))
         .toString();
   }
 
@@ -119,7 +125,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
     hash = 17 * hash + Objects.hashCode(this.type);
-    hash = 17 * hash + Objects.hashCode(this.sha256sum);
+    hash = 17 * hash + Objects.hashCode(this.checksum);
     return hash;
   }
 
@@ -147,7 +153,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     if (!Objects.equals(this.type, other.type)) {
       return false;
     }
-    if (!Objects.equals(this.sha256sum, other.sha256sum)) {
+    if (!Objects.equals(this.checksum, other.checksum)) {
       return false;
     }
     return true;
@@ -171,7 +177,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
           .append(':').append(myVersion)
           .append(':').append(scope)
           .append(':').append(type)
-          .append('@').append(sha256sum.orElse("NO_CHECKSUM"))
+          .append('@').append(checksum.orElse("NO_CHECKSUM"))
           .toString();
     }
 
@@ -182,7 +188,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
           version.matches(myVersion) &&
           scope.equals(artifact.scope) &&
           type.equals(artifact.type) &&
-          sha256sum.equals(artifact.sha256sum);
+          checksum.equals(artifact.checksum);
     }
   }
 }
