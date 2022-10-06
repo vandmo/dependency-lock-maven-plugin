@@ -85,9 +85,9 @@ Which lock file format to use, defaults to _json_.
 * _json_, lock file in JSON format, default filename is dependency-lock.json
 * _pom_, lock file in POM XML format, default filename is .dependeny-lock/pom.xml
 
-### dependencyIntegrityChecking
-Validates that the artifacts that are resolves have the same checksum (SHA-256)
-as previous ones that were downloaded. This can only be used with the `json` format.
+### checkIntegrity
+Validates that the artifacts that are resolves have the same checksum (SHA-512)
+as previous ones that were downloaded.
 
 This will ensure that all artifacts that are downloaded are exactly the same as the
 ones which were used to generate the lock file. This helps guard against

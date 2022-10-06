@@ -19,6 +19,7 @@ public final class Filters {
 
   public static final class UseMyVersionForFilterBuilderStage {
     private UseMyVersionForFilterBuilderStage() {}
+
     public IgnoreFilterBuilderStage useMyVersionForFilter(ArtifactFilter useMyVersionForFilter) {
       return new IgnoreFilterBuilderStage(requireNonNull(useMyVersionForFilter));
     }
@@ -26,9 +27,11 @@ public final class Filters {
 
   public static final class IgnoreFilterBuilderStage {
     private final ArtifactFilter useMyVersionForFilter;
+
     private IgnoreFilterBuilderStage(ArtifactFilter useMyVersionForFilter) {
       this.useMyVersionForFilter = useMyVersionForFilter;
     }
+
     public FinalBuilderStage ignoreFilter(ArtifactFilter ignoreFilter) {
       return new FinalBuilderStage(useMyVersionForFilter, requireNonNull(ignoreFilter));
     }
@@ -37,13 +40,14 @@ public final class Filters {
   public static final class FinalBuilderStage {
     private final ArtifactFilter useMyVersionForFilter;
     private final ArtifactFilter ignoreFilter;
+
     private FinalBuilderStage(ArtifactFilter useMyVersionForFilter, ArtifactFilter ignoreFilter) {
       this.useMyVersionForFilter = useMyVersionForFilter;
       this.ignoreFilter = ignoreFilter;
     }
+
     public Filters build() {
       return new Filters(useMyVersionForFilter, ignoreFilter);
     }
   }
-
 }

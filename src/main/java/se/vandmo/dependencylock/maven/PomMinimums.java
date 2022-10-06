@@ -12,18 +12,12 @@ public final class PomMinimums {
 
   public static PomMinimums from(MavenProject mavenProject) {
     return new PomMinimums(
-        mavenProject.getGroupId(),
-        mavenProject.getArtifactId(),
-        mavenProject.getVersion());
+        mavenProject.getGroupId(), mavenProject.getArtifactId(), mavenProject.getVersion());
   }
 
-  PomMinimums(
-      String groupId,
-      String artifactId,
-      String version) {
+  PomMinimums(String groupId, String artifactId, String version) {
     this.groupId = requireNonNull(groupId);
     this.artifactId = requireNonNull(artifactId);
     this.version = requireNonNull(version);
   }
-
 }

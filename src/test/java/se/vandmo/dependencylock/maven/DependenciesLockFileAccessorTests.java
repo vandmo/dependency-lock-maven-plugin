@@ -12,13 +12,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-
 public final class DependenciesLockFileAccessorTests {
 
   private static Random random = new Random();
 
-  @Rule
-  public TemporaryFolder folder = new TemporaryFolder();
+  @Rule public TemporaryFolder folder = new TemporaryFolder();
 
   @Test
   public void parentFoldersShouldBeCreated() throws IOException {
@@ -28,8 +26,8 @@ public final class DependenciesLockFileAccessorTests {
     String filename = randomEnoughString();
     File lockFile = new File(new File(new File(basedir, folderName1), folderName2), filename);
     assertFalse(lockFile.isFile());
-    DependenciesLockFileAccessor
-        .fromBasedir(basedir, format(ROOT, "%s/%s/%s", folderName1, folderName2, filename))
+    DependenciesLockFileAccessor.fromBasedir(
+            basedir, format(ROOT, "%s/%s/%s", folderName1, folderName2, filename))
         .writer()
         .close();
     assertTrue(lockFile.isFile());

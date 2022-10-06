@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-
 public final class DependenciesLockFileAccessor {
 
   private final File file;

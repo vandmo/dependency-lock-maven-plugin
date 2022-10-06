@@ -13,32 +13,34 @@ import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
-
-@Mojo(
-  name = "check",
-  defaultPhase = VALIDATE,
-  requiresDependencyResolution = TEST)
+@Mojo(name = "check", defaultPhase = VALIDATE, requiresDependencyResolution = TEST)
 public final class CheckMojo extends AbstractDependencyLockMojo {
 
-  @Parameter
-  private String[] useMyVersionFor = new String[0];
-  @Parameter
-  private String[] ignore = new String[0];
+  @Parameter private String[] useMyVersionFor = new String[0];
+  @Parameter private String[] ignore = new String[0];
 
   @Override
   public void execute() throws MojoExecutionException {
     DependenciesLockFileAccessor lockFile = lockFile();
     if (!lockFile.exists()) {
       throw new MojoExecutionException(
-          "No lock file found, create one by running 'mvn se.vandmo:dependency-lock-maven-plugin:create-lock-file'");
+          "No lock file found, create one by running 'mvn"
+              + " se.vandmo:dependency-lock-maven-plugin:create-lock-file'");
     }
-    ArtifactFilter useMyVersionForFilter = new StrictPatternIncludesArtifactFilter(asList(useMyVersionFor));
+    ArtifactFilter useMyVersionForFilter =
+        new StrictPatternIncludesArtifactFilter(asList(useMyVersionFor));
     ArtifactFilter ignoreFilter = new StrictPatternIncludesArtifactFilter(asList(ignore));
-    LockedDependencies lockedDependencies = format()
-        .dependenciesLockFile_from(lockFile, pomMinimums(), getLog())
-        .read(dependencyIntegrityChecking());
-    Filters filters = Filters.builder().useMyVersionForFilter(useMyVersionForFilter).ignoreFilter(ignoreFilter).build();
-    LockedDependencies.Diff diff = lockedDependencies.compareWith(projectDependencies(), projectVersion(), filters);
+    LockedDependencies lockedDependencies =
+        format()
+            .dependenciesLockFile_from(lockFile, pomMinimums(), getLog())
+            .read(checkIntegrity());
+    Filters filters =
+        Filters.builder()
+            .useMyVersionForFilter(useMyVersionForFilter)
+            .ignoreFilter(ignoreFilter)
+            .build();
+    LockedDependencies.Diff diff =
+        lockedDependencies.compareWith(projectDependencies(), projectVersion(), filters);
     if (diff.equals()) {
       getLog().info("Actual dependencies matches locked dependencies");
     } else {
@@ -46,5 +48,4 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
       throw new MojoExecutionException("Dependencies differ");
     }
   }
-
 }

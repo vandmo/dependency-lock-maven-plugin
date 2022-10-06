@@ -22,10 +22,7 @@ public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> 
   }
 
   ArtifactIdentifier(
-      String groupId,
-      String artifactId,
-      Optional<String> classifier,
-      Optional<String> type) {
+      String groupId, String artifactId, Optional<String> classifier, Optional<String> type) {
     this.groupId = requireNonNull(groupId);
     this.artifactId = requireNonNull(artifactId);
     this.classifier = requireNonNull(classifier);
@@ -40,15 +37,15 @@ public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb
-        .append(groupId)
-        .append(':').append(artifactId);
-    classifier.ifPresent(actualClassifier -> {
-      sb.append(':').append(actualClassifier);
-    });
-    type.ifPresent(actualType -> {
-      sb.append(':').append(actualType);
-    });
+    sb.append(groupId).append(':').append(artifactId);
+    classifier.ifPresent(
+        actualClassifier -> {
+          sb.append(':').append(actualClassifier);
+        });
+    type.ifPresent(
+        actualType -> {
+          sb.append(':').append(actualType);
+        });
     return sb.toString();
   }
 
@@ -88,5 +85,4 @@ public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> 
     }
     return true;
   }
-
 }

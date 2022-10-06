@@ -13,7 +13,6 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import org.apache.maven.plugin.logging.Log;
 
-
 public final class DependenciesLockFileJson implements DependenciesLockFile {
 
   private final DependenciesLockFileAccessor dependenciesLockFile;
@@ -24,7 +23,8 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     this.log = log;
   }
 
-  public static DependenciesLockFileJson from(DependenciesLockFileAccessor dependenciesLockFile, Log log) {
+  public static DependenciesLockFileJson from(
+      DependenciesLockFileAccessor dependenciesLockFile, Log log) {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
   }
 
