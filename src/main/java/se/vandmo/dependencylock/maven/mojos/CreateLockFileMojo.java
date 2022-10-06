@@ -9,10 +9,7 @@ import se.vandmo.dependencylock.maven.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.DependenciesLockFilePom;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
-
-@Mojo(
-  name = "create-lock-file",
-  requiresDependencyResolution = TEST)
+@Mojo(name = "create-lock-file", requiresDependencyResolution = TEST)
 public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
 
   @Override
@@ -22,16 +19,17 @@ public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
     switch (format()) {
       case json:
         DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
-        LockedDependencies lockedDependencies = LockedDependencies.from(projectDependencies(), getLog(), dependencyIntegrityChecking());
+        LockedDependencies lockedDependencies =
+            LockedDependencies.from(projectDependencies(), getLog(), checkIntegrity());
         lockFileJson.write(lockedDependencies);
         break;
       case pom:
-        DependenciesLockFilePom lockFilePom = DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
+        DependenciesLockFilePom lockFilePom =
+            DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
         lockFilePom.write(projectDependencies());
         break;
       default:
         throw new RuntimeException("This should not happen!");
     }
   }
-
 }

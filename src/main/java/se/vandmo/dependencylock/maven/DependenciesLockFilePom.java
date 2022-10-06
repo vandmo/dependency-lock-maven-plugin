@@ -19,7 +19,6 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
-
 public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
@@ -29,22 +28,16 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   private final Log log;
 
   private DependenciesLockFilePom(
-      DependenciesLockFileAccessor dependenciesLockFile,
-      PomMinimums pomMinimums,
-      Log log) {
+      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
     this.log = log;
   }
 
   public static DependenciesLockFilePom from(
-      DependenciesLockFileAccessor dependenciesLockFile,
-      PomMinimums pomMinimums,
-      Log log) {
+      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     return new DependenciesLockFilePom(
-        requireNonNull(dependenciesLockFile),
-        requireNonNull(pomMinimums),
-        requireNonNull(log));
+        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
   }
 
   @Override
@@ -60,9 +53,7 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
     }
   }
 
-  private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums,
-      Artifacts artifacts) {
+  private static Map<String, Object> makeDataModel(PomMinimums pomMinimums, Artifacts artifacts) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", artifacts);

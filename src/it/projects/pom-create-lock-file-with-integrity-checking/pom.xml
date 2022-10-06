@@ -54,7 +54,7 @@
         <version>@project.version@</version>
         <configuration>
           <format>pom</format>
-          <dependencyIntegrityChecking>true</dependencyIntegrityChecking>
+          <checkIntegrity>true</checkIntegrity>
         </configuration>
       </plugin>
     </plugins>

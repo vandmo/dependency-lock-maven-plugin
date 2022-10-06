@@ -8,11 +8,10 @@ import static se.vandmo.dependencylock.maven.JsonUtils.possiblyGetStringValue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import org.apache.commons.lang3.StringUtils;
 
 public final class LockedDependency implements Comparable<LockedDependency>, Predicate<Artifact> {
 
@@ -34,8 +33,14 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     this.type = requireNonNull(type);
     this.checksum = requireNonNull(checksum);
 
-    this.checksum.ifPresent(value -> checkArgument(StringUtils.startsWith(value, Artifact.ALGORITHM_HEADER),
-      "Encountered unsupported checksum format, consider using a later version of this plugin", Artifact.ALGORITHM_HEADER, value));
+    this.checksum.ifPresent(
+        value ->
+            checkArgument(
+                StringUtils.startsWith(value, Artifact.ALGORITHM_HEADER),
+                "Encountered unsupported checksum format, consider using a later version of this"
+                    + " plugin",
+                Artifact.ALGORITHM_HEADER,
+                value));
   }
 
   public static LockedDependency fromJson(JsonNode json, boolean enableIntegrityChecking) {
@@ -57,8 +62,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         artifact.version,
         artifact.scope,
         artifact.type,
-        integrityCheck ? artifact.checksum : Optional.empty()
-    );
+        integrityCheck ? artifact.checksum : Optional.empty());
   }
 
   public JsonNode asJson() {
@@ -74,8 +78,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
   }
 
   public Artifact toArtifact() {
-    return Artifact
-        .builder()
+    return Artifact.builder()
         .artifactIdentifier(identifier)
         .version(version)
         .scope(scope)
@@ -86,20 +89,18 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
 
   @Override
   public boolean test(Artifact artifact) {
-    return
-        identifier.equals(artifact.identifier) &&
-        version.matches(artifact.version) &&
-        scope.equals(artifact.scope) &&
-        type.equals(artifact.type) &&
-        checksum.equals(artifact.checksum);
+    return identifier.equals(artifact.identifier)
+        && version.matches(artifact.version)
+        && scope.equals(artifact.scope)
+        && type.equals(artifact.type)
+        && checksum.equals(artifact.checksum);
   }
 
   public boolean differsOnlyByChecksum(Artifact artifact) {
-    return
-        identifier.equals(artifact.identifier) &&
-        version.matches(artifact.version) &&
-        scope.equals(artifact.scope) &&
-        type.equals(artifact.type);
+    return identifier.equals(artifact.identifier)
+        && version.matches(artifact.version)
+        && scope.equals(artifact.scope)
+        && type.equals(artifact.type);
   }
 
   @Override
@@ -111,10 +112,14 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
   public String toString() {
     return new StringBuilder()
         .append(identifier)
-        .append(':').append(version)
-        .append(':').append(scope)
-        .append(':').append(type)
-        .append('@').append(checksum.orElse("NO_CHECKSUM"))
+        .append(':')
+        .append(version)
+        .append(':')
+        .append(scope)
+        .append(':')
+        .append(type)
+        .append('@')
+        .append(checksum.orElse("NO_CHECKSUM"))
         .toString();
   }
 
@@ -163,7 +168,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     return new WithMyVersion(myVersion);
   }
 
-  public final class WithMyVersion implements Predicate<Artifact>{
+  public final class WithMyVersion implements Predicate<Artifact> {
 
     private final String myVersion;
 
@@ -174,21 +179,24 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     public String toString() {
       return new StringBuilder()
           .append(identifier)
-          .append(':').append(myVersion)
-          .append(':').append(scope)
-          .append(':').append(type)
-          .append('@').append(checksum.orElse("NO_CHECKSUM"))
+          .append(':')
+          .append(myVersion)
+          .append(':')
+          .append(scope)
+          .append(':')
+          .append(type)
+          .append('@')
+          .append(checksum.orElse("NO_CHECKSUM"))
           .toString();
     }
 
     @Override
     public boolean test(Artifact artifact) {
-      return
-          identifier.equals(artifact.identifier) &&
-          version.matches(myVersion) &&
-          scope.equals(artifact.scope) &&
-          type.equals(artifact.type) &&
-          checksum.equals(artifact.checksum);
+      return identifier.equals(artifact.identifier)
+          && version.matches(myVersion)
+          && scope.equals(artifact.scope)
+          && type.equals(artifact.type)
+          && checksum.equals(artifact.checksum);
     }
   }
 }

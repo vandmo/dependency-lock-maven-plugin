@@ -17,7 +17,7 @@ public final class JsonUtils {
   public static String getStringValue(JsonNode json, String fieldName) {
     String value = json.get(fieldName).textValue();
     if (isBlank(value)) {
-      throw new IllegalArgumentException("Missing value for "+fieldName);
+      throw new IllegalArgumentException("Missing value for " + fieldName);
     }
     return value;
   }
@@ -48,5 +48,4 @@ public final class JsonUtils {
       throw new UncheckedIOException(ex);
     }
   }
-
 }

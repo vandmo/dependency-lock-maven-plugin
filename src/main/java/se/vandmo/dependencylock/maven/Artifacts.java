@@ -22,8 +22,10 @@ public final class Artifacts implements Iterable<Artifact> {
     this.artifacts = unmodifiableList(copy);
   }
 
-  public static Artifacts from(Set<org.apache.maven.artifact.Artifact> artifacts, boolean enableIntegrityChecking) {
-    return new Artifacts(artifacts.stream().map(a -> Artifact.from(a, enableIntegrityChecking)).collect(toList()));
+  public static Artifacts from(
+      Set<org.apache.maven.artifact.Artifact> artifacts, boolean enableIntegrityChecking) {
+    return new Artifacts(
+        artifacts.stream().map(a -> Artifact.from(a, enableIntegrityChecking)).collect(toList()));
   }
 
   public static Artifacts from(Collection<Dependency> dependencies) {

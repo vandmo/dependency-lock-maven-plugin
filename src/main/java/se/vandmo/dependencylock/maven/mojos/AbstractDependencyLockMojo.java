@@ -9,42 +9,29 @@ import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.LockFileFormat;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
-
 public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
-  @Parameter(
-    defaultValue = "${basedir}",
-    required = true,
-    readonly = true)
+  @Parameter(defaultValue = "${basedir}", required = true, readonly = true)
   private File basedir;
 
-  @Parameter(
-    defaultValue="${project}",
-    required = true,
-    readonly = true)
+  @Parameter(defaultValue = "${project}", required = true, readonly = true)
   private MavenProject project;
 
-  @Parameter(
-      property = "dependencyLock.filename"
-  )
+  @Parameter(property = "dependencyLock.filename")
   private String filename;
 
-  @Parameter(
-      property = "dependencyLock.format"
-  )
+  @Parameter(property = "dependencyLock.format")
   private LockFileFormat format = LockFileFormat.json;
 
-  @Parameter(
-     property = "dependencyLock.integrityChecking"
-  )
-  private boolean dependencyIntegrityChecking = false;
+  @Parameter(property = "dependencyLock.checkIntegrity")
+  private boolean checkIntegrity = false;
 
   DependenciesLockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
   Artifacts projectDependencies() {
-    return Artifacts.from(project.getArtifacts(), dependencyIntegrityChecking());
+    return Artifacts.from(project.getArtifacts(), checkIntegrity());
   }
 
   PomMinimums pomMinimums() {
@@ -59,7 +46,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return format;
   }
 
-  boolean dependencyIntegrityChecking() {
-      return dependencyIntegrityChecking;
+  boolean checkIntegrity() {
+    return checkIntegrity;
   }
 }

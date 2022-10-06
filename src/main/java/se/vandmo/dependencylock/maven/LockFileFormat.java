@@ -4,7 +4,6 @@ import java.io.File;
 import org.apache.maven.plugin.logging.Log;
 
 public enum LockFileFormat {
-
   json {
     @Override
     public String defaultFilename() {
@@ -44,13 +43,11 @@ public enum LockFileFormat {
     return defaultFilename();
   }
 
-  public DependenciesLockFileAccessor dependenciesLockFileAccessor_fromBasedirAndFilename(File basedir, String filename) {
+  public DependenciesLockFileAccessor dependenciesLockFileAccessor_fromBasedirAndFilename(
+      File basedir, String filename) {
     return DependenciesLockFileAccessor.fromBasedir(basedir, getLockFilename(filename));
   }
 
   public abstract DependenciesLockFile dependenciesLockFile_from(
-      DependenciesLockFileAccessor dependenciesLockFileAccessor,
-      PomMinimums pomMinimums,
-      Log log);
-
+      DependenciesLockFileAccessor dependenciesLockFileAccessor, PomMinimums pomMinimums, Log log);
 }

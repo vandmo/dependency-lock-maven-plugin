@@ -24,7 +24,8 @@ public final class LockedDependencies {
     this.log = log;
   }
 
-  public static LockedDependencies fromJson(JsonNode json, Log log, boolean enableIntegrityChecking) {
+  public static LockedDependencies fromJson(
+      JsonNode json, Log log, boolean enableIntegrityChecking) {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
@@ -52,7 +53,8 @@ public final class LockedDependencies {
   }
 
   public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
-    LockFileExpectationsDiff expectationsDiff = new LockFileExpectationsDiff(artifacts, projectVersion, filters);
+    LockFileExpectationsDiff expectationsDiff =
+        new LockFileExpectationsDiff(artifacts, projectVersion, filters);
     List<String> unexpected = findUnexpected(artifacts, filters);
     return new Diff(expectationsDiff, unexpected);
   }
@@ -60,20 +62,23 @@ public final class LockedDependencies {
   private final class LockFileExpectationsDiff {
     private List<String> missing = new ArrayList<>();
     private List<String> different = new ArrayList<>();
+
     private LockFileExpectationsDiff(Artifacts artifacts, String projectVersion, Filters filters) {
       for (LockedDependency lockedDependency : lockedDependencies) {
         if (filters.ignoreFilter.include(lockedDependency.toArtifact().toMavenArtifact())) {
-          log.info(format(ROOT,"Ignoring %s from lock file", lockedDependency));
+          log.info(format(ROOT, "Ignoring %s from lock file", lockedDependency));
           continue;
         }
-        Predicate<Artifact> expectedDependency = resolve(filters.useMyVersionForFilter, lockedDependency, projectVersion);
+        Predicate<Artifact> expectedDependency =
+            resolve(filters.useMyVersionForFilter, lockedDependency, projectVersion);
         Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
         if (!possiblyOtherArtifact.isPresent()) {
           missing.add(expectedDependency.toString());
         } else {
           Artifact otherArtifact = possiblyOtherArtifact.get();
           if (!expectedDependency.test(otherArtifact)) {
-            different.add(format(ROOT, "Expected %s but found %s", expectedDependency, otherArtifact));
+            different.add(
+                format(ROOT, "Expected %s but found %s", expectedDependency, otherArtifact));
           }
         }
       }
@@ -84,7 +89,7 @@ public final class LockedDependencies {
     List<String> unexpected = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
       if (filters.ignoreFilter.include(artifact.toMavenArtifact())) {
-        log.info(format(ROOT,"Ignoring %s from actual dependencies", artifact));
+        log.info(format(ROOT, "Ignoring %s from actual dependencies", artifact));
         continue;
       }
       if (!by(artifact.identifier).isPresent()) {
@@ -94,16 +99,20 @@ public final class LockedDependencies {
     return unexpected;
   }
 
-  private Predicate<Artifact> resolve(ArtifactFilter useMyVersionForFilter, LockedDependency lockedDependency, String projectVersion) {
+  private Predicate<Artifact> resolve(
+      ArtifactFilter useMyVersionForFilter,
+      LockedDependency lockedDependency,
+      String projectVersion) {
     boolean shouldUseMyVersion = shouldUseMyVersion(lockedDependency, useMyVersionForFilter);
     if (shouldUseMyVersion) {
-      log.info(format(ROOT,"Using my version for %s", lockedDependency));
+      log.info(format(ROOT, "Using my version for %s", lockedDependency));
       return lockedDependency.withMyVersion(projectVersion);
     }
     return lockedDependency;
   }
 
-  private boolean shouldUseMyVersion(LockedDependency lockedDependency, ArtifactFilter useMyVersionForFilter) {
+  private boolean shouldUseMyVersion(
+      LockedDependency lockedDependency, ArtifactFilter useMyVersionForFilter) {
     return useMyVersionForFilter.include(lockedDependency.toArtifact().toMavenArtifact());
   }
 
@@ -120,26 +129,29 @@ public final class LockedDependencies {
     private final List<String> missing;
     private final List<String> different;
     private final List<String> added;
+
     private Diff(LockFileExpectationsDiff lockFileExpectationsDiff, List<String> added) {
       this.missing = lockFileExpectationsDiff.missing;
       this.different = lockFileExpectationsDiff.different;
       this.added = added;
     }
+
     public boolean equals() {
       return missing.isEmpty() && different.isEmpty() && added.isEmpty();
     }
+
     public void logTo(Log log) {
       if (!missing.isEmpty()) {
         log.error("Missing dependencies:");
-        missing.forEach(line -> log.error("  "+line));
+        missing.forEach(line -> log.error("  " + line));
       }
       if (!different.isEmpty()) {
         log.error("The following dependencies differ:");
-        different.forEach(line -> log.error("  "+line));
+        different.forEach(line -> log.error("  " + line));
       }
       if (!added.isEmpty()) {
         log.error("Extraneous dependencies:");
-        added.forEach(line -> log.error("  "+line));
+        added.forEach(line -> log.error("  " + line));
       }
     }
   }
