@@ -20,6 +20,6 @@ assertTrue("Lock file missing", lockFile.isFile())
  * (target/local-repo) and validating the checksum appears twice (exactly) in the file.
  */
 jar = new File(basedir, "../../local-repo/se/vandmo/testing/leaf/1.0/leaf-1.0.jar")
-hash = BaseEncoding.base16().encode(MessageDigest.getInstance("SHA-512").digest(Files.toByteArray(jar)));
+hash = BaseEncoding.base64().encode(MessageDigest.getInstance("SHA-512").digest(Files.toByteArray(jar)));
 
 assertThat("Lock file content not as expected", FileUtils.readLines(lockFile), hasItems(containsString(hash), containsString(hash)));

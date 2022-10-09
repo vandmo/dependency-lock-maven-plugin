@@ -14,21 +14,6 @@ import java.util.Optional;
 import org.apache.maven.model.Dependency;
 
 public final class Artifact implements Comparable<Artifact> {
-  private static final MessageDigest SHA512_DIGEST;
-
-  /**
-   * The current algorithm that is being used. If this doesn't match an error will be thrown and
-   * dependency files need to be regenerated.
-   */
-  public static final String ALGORITHM_HEADER = "sha512:";
-
-  static {
-    try {
-      SHA512_DIGEST = MessageDigest.getInstance("SHA-512");
-    } catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   public final ArtifactIdentifier identifier;
   public final String version;
@@ -138,26 +123,19 @@ public final class Artifact implements Comparable<Artifact> {
 
   public static Artifact from(
       org.apache.maven.artifact.Artifact artifact, boolean enableIntegrityChecking) {
-    try {
-      return new Artifact(
-          new ArtifactIdentifier(
-              artifact.getGroupId(),
-              artifact.getArtifactId(),
-              ofNullable(artifact.getClassifier()),
-              ofNullable(artifact.getType())),
-          artifact.getVersion(),
-          artifact.getScope(),
-          artifact.getType(),
-          artifact.isOptional(),
-          enableIntegrityChecking
-              ? Optional.of(
-                  ALGORITHM_HEADER
-                      + BaseEncoding.base16()
-                          .encode(SHA512_DIGEST.digest(Files.toByteArray(artifact.getFile()))))
-              : Optional.empty());
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+    return new Artifact(
+        new ArtifactIdentifier(
+            artifact.getGroupId(),
+            artifact.getArtifactId(),
+            ofNullable(artifact.getClassifier()),
+            ofNullable(artifact.getType())),
+        artifact.getVersion(),
+        artifact.getScope(),
+        artifact.getType(),
+        artifact.isOptional(),
+        enableIntegrityChecking
+            ? Optional.of(Checksum.calculateFor(artifact.getFile()))
+            : Optional.empty());
   }
 
   public static Artifact from(Dependency dependency) {
