@@ -17,7 +17,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:EBC4DDD09806ED8687DD3483A145F856A0DD908DB25B59FBA066A366BF425CA7459D4722C96E66061E81282CCF6FA041EDCA41AA13DBC176EB5EBF9F9E020AE6</integrity:checksum>
+      <dependency-lock:integrity>sha512:68Td0JgG7YaH3TSDoUX4VqDdkI2yW1n7oGajZr9CXKdFnUciyW5mBh6BKCzPb6BB7cpBqhPbwXbrXr+fngIK5g==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -25,7 +25,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:E4FE333856C3A8CE7A2D0604ED6ADC5CB296ED0001D1B814F380163E3C0D695F53EE0F355E40316E152CCF1E39A80B5AC686E0482AB76F93909D92C4D01E01A7</integrity:checksum>
+      <dependency-lock:integrity>sha512:5P4zOFbDqM56LQYE7WrcXLKW7QAB0bgU84AWPjwNaV9T7g81XkAxbhUszx45qAtaxobgSCq3b5OQnZLE0B4Bpw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -33,7 +33,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:BF2105FF730C5A586F0E9A7B789A9625249E3D3BF8EDD1F312A63D68DA6252794309A68CB513909CC0DC9C37E42A9EAB9182F7538003255086754CF1AE2B18C5</integrity:checksum>
+      <dependency-lock:integrity>sha512:vyEF/3MMWlhvDpp7eJqWJSSePTv47dHzEqY9aNpiUnlDCaaMtROQnMDcnDfkKp6rkYL3U4ADJVCGdUzxrisYxQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -42,7 +42,7 @@
       <type>jar</type>
       <scope>compile</scope>
       <classifier>linux-x86_64</classifier>
-      <integrity:checksum>sha512:FEF7536F7230FC63E7A748EB7B9770FDD609FF49B9B16D567A261BA0E363083F3F645C463CBB426BC44B23D3DFAFABB27F4424A013404B428982600D2C7DDC1A</integrity:checksum>
+      <dependency-lock:integrity>sha512:/vdTb3Iw/GPnp0jre5dw/dYJ/0m5sW1WeiYboONjCD8/ZFxGPLtCa8RLI9Pfr6uyf0QkoBNAS0KJgmANLH3cGg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -50,7 +50,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:265B067D61453BD46AAF4FFCC15178119E4489C799F0762E5290A33D8E0D7765771994D5F6830948A90B2369C75D1F5915B3AA5B6801243AA7146FB49D513716</integrity:checksum>
+      <dependency-lock:integrity>sha512:JlsGfWFFO9Rqr0/8wVF4EZ5EiceZ8HYuUpCjPY4Nd2V3GZTV9oMJSKkLI2nHXR9ZFbOqW2gBJDqnFG+0nVE3Fg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
@@ -58,7 +58,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:BE1D88D074AA8115DCFC417333D3932CEB1D45019CD9EC4B8301CA58EA55DEF969C457B0C1D1AADE8A012650381F37F406BD77FF5B1D4CDCA448B41FDF17D883</integrity:checksum>
+      <dependency-lock:integrity>sha512:vh2I0HSqgRXc/EFzM9OTLOsdRQGc2exLgwHKWOpV3vlpxFewwdGq3ooBJlA4Hzf0Br13/1sdTNykSLQf3xfYgw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>
@@ -66,7 +66,7 @@
       <version>1.2</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:2453330B27A0822BBA440C28B98AE1D83D60D97DFA2D040562DD5126B3548E0CAA040FEA3B886AC6FEB0A858E6C1BC45B6C5472B180F1F14792E5CA33E355959</integrity:checksum>
+      <dependency-lock:integrity>sha512:JFMzCyeggiu6RAwouYrh2D1g2X36LQQFYt1RJrNUjgyqBA/qO4hqxv6wqFjmwbxFtsVHKxgPHxR5LlyjPjVZWQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -75,7 +75,7 @@
       <type>jar</type>
       <scope>compile</scope>
       <optional>true</optional>
-      <integrity:checksum>sha512:FB0FE98385496A565678A000C26A3245082ABFBF879CC29A35112B4BF18C966697A7A63BB1FD2FAE4A42512CD3DE5A2E6DC9D1DF4A4058332A6DDEAE06CDF667</integrity:checksum>
+      <dependency-lock:integrity>sha512:+w/pg4VJalZWeKAAwmoyRQgqv7+HnMKaNRErS/GMlmaXp6Y7sf0vrkpCUSzT3loubcnR30pAWDMqbd6uBs32Zw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -83,7 +83,7 @@
       <version>3.6.1</version>
       <type>jar</type>
       <scope>runtime</scope>
-      <integrity:checksum>sha512:D7D8075358687B942EFAF34AE39120A5E43FD5A78455F75A1C39870B736C2F7CB956845C6478E56695DD5C3BC5632D8A794BDD81FF08B91E934071F558737CD4</integrity:checksum>
+      <dependency-lock:integrity>sha512:19gHU1hoe5Qu+vNK45EgpeQ/1aeEVfdaHDmHC3NsL3y5VoRcZHjlZpXdXDvFYy2KeUvdgf8IuR6TQHH1WHN81A==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -92,7 +92,7 @@
       <type>jar</type>
       <scope>compile</scope>
       <optional>true</optional>
-      <integrity:checksum>sha512:305174DE2499CC68491864C27BD51C1CF91D9BBA4E22722A200A60F44864855EA782CDE90D5E1B923518E8AE8250245E92E1E4F5F55DC6FBB25430A2EE04C7C8</integrity:checksum>
+      <dependency-lock:integrity>sha512:MFF03iSZzGhJGGTCe9UcHPkdm7pOInIqIApg9EhkhV6ngs3pDV4bkjUY6K6CUCRekuHk9fVdxvuyVDCi7gTHyA==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -100,7 +100,7 @@
       <version>3.8.3</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:4E7D3561E1C8C9BDF736AAF7115828FFCADE3D1D0A009CC09787D93FC2505DADD71E771936F59A5F17E213B89799ED2D281A98AEF56D6C6FA02720226A0B85F7</integrity:checksum>
+      <dependency-lock:integrity>sha512:Tn01YeHIyb33Nqr3EVgo/8rePR0KAJzAl4fZP8JQXa3XHncZNvWaXxfiE7iXme0tKBqYrvVtbG+gJyAiaguF9w==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -108,7 +108,7 @@
       <version>3.8.3</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:82A12B14C96C8B041647763D8D7D6B1D43C0D726D3810B67D4BACFF3663BA39D782D49EDD4FB7DF50FBD83B5CDD0674981FF8AEBC324406FD5B00163050A2FA0</integrity:checksum>
+      <dependency-lock:integrity>sha512:gqErFMlsiwQWR3Y9jX1rHUPA1ybTgQtn1LrP82Y7o514LUnt1Pt99Q+9g7XN0GdJgf+K68MkQG/VsAFjBQovoA==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.cargo</groupId>
@@ -116,7 +116,7 @@
       <version>1.9.8</version>
       <type>war</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:FEE8460C01E3EED5E44307F8C370A267A1CE85ED747E4AB290ADDD7396A2AF2E51DFBFACF0154E413E98DC2555F3AD9F080937D09518864201078DF0DFEA4085</integrity:checksum>
+      <dependency-lock:integrity>sha512:/uhGDAHj7tXkQwf4w3CiZ6HOhe10fkqykK3dc5airy5R37+s8BVOQT6Y3CVV862fCAk30JUYhkIBB43w3+pAhQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -124,7 +124,7 @@
       <version>2.6.0</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:6A58048D9DB54E603B9CFD35373CF695B66DD860BEC878C663B4FC53B6B3D44DD5B0C92E7603654911B1F78E63EF277CF6B272FE069A360989138550545F274D</integrity:checksum>
+      <dependency-lock:integrity>sha512:algEjZ21TmA7nP01Nzz2lbZt2GC+yHjGY7T8U7az1E3VsMkudgNlSRGx945j7yd89rJy/gaaNgmJE4VQVF8nTQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -132,7 +132,7 @@
       <version>1.5.5</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:2EA4AFB8888F157483C6A8E99852FA8A80E90A3CF0756B3B22C73A8BC59A4AA3D7B50B975A1D810F28A090023B268DAB49AF14E8F8E33C7553FA61315AFE06B2</integrity:checksum>
+      <dependency-lock:integrity>sha512:LqSvuIiPFXSDxqjpmFL6ioDpCjzwdWs7Isc6i8WaSqPXtQuXWh2BDyigkAI7Jo2rSa8U6PjjPHVT+mExWv4Gsg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -140,7 +140,7 @@
       <version>3.3.0</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:A93038005CD9793476C913BEAEA7C8C170D1853DDDF39BF6794AD6446165EAF538C2C3C2314BAA9D919D6B0BDA78E5EA3CD987D5DBACF8E3B98E315BCFA7DB64</integrity:checksum>
+      <dependency-lock:integrity>sha512:qTA4AFzZeTR2yRO+rqfIwXDRhT3d85v2eUrWRGFl6vU4wsPCMUuqnZGdawvaeOXqPNmH1dus+OO5jjFbz6fbZA==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
@@ -148,7 +148,7 @@
       <version>0.3.5</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:F4790768C0D958B3429A3241ABB15F9BB6E2FD7F43A5E034DDE6A3A6820E6941C00F10AD084D5C38F8EDC144E7ACBEA7BA3DC8952F01DAB41E443803DB2A4EFC</integrity:checksum>
+      <dependency-lock:integrity>sha512:9HkHaMDZWLNCmjJBq7Ffm7bi/X9DpeA03eajpoIOaUHADxCtCE1cOPjtwUTnrL6nuj3IlS8B2rQeRDgD2ypO/A==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
@@ -156,7 +156,7 @@
       <version>0.3.5</version>
       <type>jar</type>
       <scope>compile</scope>
-      <integrity:checksum>sha512:38D7DBE023F9751CB5E30BF154E31696590317DC7B7F768811FE0F5940513FCEA4665670CD47D0B72DED85453B10F7D129B0B7428B155A41C903C7B56C986E8D</integrity:checksum>
+      <dependency-lock:integrity>sha512:ONfb4CP5dRy14wvxVOMWllkDF9x7f3aIEf4PWUBRP86kZlZwzUfQty3thUU7EPfRKbC3QosVWkHJA8e1bJhujQ==</dependency-lock:integrity>
     </dependency>
   </dependencies>
 

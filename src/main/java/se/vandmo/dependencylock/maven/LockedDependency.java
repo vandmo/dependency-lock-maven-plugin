@@ -35,12 +35,9 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
 
     this.checksum.ifPresent(
         value ->
-            checkArgument(
-                StringUtils.startsWith(value, Artifact.ALGORITHM_HEADER),
-                "Encountered unsupported checksum format, consider using a later version of this"
-                    + " plugin",
-                Artifact.ALGORITHM_HEADER,
-                value));
+            Checksum.checkAlgorithmHeader(
+                value,
+                "Encountered unsupported checksum format, consider using a later version of this plugin"));
   }
 
   public static LockedDependency fromJson(JsonNode json, boolean enableIntegrityChecking) {
