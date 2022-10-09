@@ -56,7 +56,7 @@
     <plexus-utils.version>3.4.2</plexus-utils.version>
 
     <!-- BOMs -->
-    <jackson-bom.version>2.13.3</jackson-bom.version>
+    <jackson-bom.version>2.13.4</jackson-bom.version>
   </properties>
 
   <licenses>
