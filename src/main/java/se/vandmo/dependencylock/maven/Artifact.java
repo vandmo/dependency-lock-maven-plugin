@@ -12,11 +12,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Optional;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
 
 public final class Artifact implements Comparable<Artifact> {
-  private static final Log LOGGER = new SystemStreamLog();
   private static final MessageDigest SHA512_DIGEST;
 
   /**
@@ -142,7 +139,6 @@ public final class Artifact implements Comparable<Artifact> {
   public static Artifact from(
       org.apache.maven.artifact.Artifact artifact, boolean enableIntegrityChecking) {
     try {
-      LOGGER.debug(String.format("Locking artifact: %s (file: %s)", artifact, artifact.getFile()));
       return new Artifact(
           new ArtifactIdentifier(
               artifact.getGroupId(),
@@ -224,6 +220,7 @@ public final class Artifact implements Comparable<Artifact> {
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
     hash = 17 * hash + Objects.hashCode(this.type);
+    hash = 17 * hash + Objects.hashCode(this.checksum);
     return hash;
   }
 
@@ -249,6 +246,9 @@ public final class Artifact implements Comparable<Artifact> {
       return false;
     }
     if (!Objects.equals(this.type, other.type)) {
+      return false;
+    }
+    if (!Objects.equals(this.checksum, other.checksum)) {
       return false;
     }
     return true;
