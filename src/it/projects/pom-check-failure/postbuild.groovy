@@ -1,10 +1,10 @@
-import org.apache.commons.io.FileUtils
-
 import static java.nio.charset.StandardCharsets.UTF_8
 import static org.hamcrest.MatcherAssert.assertThat
 import static org.hamcrest.Matchers.containsInRelativeOrder
 import static org.hamcrest.core.IsIterableContaining.hasItem
 import static org.junit.Assert.assertTrue
+
+import org.apache.commons.io.FileUtils
 
 File lockFile = new File(basedir, ".dependency-lock/pom.xml");
 
