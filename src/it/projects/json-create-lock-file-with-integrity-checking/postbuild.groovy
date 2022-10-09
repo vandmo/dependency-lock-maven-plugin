@@ -1,18 +1,12 @@
+import static org.hamcrest.MatcherAssert.assertThat
+import static org.hamcrest.Matchers.containsString
+import static org.hamcrest.Matchers.hasItems
+import static org.junit.Assert.assertTrue
+
 import com.google.common.io.BaseEncoding
 import com.google.common.io.Files
-import org.apache.commons.io.FileUtils
-
 import java.security.MessageDigest
-
-import static java.nio.charset.StandardCharsets.UTF_8
-import static org.hamcrest.MatcherAssert.assertThat
-import static org.hamcrest.core.CombinableMatcher.both
-import static org.hamcrest.core.IsIterableContaining.hasItem
-import static org.hamcrest.core.StringEndsWith.endsWith
-import static org.hamcrest.core.StringStartsWith.startsWith
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertTrue
+import org.apache.commons.io.FileUtils
 
 lockFile = new File(basedir, "dependencies-lock.json")
 expectedLockFile = new File(basedir, "expected-dependencies-lock.json")
