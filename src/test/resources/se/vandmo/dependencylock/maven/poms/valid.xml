@@ -1,0 +1,38 @@
+
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+    xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.vandmo.tests</groupId>
+  <artifactId>pom-dependency-lock</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <x><y>abc</y></x>
+
+  <dependencies>
+
+    <x><y>abc</y></x>
+
+    <dependency>
+
+      <x><y>abc</y></x>
+
+      <groupId>io.netty</groupId>
+
+      <x><y>abc</y></x>
+
+      <artifactId>netty-buffer</artifactId>
+      <version>4.1.65.Final</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <dependency-lock:integrity>sha512:something</dependency-lock:integrity>
+
+      <x><y>abc</y></x>
+
+    </dependency>
+  </dependencies>
+
+</project>

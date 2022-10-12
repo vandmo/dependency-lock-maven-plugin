@@ -1,5 +1,7 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.lang.String.format;
+import static java.util.Locale.ROOT;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
@@ -20,6 +22,17 @@ public final class JsonUtils {
       throw new IllegalArgumentException("Missing value for " + fieldName);
     }
     return value;
+  }
+
+  public static boolean getBooleanOrDefault(JsonNode json, String fieldName, boolean defaultValue) {
+    if (!json.has(fieldName)) {
+      return defaultValue;
+    }
+    JsonNode value = json.get(fieldName);
+    if (!value.isBoolean()) {
+      throw new IllegalArgumentException(format(ROOT, "'%s' is not a boolean value", fieldName));
+    }
+    return value.booleanValue();
   }
 
   public static Optional<String> possiblyGetStringValue(JsonNode json, String fieldName) {

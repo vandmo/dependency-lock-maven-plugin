@@ -50,7 +50,7 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
 
   @Override
   public String getType() {
-    return delegate.type;
+    return delegate.identifier.type;
   }
 
   @Override

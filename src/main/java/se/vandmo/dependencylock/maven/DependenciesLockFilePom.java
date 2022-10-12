@@ -10,14 +10,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.logging.Log;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 public final class DependenciesLockFilePom implements DependenciesLockFile {
 
@@ -80,13 +76,7 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   @Override
   public LockedDependencies read(boolean enableIntegrityChecking) {
-    MavenXpp3Reader pomReader = new MavenXpp3Reader();
-    try (Reader reader = dependenciesLockFile.reader()) {
-      Model pom = pomReader.read(reader);
-      Artifacts artifacts = Artifacts.from(pom.getDependencies());
-      return LockedDependencies.from(artifacts, log, enableIntegrityChecking);
-    } catch (IOException | XmlPullParserException e) {
-      throw new RuntimeException(e);
-    }
+    Artifacts artifacts = Artifacts.fromArtifacts(PomLockFile.read(dependenciesLockFile.file), enableIntegrityChecking);
+    return LockedDependencies.from(artifacts, log, enableIntegrityChecking);
   }
 }

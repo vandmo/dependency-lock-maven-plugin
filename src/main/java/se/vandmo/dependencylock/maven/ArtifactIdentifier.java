@@ -8,25 +8,102 @@ import java.util.Optional;
 
 public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> {
 
+  private static final String DEFAULT_TYPE = "jar";
+
   public final String groupId;
   public final String artifactId;
   public final Optional<String> classifier;
-  public final Optional<String> type;
+  public final String type;
 
   public static ArtifactIdentifier from(org.apache.maven.artifact.Artifact artifact) {
     return new ArtifactIdentifier(
         artifact.getGroupId(),
         artifact.getArtifactId(),
         ofNullable(artifact.getClassifier()),
-        ofNullable(artifact.getType()));
+        ofNullable(artifact.getType()).orElse(DEFAULT_TYPE));
   }
 
-  ArtifactIdentifier(
-      String groupId, String artifactId, Optional<String> classifier, Optional<String> type) {
+  private ArtifactIdentifier(
+      String groupId, String artifactId, Optional<String> classifier, String type) {
     this.groupId = requireNonNull(groupId);
     this.artifactId = requireNonNull(artifactId);
     this.classifier = requireNonNull(classifier);
     this.type = requireNonNull(type);
+  }
+
+  public static GroupIdBuilderStage builder() {
+    return new GroupIdBuilderStage();
+  }
+
+  public static final class GroupIdBuilderStage {
+    private GroupIdBuilderStage() {}
+    public ArtifactIdBuilderStage groupId(String groupId) {
+      return new ArtifactIdBuilderStage(requireNonNull(groupId));
+    }
+  }
+
+  public static final class ArtifactIdBuilderStage {
+    private final String groupId;
+    private ArtifactIdBuilderStage(String groupId) {
+      this.groupId = groupId;
+    }
+    public ClassifierBuilderStage artifactId(String artifactId) {
+      return new ClassifierBuilderStage(groupId, requireNonNull(artifactId));
+    }
+  }
+
+  public static final class ClassifierBuilderStage {
+    private final String groupId;
+    private final String artifactId;
+    private ClassifierBuilderStage(String groupId, String artifactId) {
+      this.groupId = groupId;
+      this.artifactId = artifactId;
+    }
+    public TypeBuilderStage classifier(String classifier) {
+      return new TypeBuilderStage(groupId, artifactId, Optional.of(classifier));
+    }
+    public TypeBuilderStage classifier(Optional<String> possiblyClassifier) {
+      return new TypeBuilderStage(groupId, artifactId, requireNonNull(possiblyClassifier));
+    }
+    public ArtifactIdentifier build() {
+      return new ArtifactIdentifier(groupId, artifactId, Optional.empty(), DEFAULT_TYPE);
+    }
+  }
+
+  public static final class TypeBuilderStage {
+    private final String groupId;
+    private final String artifactId;
+    private final Optional<String> classifier;
+    private TypeBuilderStage(String groupId, String artifactId, Optional<String> classifier) {
+      this.groupId = groupId;
+      this.artifactId = artifactId;
+      this.classifier = classifier;
+    }
+    public FinalBuilderStage type(String type) {
+      return new FinalBuilderStage(groupId, artifactId, classifier, Optional.of(type).orElse(DEFAULT_TYPE));
+    }
+    public FinalBuilderStage type(Optional<String> possiblyType) {
+      return new FinalBuilderStage(groupId, artifactId, classifier, requireNonNull(possiblyType).orElse(DEFAULT_TYPE));
+    }
+    public ArtifactIdentifier build() {
+      return new ArtifactIdentifier(groupId, artifactId, classifier, DEFAULT_TYPE);
+    }
+  }
+
+  public static final class FinalBuilderStage {
+    private final String groupId;
+    private final String artifactId;
+    private final Optional<String> classifier;
+    private final String type;
+    private FinalBuilderStage(String groupId, String artifactId, Optional<String> classifier, String type) {
+      this.groupId = groupId;
+      this.artifactId = artifactId;
+      this.classifier = classifier;
+      this.type = type;
+    }
+    public ArtifactIdentifier build() {
+      return new ArtifactIdentifier(groupId, artifactId, classifier, type);
+    }
   }
 
   @Override
@@ -42,10 +119,7 @@ public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> 
         actualClassifier -> {
           sb.append(':').append(actualClassifier);
         });
-    type.ifPresent(
-        actualType -> {
-          sb.append(':').append(actualType);
-        });
+    sb.append(':').append(type);
     return sb.toString();
   }
 

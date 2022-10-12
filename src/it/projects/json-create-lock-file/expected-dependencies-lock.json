@@ -4,12 +4,14 @@
     "artifactId" : "leaf",
     "version" : "1.0",
     "scope" : "compile",
-    "type" : "jar"
+    "type" : "jar",
+    "optional" : false
   }, {
     "groupId" : "se.vandmo.testing",
     "artifactId" : "with-dependency",
     "version" : "1.0",
     "scope" : "compile",
-    "type" : "jar"
+    "type" : "jar",
+    "optional" : false
   } ]
 }
