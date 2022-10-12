@@ -31,7 +31,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   }
 
   Artifacts projectDependencies() {
-    return Artifacts.from(project.getArtifacts(), checkIntegrity());
+    return Artifacts.fromMavenArtifacts(project.getArtifacts(), checkIntegrity());
   }
 
   PomMinimums pomMinimums() {

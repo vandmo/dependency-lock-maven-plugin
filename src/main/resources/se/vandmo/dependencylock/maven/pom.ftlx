@@ -16,7 +16,7 @@
       <groupId>${dependency.identifier.groupId}</groupId>
       <artifactId>${dependency.identifier.artifactId}</artifactId>
       <version>${dependency.version}</version>
-      <type>${dependency.type}</type>
+      <type>${dependency.identifier.type}</type>
       <scope>${dependency.scope}</scope>
       <#if dependency.identifier.classifier.isPresent()>
       <classifier>${dependency.identifier.classifier.get()}</classifier>

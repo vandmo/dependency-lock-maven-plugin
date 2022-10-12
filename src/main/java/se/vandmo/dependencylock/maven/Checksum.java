@@ -1,8 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
@@ -11,10 +9,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
-import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.model.Dependency;
 
 public final class Checksum {
   private static final MessageDigest SHA512_DIGEST;

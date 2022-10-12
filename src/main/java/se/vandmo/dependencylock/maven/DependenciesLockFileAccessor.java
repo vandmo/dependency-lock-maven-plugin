@@ -15,7 +15,7 @@ import java.io.Writer;
 
 public final class DependenciesLockFileAccessor {
 
-  private final File file;
+  public final File file;
 
   private DependenciesLockFileAccessor(File file) {
     this.file = file;
