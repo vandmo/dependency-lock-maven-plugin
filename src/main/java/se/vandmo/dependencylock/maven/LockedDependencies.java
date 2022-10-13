@@ -22,10 +22,10 @@ public final class LockedDependencies {
     this.log = log;
   }
 
-  public static LockedDependencies from(Artifacts artifacts, Log log, boolean integrityCheck) {
+  public static LockedDependencies from(Artifacts artifacts, Log log) {
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
-      lockedDependencies.add(LockedDependency.from(artifact, integrityCheck));
+      lockedDependencies.add(LockedDependency.from(artifact));
     }
     return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }

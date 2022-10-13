@@ -33,7 +33,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     LockedDependencies lockedDependencies =
         format()
             .dependenciesLockFile_from(lockFile, pomMinimums(), getLog())
-            .read(checkIntegrity());
+            .read();
     Filters filters =
         Filters.builder()
             .useMyVersionForFilter(useMyVersionForFilter)

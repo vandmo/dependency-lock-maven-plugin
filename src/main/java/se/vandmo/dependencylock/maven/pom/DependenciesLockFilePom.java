@@ -80,8 +80,8 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   @Override
-  public LockedDependencies read(boolean enableIntegrityChecking) {
-    Artifacts artifacts = Artifacts.fromArtifacts(PomLockFile.read(dependenciesLockFile.file), enableIntegrityChecking);
-    return LockedDependencies.from(artifacts, log, enableIntegrityChecking);
+  public LockedDependencies read() {
+    Artifacts artifacts = Artifacts.fromArtifacts(PomLockFile.read(dependenciesLockFile.file));
+    return LockedDependencies.from(artifacts, log);
   }
 }
