@@ -1,4 +1,4 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.pom;
 
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;
@@ -19,6 +19,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import org.codehaus.stax2.XMLEventReader2;
+import se.vandmo.dependencylock.maven.Artifact;
+import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 
 public final class PomLockFile {
 

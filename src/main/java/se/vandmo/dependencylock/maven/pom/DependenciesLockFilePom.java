@@ -1,4 +1,4 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.pom;
 
 import static freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER;
 import static java.util.Objects.requireNonNull;
@@ -14,6 +14,11 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.DependenciesLockFile;
+import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.PomMinimums;
 
 public final class DependenciesLockFilePom implements DependenciesLockFile {
 

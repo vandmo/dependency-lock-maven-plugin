@@ -1,13 +1,7 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
-import static se.vandmo.dependencylock.maven.JsonUtils.getBooleanOrDefault;
-import static se.vandmo.dependencylock.maven.JsonUtils.getStringValue;
-import static se.vandmo.dependencylock.maven.JsonUtils.possiblyGetStringValue;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -38,21 +32,6 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
                 "Encountered unsupported checksum format, consider using a later version of this plugin"));
   }
 
-  public static LockedDependency fromJson(JsonNode json, boolean enableIntegrityChecking) {
-    return new LockedDependency(
-        ArtifactIdentifier
-            .builder()
-            .groupId(getStringValue(json, "groupId"))
-            .artifactId(getStringValue(json, "artifactId"))
-            .classifier(possiblyGetStringValue(json, "classifier"))
-            .type(possiblyGetStringValue(json, "type"))
-            .build(),
-        getStringValue(json, "version"),
-        getStringValue(json, "scope"),
-        getBooleanOrDefault(json, "optional", false),
-        enableIntegrityChecking ? possiblyGetStringValue(json, "checksum") : Optional.empty());
-  }
-
   public static LockedDependency from(Artifact artifact, boolean integrityCheck) {
     return new LockedDependency(
         artifact.identifier,
@@ -62,17 +41,111 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         integrityCheck ? artifact.checksum : Optional.empty());
   }
 
-  public JsonNode asJson() {
-    ObjectNode json = JsonNodeFactory.instance.objectNode();
-    json.put("groupId", identifier.groupId);
-    json.put("artifactId", identifier.artifactId);
-    json.put("version", version);
-    json.put("scope", scope);
-    json.put("type", identifier.type);
-    json.put("optional", optional);
-    checksum.ifPresent(sum -> json.put("checksum", sum));
-    identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
-    return json;
+  public static ArtifactIdentifierBuilderStage builder() {
+    return new ArtifactIdentifierBuilderStage();
+  }
+
+  public static final class ArtifactIdentifierBuilderStage {
+    private ArtifactIdentifierBuilderStage() {}
+
+    public VersionBuilderStage artifactIdentifier(ArtifactIdentifier artifactIdentifier) {
+      return new VersionBuilderStage(requireNonNull(artifactIdentifier));
+    }
+  }
+
+  public static final class VersionBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+
+    private VersionBuilderStage(ArtifactIdentifier artifactIdentifier) {
+      this.artifactIdentifier = artifactIdentifier;
+    }
+
+    public ScopeBuilderStage version(String version) {
+      return new ScopeBuilderStage(artifactIdentifier, requireNonNull(version));
+    }
+  }
+
+  public static final class ScopeBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+    private final String version;
+
+    private ScopeBuilderStage(ArtifactIdentifier artifactIdentifier, String version) {
+      this.artifactIdentifier = artifactIdentifier;
+      this.version = version;
+    }
+
+    public OptionalBuilderStage scope(String scope) {
+      return new OptionalBuilderStage(artifactIdentifier, version, requireNonNull(scope));
+    }
+  }
+
+  public static final class OptionalBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+    private final String version;
+    private final String scope;
+
+    private OptionalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope) {
+      this.artifactIdentifier = artifactIdentifier;
+      this.version = version;
+      this.scope = scope;
+    }
+
+    public IntegrityBuilderStage optional(boolean optional) {
+      return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
+    }
+    public FinalBuilderStage integrity(String integrity) {
+      return new FinalBuilderStage(
+          artifactIdentifier, version, scope, false, Optional.of(requireNonNull(integrity)));
+    }
+    public FinalBuilderStage integrity(Optional<String> integrity) {
+      return new FinalBuilderStage(
+          artifactIdentifier, version, scope, false, requireNonNull(integrity));
+    }
+  }
+
+  public static final class IntegrityBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+    private final String version;
+    private final String scope;
+    private final boolean optional;
+
+    private IntegrityBuilderStage(
+        ArtifactIdentifier artifactIdentifier, String version, String scope, boolean optional) {
+      this.artifactIdentifier = artifactIdentifier;
+      this.version = version;
+      this.scope = scope;
+      this.optional = optional;
+    }
+
+    public FinalBuilderStage integrity(Optional<String> integrity) {
+      return new FinalBuilderStage(
+          artifactIdentifier, version, scope, optional, requireNonNull(integrity));
+    }
+  }
+
+  public static final class FinalBuilderStage {
+    private final ArtifactIdentifier artifactIdentifier;
+    private final String version;
+    private final String scope;
+    private final boolean optional;
+    private final Optional<String> checksum;
+
+    private FinalBuilderStage(
+        ArtifactIdentifier artifactIdentifier,
+        String version,
+        String scope,
+        boolean optional,
+        Optional<String> checksum) {
+      this.artifactIdentifier = artifactIdentifier;
+      this.version = version;
+      this.scope = scope;
+      this.optional = optional;
+      this.checksum = checksum;
+    }
+
+    public LockedDependency build() {
+      return new LockedDependency(artifactIdentifier, version, scope, optional, checksum);
+    }
   }
 
   public Artifact toArtifact() {

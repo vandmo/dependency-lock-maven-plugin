@@ -4,10 +4,8 @@ import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.ROOT;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -24,18 +22,6 @@ public final class LockedDependencies {
     this.log = log;
   }
 
-  public static LockedDependencies fromJson(
-      JsonNode json, Log log, boolean enableIntegrityChecking) {
-    if (!json.isArray()) {
-      throw new IllegalStateException("Needs to be an array");
-    }
-    List<LockedDependency> lockedDependencies = new ArrayList<>();
-    for (JsonNode entry : json) {
-      lockedDependencies.add(LockedDependency.fromJson(entry, enableIntegrityChecking));
-    }
-    return new LockedDependencies(unmodifiableList(lockedDependencies), log);
-  }
-
   public static LockedDependencies from(Artifacts artifacts, Log log, boolean integrityCheck) {
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
@@ -44,12 +30,8 @@ public final class LockedDependencies {
     return new LockedDependencies(unmodifiableList(lockedDependencies), log);
   }
 
-  public JsonNode asJson() {
-    ArrayNode json = JsonNodeFactory.instance.arrayNode();
-    for (LockedDependency lockedDependency : lockedDependencies) {
-      json.add(lockedDependency.asJson());
-    }
-    return json;
+  public static LockedDependencies from(Collection<LockedDependency> lockedDependencies, Log log) {
+    return new LockedDependencies(unmodifiableList(new ArrayList<>(lockedDependencies)), log);
   }
 
   public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
