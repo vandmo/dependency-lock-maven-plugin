@@ -180,7 +180,7 @@ public final class PomLockFile {
             .version(version)
             .scope(scope)
             .optional(optional)
-            .integrity(Optional.of(integrity))
+            .integrity(integrity)
             .build();
       }
     }
@@ -219,8 +219,4 @@ public final class PomLockFile {
     }
   }
 
-  public static void main(String[] args) throws IOException, XMLStreamException {
-    File f = new File("/home/mikaelv/expected-pom.xml");
-    System.out.println(read(f));
-  }
 }

@@ -3,7 +3,6 @@ package se.vandmo.dependencylock.maven;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 public final class LockedDependency implements Comparable<LockedDependency>, Predicate<Artifact> {
@@ -12,33 +11,36 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
   public final String version;
   public final String scope;
   public final boolean optional;
-  public final Optional<String> checksum;
+  public final String integrity;
 
   private LockedDependency(
       ArtifactIdentifier identifier,
       String version,
       String scope,
       boolean optional,
-      Optional<String> checksum) {
+      String integrity) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.optional = optional;
-    this.checksum = requireNonNull(checksum);
-    this.checksum.ifPresent(
-        value ->
-            Checksum.checkAlgorithmHeader(
-                value,
-                "Encountered unsupported checksum format, consider using a later version of this plugin"));
+    this.integrity = checkIntegrityArgument(integrity);
   }
 
-  public static LockedDependency from(Artifact artifact, boolean integrityCheck) {
+  private String checkIntegrityArgument(String integrity) {
+    requireNonNull(integrity);
+    Checksum.checkAlgorithmHeader(
+        integrity,
+        "Encountered unsupported checksum format, consider using a later version of this plugin");
+    return integrity;
+  }
+
+  public static LockedDependency from(Artifact artifact) {
     return new LockedDependency(
         artifact.identifier,
         artifact.version,
         artifact.scope,
         artifact.optional,
-        integrityCheck ? artifact.checksum : Optional.empty());
+        artifact.integrity);
   }
 
   public static ArtifactIdentifierBuilderStage builder() {
@@ -93,11 +95,8 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     public IntegrityBuilderStage optional(boolean optional) {
       return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
     }
+
     public FinalBuilderStage integrity(String integrity) {
-      return new FinalBuilderStage(
-          artifactIdentifier, version, scope, false, Optional.of(requireNonNull(integrity)));
-    }
-    public FinalBuilderStage integrity(Optional<String> integrity) {
       return new FinalBuilderStage(
           artifactIdentifier, version, scope, false, requireNonNull(integrity));
     }
@@ -117,7 +116,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
       this.optional = optional;
     }
 
-    public FinalBuilderStage integrity(Optional<String> integrity) {
+    public FinalBuilderStage integrity(String integrity) {
       return new FinalBuilderStage(
           artifactIdentifier, version, scope, optional, requireNonNull(integrity));
     }
@@ -128,23 +127,23 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     private final String version;
     private final String scope;
     private final boolean optional;
-    private final Optional<String> checksum;
+    private final String integrity;
 
     private FinalBuilderStage(
         ArtifactIdentifier artifactIdentifier,
         String version,
         String scope,
         boolean optional,
-        Optional<String> checksum) {
+        String integrity) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
       this.optional = optional;
-      this.checksum = checksum;
+      this.integrity = integrity;
     }
 
     public LockedDependency build() {
-      return new LockedDependency(artifactIdentifier, version, scope, optional, checksum);
+      return new LockedDependency(artifactIdentifier, version, scope, optional, integrity);
     }
   }
 
@@ -154,7 +153,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         .version(version)
         .scope(scope)
         .optional(optional)
-        .integrity(checksum)
+        .integrity(integrity)
         .build();
   }
 
@@ -164,14 +163,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         && version.matches(artifact.version)
         && scope.equals(artifact.scope)
         && optional == artifact.optional
-        && checksum.equals(artifact.checksum);
-  }
-
-  public boolean differsOnlyByChecksum(Artifact artifact) {
-    return identifier.equals(artifact.identifier)
-        && version.matches(artifact.version)
-        && scope.equals(artifact.scope)
-        && optional == artifact.optional;
+        && integrity.equals(artifact.integrity);
   }
 
   @Override
@@ -193,7 +185,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
         .append(":optional=")
         .append(optional)
         .append('@')
-        .append(checksum.orElse("NO_CHECKSUM"))
+        .append(integrity)
         .toString();
   }
 
@@ -204,7 +196,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
     hash = 17 * hash + Objects.hashCode(this.optional);
-    hash = 17 * hash + Objects.hashCode(this.checksum);
+    hash = 17 * hash + Objects.hashCode(this.integrity);
     return hash;
   }
 
@@ -232,7 +224,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
     if (!Objects.equals(this.optional, other.optional)) {
       return false;
     }
-    if (!Objects.equals(this.checksum, other.checksum)) {
+    if (!Objects.equals(this.integrity, other.integrity)) {
       return false;
     }
     return true;
@@ -260,7 +252,7 @@ public final class LockedDependency implements Comparable<LockedDependency>, Pre
           && version.matches(myVersion)
           && scope.equals(artifact.scope)
           && optional == artifact.optional
-          && checksum.equals(artifact.checksum);
+          && integrity.equals(artifact.integrity);
     }
   }
 

@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import org.apache.maven.model.Dependency;
 
 public final class Artifacts implements Iterable<Artifact> {
 
@@ -22,18 +21,13 @@ public final class Artifacts implements Iterable<Artifact> {
   }
 
   public static Artifacts fromMavenArtifacts(
-      Collection<org.apache.maven.artifact.Artifact> artifacts, boolean enableIntegrityChecking) {
+      Collection<org.apache.maven.artifact.Artifact> artifacts) {
     return new Artifacts(
-        artifacts.stream().map(a -> Artifact.from(a, enableIntegrityChecking)).collect(toList()));
+        artifacts.stream().map(a -> Artifact.from(a)).collect(toList()));
   }
 
-  public static Artifacts fromArtifacts(
-      Collection<Artifact> artifacts, boolean enableIntegrityChecking) {
+  public static Artifacts fromArtifacts(Collection<Artifact> artifacts) {
     return new Artifacts(artifacts);
-  }
-
-  public static Artifacts fromDependencies(Collection<Dependency> dependencies) {
-    return new Artifacts(dependencies.stream().map(Artifact::from).collect(toList()));
   }
 
   public Optional<Artifact> by(ArtifactIdentifier identifier) {

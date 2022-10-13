@@ -4,8 +4,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 
 import java.util.Objects;
-import java.util.Optional;
-import org.apache.maven.model.Dependency;
 
 public final class Artifact implements Comparable<Artifact> {
 
@@ -13,7 +11,7 @@ public final class Artifact implements Comparable<Artifact> {
   public final String version;
   public final String scope;
   public final boolean optional;
-  public final Optional<String> checksum;
+  public final String integrity;
 
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
@@ -65,15 +63,13 @@ public final class Artifact implements Comparable<Artifact> {
     }
 
     public IntegrityBuilderStage optional(boolean optional) {
-      return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
+      return integrityBuilderStage(optional);
     }
     public FinalBuilderStage integrity(String integrity) {
-      return new FinalBuilderStage(
-          artifactIdentifier, version, scope, false, Optional.of(requireNonNull(integrity)));
+      return integrityBuilderStage(false).integrity(integrity);
     }
-    public FinalBuilderStage integrity(Optional<String> integrity) {
-      return new FinalBuilderStage(
-          artifactIdentifier, version, scope, false, requireNonNull(integrity));
+    private IntegrityBuilderStage integrityBuilderStage(boolean optional) {
+      return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
     }
   }
 
@@ -90,8 +86,7 @@ public final class Artifact implements Comparable<Artifact> {
       this.scope = scope;
       this.optional = optional;
     }
-
-    public FinalBuilderStage integrity(Optional<String> integrity) {
+    public FinalBuilderStage integrity(String integrity) {
       return new FinalBuilderStage(
           artifactIdentifier, version, scope, optional, requireNonNull(integrity));
     }
@@ -102,28 +97,28 @@ public final class Artifact implements Comparable<Artifact> {
     private final String version;
     private final String scope;
     private final boolean optional;
-    private final Optional<String> checksum;
+    private final String integrity;
 
     private FinalBuilderStage(
         ArtifactIdentifier artifactIdentifier,
         String version,
         String scope,
         boolean optional,
-        Optional<String> checksum) {
+        String integrity) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
       this.optional = optional;
-      this.checksum = checksum;
+      this.integrity = integrity;
     }
 
     public Artifact build() {
-      return new Artifact(artifactIdentifier, version, scope, optional, checksum);
+      return new Artifact(artifactIdentifier, version, scope, optional, integrity);
     }
   }
 
   public static Artifact from(
-      org.apache.maven.artifact.Artifact artifact, boolean enableIntegrityChecking) {
+      org.apache.maven.artifact.Artifact artifact) {
     return new Artifact(
         ArtifactIdentifier
             .builder()
@@ -135,24 +130,7 @@ public final class Artifact implements Comparable<Artifact> {
         artifact.getVersion(),
         artifact.getScope(),
         artifact.isOptional(),
-        enableIntegrityChecking
-            ? Optional.of(Checksum.calculateFor(artifact.getFile()))
-            : Optional.empty());
-  }
-
-  public static Artifact from(Dependency dependency) {
-    return new Artifact(
-        ArtifactIdentifier
-            .builder()
-            .groupId(dependency.getGroupId())
-            .artifactId(dependency.getArtifactId())
-            .classifier(ofNullable(dependency.getClassifier()))
-            .type(ofNullable(dependency.getType()))
-            .build(),
-        dependency.getVersion(),
-        dependency.getScope(),
-        dependency.isOptional(),
-        Optional.empty());
+        Checksum.calculateFor(artifact.getFile()));
   }
 
   public org.apache.maven.artifact.Artifact toMavenArtifact() {
@@ -164,12 +142,12 @@ public final class Artifact implements Comparable<Artifact> {
       String version,
       String scope,
       boolean optional,
-      Optional<String> checksum) {
+      String integrity) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
     this.optional = optional;
-    this.checksum = checksum;
+    this.integrity = integrity;
   }
 
   @Override
@@ -188,7 +166,7 @@ public final class Artifact implements Comparable<Artifact> {
         .append(":optional=")
         .append(optional)
         .append('@')
-        .append(checksum.orElse("NO_CHECKSUM"));
+        .append(integrity);
     return sb.toString();
   }
 
@@ -198,7 +176,7 @@ public final class Artifact implements Comparable<Artifact> {
     hash = 17 * hash + Objects.hashCode(this.identifier);
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
-    hash = 17 * hash + Objects.hashCode(this.checksum);
+    hash = 17 * hash + Objects.hashCode(this.integrity);
     return hash;
   }
 
@@ -223,7 +201,7 @@ public final class Artifact implements Comparable<Artifact> {
     if (!Objects.equals(this.scope, other.scope)) {
       return false;
     }
-    if (!Objects.equals(this.checksum, other.checksum)) {
+    if (!Objects.equals(this.integrity, other.integrity)) {
       return false;
     }
     return true;

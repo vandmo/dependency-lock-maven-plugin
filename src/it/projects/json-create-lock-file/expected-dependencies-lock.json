@@ -5,13 +5,15 @@
     "version" : "1.0",
     "scope" : "compile",
     "type" : "jar",
-    "optional" : false
+    "optional" : false,
+    "integrity" : "sha512:yfvw+eAXI+Vk9+8zW1Js28sQDnDFnRoNbf5qPWWpO8pZhG1j3M9hz4gxjVEXL82+koma3IiIYYCJZRYENJ+C4g=="
   }, {
     "groupId" : "se.vandmo.testing",
     "artifactId" : "with-dependency",
     "version" : "1.0",
     "scope" : "compile",
     "type" : "jar",
-    "optional" : false
+    "optional" : false,
+    "integrity" : "sha512:yfvw+eAXI+Vk9+8zW1Js28sQDnDFnRoNbf5qPWWpO8pZhG1j3M9hz4gxjVEXL82+koma3IiIYYCJZRYENJ+C4g=="
   } ]
 }

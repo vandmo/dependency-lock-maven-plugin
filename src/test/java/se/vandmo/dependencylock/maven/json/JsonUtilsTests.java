@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.StringWriter;
 import org.junit.Test;
-import se.vandmo.dependencylock.maven.json.JsonUtils;
 
 public final class JsonUtilsTests {
 

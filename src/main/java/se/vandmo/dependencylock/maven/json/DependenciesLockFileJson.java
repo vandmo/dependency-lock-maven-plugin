@@ -17,7 +17,6 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
@@ -41,7 +40,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
   }
 
-  public LockedDependencies read(boolean enableIntegrityChecking) {
+  public LockedDependencies read() {
     JsonNode json = readJsonNode();
     if (!json.isObject()) {
       throw new IllegalStateException("Expected top level type to be an object");
@@ -50,22 +49,21 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     if (dependencies == null || !dependencies.isArray()) {
       throw new IllegalStateException("Expected a property named 'dependencies' of type array");
     }
-    return fromJson(dependencies, log, enableIntegrityChecking);
+    return fromJson(dependencies, log);
   }
 
-  private static LockedDependencies fromJson(
-      JsonNode json, Log log, boolean enableIntegrityChecking) {
+  private static LockedDependencies fromJson(JsonNode json, Log log) {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
     List<LockedDependency> lockedDependencies = new ArrayList<>();
     for (JsonNode entry : json) {
-      lockedDependencies.add(lockedDependencyFromJson(entry, enableIntegrityChecking));
+      lockedDependencies.add(lockedDependencyFromJson(entry));
     }
     return LockedDependencies.from(lockedDependencies, log);
   }
 
-  private static LockedDependency lockedDependencyFromJson(JsonNode json, boolean enableIntegrityChecking) {
+  private static LockedDependency lockedDependencyFromJson(JsonNode json) {
     return LockedDependency
         .builder()
         .artifactIdentifier(ArtifactIdentifier
@@ -78,7 +76,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
         .version(getStringValue(json, "version"))
         .scope(getStringValue(json, "scope"))
         .optional(getBooleanOrDefault(json, "optional", false))
-        .integrity(enableIntegrityChecking ? possiblyGetStringValue(json, "checksum") : Optional.empty())
+        .integrity(getStringValue(json, "integrity"))
         .build();
   }
 
@@ -91,7 +89,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
   }
 
   public void write(Artifacts projectDependencies) {
-    write(LockedDependencies.from(projectDependencies, log, false));
+    write(LockedDependencies.from(projectDependencies, log));
   }
 
   public void write(LockedDependencies lockedDependencies) {
@@ -120,7 +118,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     json.put("scope", lockedDependency.scope);
     json.put("type", lockedDependency.identifier.type);
     json.put("optional", lockedDependency.optional);
-    lockedDependency.checksum.ifPresent(sum -> json.put("checksum", sum));
+    json.put("integrity", lockedDependency.integrity);
     lockedDependency.identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
     return json;
   }

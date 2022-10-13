@@ -5,12 +5,12 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import org.apache.maven.plugins.annotations.Mojo;
 import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
-import se.vandmo.dependencylock.maven.LockedDependencies;
 
-@Mojo(name = "create-lock-file", requiresDependencyResolution = TEST)
-public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
+@Mojo(name = "lock", requiresDependencyResolution = TEST)
+public final class LockMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() {
@@ -20,7 +20,7 @@ public final class CreateLockFileMojo extends AbstractDependencyLockMojo {
       case json:
         DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
         LockedDependencies lockedDependencies =
-            LockedDependencies.from(projectDependencies(), getLog(), checkIntegrity());
+            LockedDependencies.from(projectDependencies(), getLog());
         lockFileJson.write(lockedDependencies);
         break;
       case pom:

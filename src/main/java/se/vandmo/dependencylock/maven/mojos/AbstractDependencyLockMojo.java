@@ -23,15 +23,12 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   @Parameter(property = "dependencyLock.format")
   private LockFileFormat format = LockFileFormat.json;
 
-  @Parameter(property = "dependencyLock.checkIntegrity")
-  private boolean checkIntegrity = false;
-
   DependenciesLockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
   Artifacts projectDependencies() {
-    return Artifacts.fromMavenArtifacts(project.getArtifacts(), checkIntegrity());
+    return Artifacts.fromMavenArtifacts(project.getArtifacts());
   }
 
   PomMinimums pomMinimums() {
@@ -46,7 +43,4 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return format;
   }
 
-  boolean checkIntegrity() {
-    return checkIntegrity;
-  }
 }
