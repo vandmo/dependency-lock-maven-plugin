@@ -2,6 +2,8 @@ package se.vandmo.dependencylock.maven;
 
 import java.io.File;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
+import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 
 public enum LockFileFormat {
   json {

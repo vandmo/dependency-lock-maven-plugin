@@ -5,8 +5,8 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import org.apache.maven.plugins.annotations.Mojo;
 import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
-import se.vandmo.dependencylock.maven.DependenciesLockFileJson;
-import se.vandmo.dependencylock.maven.DependenciesLockFilePom;
+import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
+import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
 @Mojo(name = "create-lock-file", requiresDependencyResolution = TEST)

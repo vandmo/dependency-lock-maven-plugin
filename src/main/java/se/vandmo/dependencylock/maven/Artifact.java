@@ -159,7 +159,7 @@ public final class Artifact implements Comparable<Artifact> {
     return new MavenArtifact(this);
   }
 
-  Artifact(
+  private Artifact(
       ArtifactIdentifier identifier,
       String version,
       String scope,

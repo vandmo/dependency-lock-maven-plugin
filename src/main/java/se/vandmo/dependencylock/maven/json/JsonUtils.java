@@ -1,4 +1,4 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.json;
 
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;

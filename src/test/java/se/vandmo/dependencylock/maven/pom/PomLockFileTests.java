@@ -1,7 +1,6 @@
-package se.vandmo.dependencylock.maven;
+package se.vandmo.dependencylock.maven.pom;
 
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
 import static java.util.Locale.ROOT;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
@@ -9,9 +8,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
+import se.vandmo.dependencylock.maven.Artifact;
+import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 
 public final class PomLockFileTests {
 
@@ -89,7 +91,7 @@ public final class PomLockFileTests {
 
   @Test
   public void valid() {
-    assertEquals(asList(
+    assertEquals(Arrays.asList(
         Artifact
             .builder()
             .artifactIdentifier(ArtifactIdentifier
