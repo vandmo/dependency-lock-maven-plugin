@@ -1,0 +1,11 @@
+{
+  "dependencies" : [ {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "leaf",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:HeB2YHkpRxZRHGkLockx3JXvtb/eitUsngcNPyAkkRkfmqMaOpG36uodKQ7L3ri3M474DW7PPFYQMANzZGAznA=="
+  } ]
+}
