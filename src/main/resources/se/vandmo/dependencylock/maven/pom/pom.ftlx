@@ -24,9 +24,7 @@
       <#if dependency.optional>
       <optional>true</optional>
       </#if>
-      <#if dependency.checksum.isPresent()>
-      <dependency-lock:integrity>${dependency.checksum.get()}</dependency-lock:integrity>
-      </#if>
+      <dependency-lock:integrity>${dependency.integrity}</dependency-lock:integrity>
     </dependency>
     </#list>
   </dependencies>

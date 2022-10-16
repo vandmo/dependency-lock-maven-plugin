@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>se.vandmo.testing</groupId>
-      <artifactId>with-dependency</artifactId>
+      <artifactId>leaf</artifactId>
       <version>1.0</version>
     </dependency>
   </dependencies>
