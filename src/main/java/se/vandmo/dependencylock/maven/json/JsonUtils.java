@@ -16,12 +16,20 @@ import java.util.Optional;
 public final class JsonUtils {
   private JsonUtils() {}
 
-  public static String getStringValue(JsonNode json, String fieldName) {
-    String value = json.get(fieldName).textValue();
+  public static String getNonBlankStringValue(JsonNode json, String fieldName) {
+    JsonNode jsonNode = json.get(fieldName);
+    if (jsonNode == null) {
+      throw missingValueFor(fieldName);
+    }
+    String value = jsonNode.textValue();
     if (isBlank(value)) {
-      throw new IllegalArgumentException("Missing value for " + fieldName);
+      throw missingValueFor(fieldName);
     }
     return value;
+  }
+
+  private static IllegalArgumentException missingValueFor(String fieldName) {
+    return new IllegalArgumentException(format(ROOT, "Missing value for '%s'", fieldName));
   }
 
   public static boolean getBooleanOrDefault(JsonNode json, String fieldName, boolean defaultValue) {
@@ -39,7 +47,7 @@ public final class JsonUtils {
     if (!json.has(fieldName)) {
       return Optional.empty();
     }
-    return Optional.of(getStringValue(json, fieldName));
+    return Optional.of(getNonBlankStringValue(json, fieldName));
   }
 
   public static JsonNode readJson(Reader reader) {

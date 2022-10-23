@@ -44,7 +44,8 @@ public final class PomLockFileTests {
   @Test
   public void wrong_optional() {
     InvalidPomLockFile exception = assertInvalid("wrong-optional");
-    assertEquals("Invalid optional value 'muahaha' for dependency on line 5", exception.getMessage());
+    assertEquals(
+        "Invalid optional value 'muahaha' for dependency on line 5", exception.getMessage());
   }
 
   @Test
@@ -91,18 +92,18 @@ public final class PomLockFileTests {
 
   @Test
   public void valid() {
-    assertEquals(Arrays.asList(
-        Artifact
-            .builder()
-            .artifactIdentifier(ArtifactIdentifier
-                .builder()
-                .groupId("io.netty")
-                .artifactId("netty-buffer")
-                .build())
-            .version("4.1.65.Final")
-            .scope("compile")
-            .integrity("sha512:something")
-            .build()),
+    assertEquals(
+        Arrays.asList(
+            Artifact.builder()
+                .artifactIdentifier(
+                    ArtifactIdentifier.builder()
+                        .groupId("io.netty")
+                        .artifactId("netty-buffer")
+                        .build())
+                .version("4.1.65.Final")
+                .scope("compile")
+                .integrity("sha512:something")
+                .build()),
         read("valid"));
   }
 
@@ -111,6 +112,8 @@ public final class PomLockFileTests {
   }
 
   private static List<Artifact> read(String name) {
-    return PomLockFile.read(new File(format(ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)));
+    return PomLockFile.read(
+        new File(
+            format(ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)));
   }
 }

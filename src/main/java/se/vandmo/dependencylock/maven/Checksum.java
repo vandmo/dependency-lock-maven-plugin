@@ -1,15 +1,12 @@
 package se.vandmo.dependencylock.maven;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import com.google.common.io.BaseEncoding;
-import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import org.apache.commons.lang3.StringUtils;
+import java.util.Base64;
 
 public final class Checksum {
   private static final MessageDigest SHA512_DIGEST;
@@ -30,22 +27,14 @@ public final class Checksum {
 
   public static String calculateFor(File file) {
     try {
-      return calculateFor(Files.toByteArray(file));
+      return calculateFor(Files.readAllBytes(file.toPath()));
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
   static String calculateFor(byte[] bytes) {
-    return ALGORITHM_HEADER
-        + BaseEncoding.base64()
-        .encode(SHA512_DIGEST.digest(bytes));
-  }
-
-  public static void checkAlgorithmHeader(String value, String errorMessageTemplate) {
-    checkArgument(StringUtils.startsWith(value, ALGORITHM_HEADER),
-        errorMessageTemplate,
-        ALGORITHM_HEADER,
-        value);
+    byte[] hashed = SHA512_DIGEST.digest(bytes);
+    return ALGORITHM_HEADER + Base64.getEncoder().encodeToString(hashed);
   }
 }

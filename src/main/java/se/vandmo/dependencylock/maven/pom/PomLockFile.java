@@ -139,7 +139,9 @@ public final class PomLockFile {
               optional = true;
               break;
             default:
-              throw new InvalidPomLockFile(format(ROOT, "Invalid optional value '%s' for dependency", optionalStr), startElementLocation);
+              throw new InvalidPomLockFile(
+                  format(ROOT, "Invalid optional value '%s' for dependency", optionalStr),
+                  startElementLocation);
           }
         } else if (name.equals(INTEGRITY)) {
           integrity = readSingleTextElement(rdr);
@@ -168,15 +170,14 @@ public final class PomLockFile {
         if (integrity == null) {
           throw new InvalidPomLockFile("Missing integrity", event.getLocation());
         }
-        return Artifact
-            .builder()
-            .artifactIdentifier(ArtifactIdentifier
-                .builder()
-                .groupId(groupId)
-                .artifactId(artifactId)
-                .classifier(Optional.ofNullable(classifier))
-                .type(type)
-                .build())
+        return Artifact.builder()
+            .artifactIdentifier(
+                ArtifactIdentifier.builder()
+                    .groupId(groupId)
+                    .artifactId(artifactId)
+                    .classifier(Optional.ofNullable(classifier))
+                    .type(type)
+                    .build())
             .version(version)
             .scope(scope)
             .optional(optional)
@@ -218,5 +219,4 @@ public final class PomLockFile {
       }
     }
   }
-
 }

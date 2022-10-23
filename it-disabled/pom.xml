@@ -30,9 +30,14 @@
         <version>@project.version@</version>
         <configuration>
           <format>json</format>
-          <ignore>
-            <dependency>se.vandmo.testing</dependency>
-          </ignore>
+          <dependencySets>
+            <dependencySet>
+              <includes>
+                <include>se.vandmo.testing</include>
+              </includes>
+              <allowMissing>true</allowMissing>
+            </dependencySet>
+          </dependencySets>
         </configuration>
       </plugin>
     </plugins>

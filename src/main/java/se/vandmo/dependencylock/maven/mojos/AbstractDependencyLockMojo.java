@@ -42,5 +42,4 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   LockFileFormat format() {
     return format;
   }
-
 }

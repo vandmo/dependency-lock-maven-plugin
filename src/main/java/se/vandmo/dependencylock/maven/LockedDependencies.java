@@ -1,37 +1,26 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.lang.String.format;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.ROOT;
+import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
 
-  public final List<LockedDependency> lockedDependencies;
+  public final Artifacts lockedDependencies;
   private final Log log;
 
-  private LockedDependencies(List<LockedDependency> lockedDependencies, Log log) {
+  private LockedDependencies(Artifacts lockedDependencies, Log log) {
     this.lockedDependencies = lockedDependencies;
     this.log = log;
   }
 
   public static LockedDependencies from(Artifacts artifacts, Log log) {
-    List<LockedDependency> lockedDependencies = new ArrayList<>();
-    for (Artifact artifact : artifacts.artifacts) {
-      lockedDependencies.add(LockedDependency.from(artifact));
-    }
-    return new LockedDependencies(unmodifiableList(lockedDependencies), log);
-  }
-
-  public static LockedDependencies from(Collection<LockedDependency> lockedDependencies, Log log) {
-    return new LockedDependencies(unmodifiableList(new ArrayList<>(lockedDependencies)), log);
+    return new LockedDependencies(requireNonNull(artifacts), log);
   }
 
   public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
@@ -46,21 +35,49 @@ public final class LockedDependencies {
     private List<String> different = new ArrayList<>();
 
     private LockFileExpectationsDiff(Artifacts artifacts, String projectVersion, Filters filters) {
-      for (LockedDependency lockedDependency : lockedDependencies) {
-        if (filters.ignoreFilter.include(lockedDependency.toArtifact().toMavenArtifact())) {
-          log.info(format(ROOT, "Ignoring %s from lock file", lockedDependency));
-          continue;
-        }
-        Predicate<Artifact> expectedDependency =
-            resolve(filters.useMyVersionForFilter, lockedDependency, projectVersion);
+      for (Artifact lockedDependency : lockedDependencies) {
         Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
         if (!possiblyOtherArtifact.isPresent()) {
-          missing.add(expectedDependency.toString());
+          if (filters.allowMissing(lockedDependency)) {
+            log.info(format(ROOT, "Ignoring missing %s", lockedDependency));
+          } else {
+            missing.add(lockedDependency.identifier.toString());
+          }
         } else {
-          Artifact otherArtifact = possiblyOtherArtifact.get();
-          if (!expectedDependency.test(otherArtifact)) {
-            different.add(
-                format(ROOT, "Expected %s but found %s", expectedDependency, otherArtifact));
+          Artifact actualArtifact = possiblyOtherArtifact.get();
+          DependencySetConfiguration.Version versionConfiguration =
+              filters.versionConfiguration(lockedDependency);
+          switch (versionConfiguration) {
+            case check:
+              if (!lockedDependency.equals(actualArtifact)) {
+                different.add(
+                    format(ROOT, "Expected %s but found %s", lockedDependency, actualArtifact));
+              }
+              break;
+            case ignore:
+              log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
+              if (!lockedDependency.equals_ignoreVersion(actualArtifact)) {
+                different.add(
+                    format(
+                        ROOT,
+                        "Expected %s with any version but found %s",
+                        lockedDependency,
+                        actualArtifact));
+              }
+              break;
+            case useProjectVersion:
+              log.info(format(ROOT, "Using project version for %s", lockedDependency));
+              if (!lockedDependency.withVersion(projectVersion).equals(actualArtifact)) {
+                different.add(
+                    format(
+                        ROOT,
+                        "Expected %s with project version but found %s",
+                        lockedDependency,
+                        actualArtifact));
+              }
+              break;
+            default:
+              throw new RuntimeException("Unsupported enum value");
           }
         }
       }
@@ -70,36 +87,19 @@ public final class LockedDependencies {
   private List<String> findUnexpected(Artifacts artifacts, Filters filters) {
     List<String> unexpected = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
-      if (filters.ignoreFilter.include(artifact.toMavenArtifact())) {
-        log.info(format(ROOT, "Ignoring %s from actual dependencies", artifact));
-        continue;
-      }
       if (!by(artifact.identifier).isPresent()) {
-        unexpected.add(artifact.toString());
+        if (filters.allowSuperfluous(artifact)) {
+          log.info(format(ROOT, "Ignoring superfluous %s", artifact));
+        } else {
+          unexpected.add(artifact.toString());
+        }
       }
     }
     return unexpected;
   }
 
-  private Predicate<Artifact> resolve(
-      ArtifactFilter useMyVersionForFilter,
-      LockedDependency lockedDependency,
-      String projectVersion) {
-    boolean shouldUseMyVersion = shouldUseMyVersion(lockedDependency, useMyVersionForFilter);
-    if (shouldUseMyVersion) {
-      log.info(format(ROOT, "Using my version for %s", lockedDependency));
-      return lockedDependency.withMyVersion(projectVersion);
-    }
-    return lockedDependency;
-  }
-
-  private boolean shouldUseMyVersion(
-      LockedDependency lockedDependency, ArtifactFilter useMyVersionForFilter) {
-    return useMyVersionForFilter.include(lockedDependency.toArtifact().toMavenArtifact());
-  }
-
-  public Optional<LockedDependency> by(ArtifactIdentifier identifier) {
-    for (LockedDependency lockedDependency : lockedDependencies) {
+  public Optional<Artifact> by(ArtifactIdentifier identifier) {
+    for (Artifact lockedDependency : lockedDependencies) {
       if (lockedDependency.identifier.equals(identifier)) {
         return Optional.of(lockedDependency);
       }

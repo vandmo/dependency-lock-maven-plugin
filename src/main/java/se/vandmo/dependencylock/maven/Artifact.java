@@ -2,8 +2,10 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
+import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 
 import java.util.Objects;
+import org.apache.commons.lang3.StringUtils;
 
 public final class Artifact implements Comparable<Artifact> {
 
@@ -56,7 +58,8 @@ public final class Artifact implements Comparable<Artifact> {
     private final String version;
     private final String scope;
 
-    private OptionalBuilderStage(ArtifactIdentifier artifactIdentifier, String version, String scope) {
+    private OptionalBuilderStage(
+        ArtifactIdentifier artifactIdentifier, String version, String scope) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
@@ -65,9 +68,11 @@ public final class Artifact implements Comparable<Artifact> {
     public IntegrityBuilderStage optional(boolean optional) {
       return integrityBuilderStage(optional);
     }
+
     public FinalBuilderStage integrity(String integrity) {
       return integrityBuilderStage(false).integrity(integrity);
     }
+
     private IntegrityBuilderStage integrityBuilderStage(boolean optional) {
       return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
     }
@@ -86,10 +91,20 @@ public final class Artifact implements Comparable<Artifact> {
       this.scope = scope;
       this.optional = optional;
     }
+
     public FinalBuilderStage integrity(String integrity) {
       return new FinalBuilderStage(
-          artifactIdentifier, version, scope, optional, requireNonNull(integrity));
+          artifactIdentifier, version, scope, optional, checkIntegrityArgument(integrity));
     }
+  }
+
+  private static String checkIntegrityArgument(String integrity) {
+    requireNonNull(integrity);
+    if (!StringUtils.startsWith(integrity, ALGORITHM_HEADER)) {
+      throw new IllegalArgumentException(
+          "Encountered unsupported checksum format, consider using a later version of this plugin");
+    }
+    return integrity;
   }
 
   public static final class FinalBuilderStage {
@@ -117,11 +132,9 @@ public final class Artifact implements Comparable<Artifact> {
     }
   }
 
-  public static Artifact from(
-      org.apache.maven.artifact.Artifact artifact) {
+  public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
     return new Artifact(
-        ArtifactIdentifier
-            .builder()
+        ArtifactIdentifier.builder()
             .groupId(artifact.getGroupId())
             .artifactId(artifact.getArtifactId())
             .classifier(ofNullable(artifact.getClassifier()))
@@ -150,6 +163,10 @@ public final class Artifact implements Comparable<Artifact> {
     this.integrity = integrity;
   }
 
+  public Artifact withVersion(String version) {
+    return new Artifact(identifier, version, scope, optional, integrity);
+  }
+
   @Override
   public int compareTo(Artifact other) {
     return toString().compareTo(other.toString());
@@ -176,6 +193,7 @@ public final class Artifact implements Comparable<Artifact> {
     hash = 17 * hash + Objects.hashCode(this.identifier);
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.scope);
+    hash = 17 * hash + Objects.hashCode(this.optional);
     hash = 17 * hash + Objects.hashCode(this.integrity);
     return hash;
   }
@@ -199,6 +217,34 @@ public final class Artifact implements Comparable<Artifact> {
       return false;
     }
     if (!Objects.equals(this.scope, other.scope)) {
+      return false;
+    }
+    if (!Objects.equals(this.optional, other.optional)) {
+      return false;
+    }
+    if (!Objects.equals(this.integrity, other.integrity)) {
+      return false;
+    }
+    return true;
+  }
+
+  public boolean equals_ignoreVersion(Artifact other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null) {
+      return false;
+    }
+    if (getClass() != other.getClass()) {
+      return false;
+    }
+    if (!Objects.equals(this.identifier, other.identifier)) {
+      return false;
+    }
+    if (!Objects.equals(this.scope, other.scope)) {
+      return false;
+    }
+    if (!Objects.equals(this.optional, other.optional)) {
       return false;
     }
     if (!Objects.equals(this.integrity, other.integrity)) {

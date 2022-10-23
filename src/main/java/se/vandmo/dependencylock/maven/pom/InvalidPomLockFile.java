@@ -19,5 +19,4 @@ public final class InvalidPomLockFile extends RuntimeException {
   InvalidPomLockFile(XMLStreamException cause) {
     super(cause);
   }
-
 }

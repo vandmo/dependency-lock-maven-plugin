@@ -2,7 +2,7 @@ package se.vandmo.dependencylock.maven.json;
 
 import static java.util.Objects.requireNonNull;
 import static se.vandmo.dependencylock.maven.json.JsonUtils.getBooleanOrDefault;
-import static se.vandmo.dependencylock.maven.json.JsonUtils.getStringValue;
+import static se.vandmo.dependencylock.maven.json.JsonUtils.getNonBlankStringValue;
 import static se.vandmo.dependencylock.maven.json.JsonUtils.possiblyGetStringValue;
 import static se.vandmo.dependencylock.maven.json.JsonUtils.readJson;
 import static se.vandmo.dependencylock.maven.json.JsonUtils.writeJson;
@@ -18,12 +18,12 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
 import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
-import se.vandmo.dependencylock.maven.LockedDependency;
 
 public final class DependenciesLockFileJson implements DependenciesLockFile {
 
@@ -56,27 +56,26 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
-    List<LockedDependency> lockedDependencies = new ArrayList<>();
+    List<Artifact> lockedDependencies = new ArrayList<>();
     for (JsonNode entry : json) {
       lockedDependencies.add(lockedDependencyFromJson(entry));
     }
-    return LockedDependencies.from(lockedDependencies, log);
+    return LockedDependencies.from(Artifacts.fromArtifacts(lockedDependencies), log);
   }
 
-  private static LockedDependency lockedDependencyFromJson(JsonNode json) {
-    return LockedDependency
-        .builder()
-        .artifactIdentifier(ArtifactIdentifier
-            .builder()
-            .groupId(getStringValue(json, "groupId"))
-            .artifactId(getStringValue(json, "artifactId"))
-            .classifier(possiblyGetStringValue(json, "classifier"))
-            .type(possiblyGetStringValue(json, "type"))
-            .build())
-        .version(getStringValue(json, "version"))
-        .scope(getStringValue(json, "scope"))
+  private static Artifact lockedDependencyFromJson(JsonNode json) {
+    return Artifact.builder()
+        .artifactIdentifier(
+            ArtifactIdentifier.builder()
+                .groupId(getNonBlankStringValue(json, "groupId"))
+                .artifactId(getNonBlankStringValue(json, "artifactId"))
+                .classifier(possiblyGetStringValue(json, "classifier"))
+                .type(possiblyGetStringValue(json, "type"))
+                .build())
+        .version(getNonBlankStringValue(json, "version"))
+        .scope(getNonBlankStringValue(json, "scope"))
         .optional(getBooleanOrDefault(json, "optional", false))
-        .integrity(getStringValue(json, "integrity"))
+        .integrity(getNonBlankStringValue(json, "integrity"))
         .build();
   }
 
@@ -104,13 +103,13 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
 
   private JsonNode asJson(LockedDependencies lockedDependencies) {
     ArrayNode json = JsonNodeFactory.instance.arrayNode();
-    for (LockedDependency lockedDependency : lockedDependencies.lockedDependencies) {
+    for (Artifact lockedDependency : lockedDependencies.lockedDependencies) {
       json.add(asJson(lockedDependency));
     }
     return json;
   }
 
-  private JsonNode asJson(LockedDependency lockedDependency) {
+  private JsonNode asJson(Artifact lockedDependency) {
     ObjectNode json = JsonNodeFactory.instance.objectNode();
     json.put("groupId", lockedDependency.identifier.groupId);
     json.put("artifactId", lockedDependency.identifier.artifactId);
@@ -119,11 +118,8 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     json.put("type", lockedDependency.identifier.type);
     json.put("optional", lockedDependency.optional);
     json.put("integrity", lockedDependency.integrity);
-    lockedDependency.identifier.classifier.ifPresent(actualClassifier -> json.put("classifier", actualClassifier));
+    lockedDependency.identifier.classifier.ifPresent(
+        actualClassifier -> json.put("classifier", actualClassifier));
     return json;
-  }
-
-  public boolean exists() {
-    return dependenciesLockFile.exists();
   }
 }

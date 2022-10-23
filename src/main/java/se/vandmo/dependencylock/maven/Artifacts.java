@@ -22,8 +22,7 @@ public final class Artifacts implements Iterable<Artifact> {
 
   public static Artifacts fromMavenArtifacts(
       Collection<org.apache.maven.artifact.Artifact> artifacts) {
-    return new Artifacts(
-        artifacts.stream().map(a -> Artifact.from(a)).collect(toList()));
+    return new Artifacts(artifacts.stream().map(a -> Artifact.from(a)).collect(toList()));
   }
 
   public static Artifacts fromArtifacts(Collection<Artifact> artifacts) {

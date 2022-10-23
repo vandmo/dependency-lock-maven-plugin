@@ -1,53 +1,45 @@
 package se.vandmo.dependencylock.maven;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Collections.unmodifiableList;
 
-import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
 
 public final class Filters {
-  public final ArtifactFilter useMyVersionForFilter;
-  public final ArtifactFilter ignoreFilter;
 
-  private Filters(ArtifactFilter useMyVersionForFilter, ArtifactFilter ignoreFilter) {
-    this.useMyVersionForFilter = useMyVersionForFilter;
-    this.ignoreFilter = ignoreFilter;
+  private final List<DependencySetConfiguration> dependencySetConfigurations;
+
+  public Filters(List<DependencySetConfiguration> dependencySets) {
+    List<DependencySetConfiguration> dependencySetConfigurations = new ArrayList<>(dependencySets);
+    Collections.reverse(dependencySetConfigurations);
+    this.dependencySetConfigurations = unmodifiableList(dependencySetConfigurations);
   }
 
-  public static UseMyVersionForFilterBuilderStage builder() {
-    return new UseMyVersionForFilterBuilderStage();
+  private <T> T configurationFor(
+      Artifact artifact, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
+    return dependencySetConfigurations.stream()
+        .filter(d -> d.matches(artifact))
+        .map(extractor)
+        .filter(v -> v != null)
+        .findFirst()
+        .orElse(defaultValue);
   }
 
-  public static final class UseMyVersionForFilterBuilderStage {
-    private UseMyVersionForFilterBuilderStage() {}
-
-    public IgnoreFilterBuilderStage useMyVersionForFilter(ArtifactFilter useMyVersionForFilter) {
-      return new IgnoreFilterBuilderStage(requireNonNull(useMyVersionForFilter));
-    }
+  public DependencySetConfiguration.Version versionConfiguration(Artifact artifact) {
+    return configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
   }
 
-  public static final class IgnoreFilterBuilderStage {
-    private final ArtifactFilter useMyVersionForFilter;
-
-    private IgnoreFilterBuilderStage(ArtifactFilter useMyVersionForFilter) {
-      this.useMyVersionForFilter = useMyVersionForFilter;
-    }
-
-    public FinalBuilderStage ignoreFilter(ArtifactFilter ignoreFilter) {
-      return new FinalBuilderStage(useMyVersionForFilter, requireNonNull(ignoreFilter));
-    }
+  public DependencySetConfiguration.Integrity integrityConfiguration(Artifact artifact) {
+    return configurationFor(artifact, d -> d.integrity, DependencySetConfiguration.Integrity.check);
   }
 
-  public static final class FinalBuilderStage {
-    private final ArtifactFilter useMyVersionForFilter;
-    private final ArtifactFilter ignoreFilter;
+  public boolean allowSuperfluous(Artifact artifact) {
+    return configurationFor(artifact, d -> d.allowSuperfluous, Boolean.FALSE);
+  }
 
-    private FinalBuilderStage(ArtifactFilter useMyVersionForFilter, ArtifactFilter ignoreFilter) {
-      this.useMyVersionForFilter = useMyVersionForFilter;
-      this.ignoreFilter = ignoreFilter;
-    }
-
-    public Filters build() {
-      return new Filters(useMyVersionForFilter, ignoreFilter);
-    }
+  public boolean allowMissing(Artifact artifact) {
+    return configurationFor(artifact, d -> d.allowMissing, Boolean.FALSE);
   }
 }
