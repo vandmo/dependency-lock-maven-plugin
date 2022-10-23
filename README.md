@@ -97,6 +97,7 @@ You can achieve this by configuring the plugin like such:
       <include>
         <includes>org.myorg:myapplication-*</includes>
       </include>
+      <version>use-project-version</version>
     </dependencySet>
   </dependencySets>
 </configuration>
@@ -120,7 +121,3 @@ Another approach to automate the creation of PRs would be to have a GitHub workf
 ### News in version 1.x
 * Integrity checking is enabled by default
 * Configuration is more verbose but also more flexible
-Version 1.x will be released in a  near future. That release will remove support for the __format__ and __lock__ goals. Specifically it is the possibility to edit the JSON lock file that will be removed.
-I don't like breaking backwards compatibility but keeping those goals makes it harder to develop some new, much needed, features.
-I plan on continuing on the 1.x version forever and keep backwards compatibility forever as well.
-I will create 0.x releases on demand as well if needed.
