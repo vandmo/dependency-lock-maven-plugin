@@ -8,4 +8,19 @@
     <Method name="writer"/>
     <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
   </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.DependencySet"/>
+    <Field name="allowMissing"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.DependencySet"/>
+    <Field name="allowExtraneus"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.DependencySet"/>
+    <Field name="integrity"/>
+    <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
 </FindBugsFilter>

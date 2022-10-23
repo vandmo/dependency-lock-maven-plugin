@@ -6,7 +6,7 @@ public final class DependencySet {
   public String version = "check";
   public Integrity integrity;
   public Boolean allowMissing = null;
-  public Boolean allowSuperfluous = null;
+  public Boolean allowExtraneus = null;
 
   public enum Integrity {
     check,

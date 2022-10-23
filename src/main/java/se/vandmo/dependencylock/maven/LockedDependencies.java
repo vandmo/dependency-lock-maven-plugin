@@ -89,7 +89,7 @@ public final class LockedDependencies {
     for (Artifact artifact : artifacts.artifacts) {
       if (!by(artifact.identifier).isPresent()) {
         if (filters.allowSuperfluous(artifact)) {
-          log.info(format(ROOT, "Ignoring superfluous %s", artifact));
+          log.info(format(ROOT, "Ignoring extraneous %s", artifact));
         } else {
           unexpected.add(artifact.toString());
         }
