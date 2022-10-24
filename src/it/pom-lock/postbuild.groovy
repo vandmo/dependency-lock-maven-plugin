@@ -15,4 +15,4 @@ assertTrue(lockFile.isFile())
 assertTrue(FileUtils.contentEquals(expectedLockFile, lockFile))
 
 buildLog = FileUtils.readLines(new File(basedir, "build.log"), UTF_8)
-assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/pom-create-lock-file-with-integrity-checking/.dependency-lock/pom.xml"))))
+assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/pom-lock/.dependency-lock/pom.xml"))))

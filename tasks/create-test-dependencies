@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+from zipfile import ZIP_DEFLATED, ZipFile
+
+folder = 'src/it/setup-dependencies'
+
+
+def create(name):
+    with ZipFile(f'{folder}/{name}.jar', 'w', ZIP_DEFLATED) as zipf:
+        zipf.writestr(name, name)
+
+
+create('another-leaf-1.0')
+create('leaf-1.0')
+create('with-dependency-1.0')

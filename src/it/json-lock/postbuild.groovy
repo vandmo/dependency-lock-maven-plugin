@@ -15,4 +15,4 @@ assertTrue("Lock file missing", lockFile.isFile())
 assertTrue("Lock file content not as expected", FileUtils.contentEquals(expectedLockFile, lockFile))
 
 buildLog = FileUtils.readLines(new File(basedir, "build.log"), UTF_8)
-assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json-create-lock-file/dependencies-lock.json"))))
+assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json-lock/dependencies-lock.json"))))

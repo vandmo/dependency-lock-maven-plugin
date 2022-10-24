@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>pom</artifactId>
+  <artifactId>configuration-order</artifactId>
   <version>0-SNAPSHOT</version>
 
   <properties>
@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>se.vandmo.testing</groupId>
-      <artifactId>leaf</artifactId>
+      <artifactId>another-leaf</artifactId>
       <version>1.0</version>
     </dependency>
   </dependencies>
@@ -29,7 +29,22 @@
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
-          <format>json</format>
+          <dependencySets>
+            <dependencySet>
+              <includes>
+                <include>se.vandmo.testing</include>
+              </includes>
+              <allowExtraneous>false</allowExtraneous>
+              <allowMissing>false</allowMissing>
+            </dependencySet>
+            <dependencySet>
+              <includes>
+                <include>se.vandmo.testing</include>
+              </includes>
+              <allowExtraneous>true</allowExtraneous>
+              <allowMissing>true</allowMissing>
+            </dependencySet>
+          </dependencySets>
         </configuration>
       </plugin>
     </plugins>

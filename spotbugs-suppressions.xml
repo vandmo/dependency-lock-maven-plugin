@@ -15,7 +15,7 @@
   </Match>
   <Match>
     <Class name="se.vandmo.dependencylock.maven.mojos.DependencySet"/>
-    <Field name="allowExtraneus"/>
+    <Field name="allowExtraneous"/>
     <Bug pattern="UWF_NULL_FIELD"/>
   </Match>
   <Match>

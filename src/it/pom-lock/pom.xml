@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>pom</artifactId>
+  <artifactId>pom-lock</artifactId>
   <version>0-SNAPSHOT</version>
 
   <properties>
@@ -54,7 +54,6 @@
         <version>@project.version@</version>
         <configuration>
           <format>pom</format>
-          <checkIntegrity>true</checkIntegrity>
         </configuration>
       </plugin>
     </plugins>

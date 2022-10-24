@@ -32,17 +32,28 @@
               <pomFile>leaf-1.0.pom</pomFile>
             </configuration>
           </execution>
-            <execution>
-              <id>install-with-dependency</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>install-file</goal>
-              </goals>
-              <configuration>
-                <file>with-dependency-1.0.jar</file>
-                <pomFile>with-dependency-1.0.pom</pomFile>
-              </configuration>
-            </execution>
+          <execution>
+            <id>install-another-leaf</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>another-leaf-1.0.jar</file>
+              <pomFile>another-leaf-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-with-dependency</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>with-dependency-1.0.jar</file>
+              <pomFile>with-dependency-1.0.pom</pomFile>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

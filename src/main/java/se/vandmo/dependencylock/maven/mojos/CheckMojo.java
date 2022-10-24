@@ -53,7 +53,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
         transformVersion(dependencySet.version),
         transformIntegrity(dependencySet.integrity),
         dependencySet.allowMissing,
-        dependencySet.allowExtraneus);
+        dependencySet.allowExtraneous);
   }
 
   private static DependencySetConfiguration.Integrity transformIntegrity(
