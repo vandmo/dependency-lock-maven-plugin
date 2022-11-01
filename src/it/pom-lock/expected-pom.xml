@@ -17,6 +17,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:68Td0JgG7YaH3TSDoUX4VqDdkI2yW1n7oGajZr9CXKdFnUciyW5mBh6BKCzPb6BB7cpBqhPbwXbrXr+fngIK5g==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -25,6 +26,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:5P4zOFbDqM56LQYE7WrcXLKW7QAB0bgU84AWPjwNaV9T7g81XkAxbhUszx45qAtaxobgSCq3b5OQnZLE0B4Bpw==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -33,6 +35,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:vyEF/3MMWlhvDpp7eJqWJSSePTv47dHzEqY9aNpiUnlDCaaMtROQnMDcnDfkKp6rkYL3U4ADJVCGdUzxrisYxQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -42,6 +45,7 @@
       <type>jar</type>
       <scope>compile</scope>
       <classifier>linux-x86_64</classifier>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:/vdTb3Iw/GPnp0jre5dw/dYJ/0m5sW1WeiYboONjCD8/ZFxGPLtCa8RLI9Pfr6uyf0QkoBNAS0KJgmANLH3cGg==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -50,6 +54,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:JlsGfWFFO9Rqr0/8wVF4EZ5EiceZ8HYuUpCjPY4Nd2V3GZTV9oMJSKkLI2nHXR9ZFbOqW2gBJDqnFG+0nVE3Fg==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -58,6 +63,7 @@
       <version>4.1.65.Final</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:vh2I0HSqgRXc/EFzM9OTLOsdRQGc2exLgwHKWOpV3vlpxFewwdGq3ooBJlA4Hzf0Br13/1sdTNykSLQf3xfYgw==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -66,6 +72,7 @@
       <version>1.2</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:JFMzCyeggiu6RAwouYrh2D1g2X36LQQFYt1RJrNUjgyqBA/qO4hqxv6wqFjmwbxFtsVHKxgPHxR5LlyjPjVZWQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -83,6 +90,7 @@
       <version>3.6.1</version>
       <type>jar</type>
       <scope>runtime</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:19gHU1hoe5Qu+vNK45EgpeQ/1aeEVfdaHDmHC3NsL3y5VoRcZHjlZpXdXDvFYy2KeUvdgf8IuR6TQHH1WHN81A==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -100,6 +108,7 @@
       <version>3.8.3</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:Tn01YeHIyb33Nqr3EVgo/8rePR0KAJzAl4fZP8JQXa3XHncZNvWaXxfiE7iXme0tKBqYrvVtbG+gJyAiaguF9w==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -108,6 +117,7 @@
       <version>3.8.3</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:gqErFMlsiwQWR3Y9jX1rHUPA1ybTgQtn1LrP82Y7o514LUnt1Pt99Q+9g7XN0GdJgf+K68MkQG/VsAFjBQovoA==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -116,6 +126,7 @@
       <version>1.9.8</version>
       <type>war</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:/uhGDAHj7tXkQwf4w3CiZ6HOhe10fkqykK3dc5airy5R37+s8BVOQT6Y3CVV862fCAk30JUYhkIBB43w3+pAhQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -124,6 +135,7 @@
       <version>2.6.0</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:algEjZ21TmA7nP01Nzz2lbZt2GC+yHjGY7T8U7az1E3VsMkudgNlSRGx945j7yd89rJy/gaaNgmJE4VQVF8nTQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -132,6 +144,7 @@
       <version>1.5.5</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:LqSvuIiPFXSDxqjpmFL6ioDpCjzwdWs7Isc6i8WaSqPXtQuXWh2BDyigkAI7Jo2rSa8U6PjjPHVT+mExWv4Gsg==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -140,6 +153,7 @@
       <version>3.3.0</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:qTA4AFzZeTR2yRO+rqfIwXDRhT3d85v2eUrWRGFl6vU4wsPCMUuqnZGdawvaeOXqPNmH1dus+OO5jjFbz6fbZA==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -148,6 +162,7 @@
       <version>0.3.5</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:9HkHaMDZWLNCmjJBq7Ffm7bi/X9DpeA03eajpoIOaUHADxCtCE1cOPjtwUTnrL6nuj3IlS8B2rQeRDgD2ypO/A==</dependency-lock:integrity>
     </dependency>
     <dependency>
@@ -156,6 +171,7 @@
       <version>0.3.5</version>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:ONfb4CP5dRy14wvxVOMWllkDF9x7f3aIEf4PWUBRP86kZlZwzUfQty3thUU7EPfRKbC3QosVWkHJA8e1bJhujQ==</dependency-lock:integrity>
     </dependency>
   </dependencies>

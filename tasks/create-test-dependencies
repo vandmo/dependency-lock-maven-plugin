@@ -13,5 +13,6 @@ def create(name, extension='jar'):
 create('leaf-1.0')
 create('another-leaf-1.0')
 create('a-third-leaf-1.0')
+create('a-classified-leaf-1.0-classy')
 create('with-dependency-1.0')
 create('a-war-1.0', 'war')

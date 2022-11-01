@@ -44,6 +44,18 @@
             </configuration>
           </execution>
           <execution>
+            <id>install-a-classified-leaf</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>a-classified-leaf-1.0-classy.jar</file>
+              <classifier>classy</classifier>
+              <pomFile>a-classified-leaf-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-a-third-leaf</id>
             <phase>validate</phase>
             <goals>

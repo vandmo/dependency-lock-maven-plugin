@@ -34,6 +34,12 @@
     </dependency>
     <dependency>
       <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-classified-leaf</artifactId>
+      <version>1.0</version>
+      <classifier>classy</classifier>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
       <artifactId>a-war</artifactId>
       <version>1.0</version>
       <type>war</type>
