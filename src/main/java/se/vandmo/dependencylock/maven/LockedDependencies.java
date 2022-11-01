@@ -23,6 +23,21 @@ public final class LockedDependencies {
     return new LockedDependencies(requireNonNull(artifacts), log);
   }
 
+  // Visible for testing
+  static String joinNouns(List<String> nouns) {
+    switch (nouns.size()) {
+      case 0:
+        return "";
+      case 1:
+        return nouns.get(0);
+      default:
+        int lastIdx = nouns.size() - 1;
+        return String.join(" and ",
+            String.join(", ", nouns.subList(0, lastIdx)),
+            nouns.get(lastIdx));
+    }
+  }
+
   public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
     LockFileExpectationsDiff expectationsDiff =
         new LockFileExpectationsDiff(artifacts, projectVersion, filters);
@@ -44,14 +59,33 @@ public final class LockedDependencies {
             missing.add(lockedDependency.identifier.toString());
           }
         } else {
+          List<String> wrongs = new ArrayList<>();
           Artifact actualArtifact = possiblyOtherArtifact.get();
+          if (lockedDependency.optional != actualArtifact.optional) {
+            wrongs.add("optional");
+          }
+          if (!lockedDependency.scope.equals(actualArtifact.scope)) {
+            wrongs.add("scope");
+          }
+          if (!lockedDependency.integrity.equals(actualArtifact.integrity)) {
+            DependencySetConfiguration.Integrity integrityConfiguration = filters.integrityConfiguration(lockedDependency);
+            switch (integrityConfiguration) {
+              case check:
+                wrongs.add("integrity");
+                break;
+              case ignore:
+                log.info(format(ROOT, "Ignoring integrity for %s", lockedDependency));
+                break;
+              default:
+                throw new RuntimeException("Unsupported enum value");
+            }
+          }
           DependencySetConfiguration.Version versionConfiguration =
               filters.versionConfiguration(lockedDependency);
           switch (versionConfiguration) {
             case check:
-              if (!lockedDependency.equals(actualArtifact)) {
-                different.add(
-                    format(ROOT, "Expected %s but found %s", lockedDependency, actualArtifact));
+              if (!lockedDependency.version.equals(actualArtifact.version)) {
+                wrongs.add("version");
               }
               break;
             case ignore:
@@ -78,6 +112,10 @@ public final class LockedDependencies {
               break;
             default:
               throw new RuntimeException("Unsupported enum value");
+          }
+          if (!wrongs.isEmpty()) {
+            different.add(
+                format(ROOT, "Expected %s but found %s, wrong %s", lockedDependency, actualArtifact, joinNouns(wrongs)));
           }
         }
       }
