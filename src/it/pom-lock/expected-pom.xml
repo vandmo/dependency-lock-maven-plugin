@@ -12,167 +12,50 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-buffer</artifactId>
-      <version>4.1.65.Final</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-classified-leaf</artifactId>
+      <version>1.0</version>
       <type>jar</type>
       <scope>compile</scope>
+      <classifier>classy</classifier>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:68Td0JgG7YaH3TSDoUX4VqDdkI2yW1n7oGajZr9CXKdFnUciyW5mBh6BKCzPb6BB7cpBqhPbwXbrXr+fngIK5g==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-common</artifactId>
-      <version>4.1.65.Final</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-third-leaf</artifactId>
+      <version>1.0</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>test</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:5P4zOFbDqM56LQYE7WrcXLKW7QAB0bgU84AWPjwNaV9T7g81XkAxbhUszx45qAtaxobgSCq3b5OQnZLE0B4Bpw==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:QjAlcrqmdWL88+sTA4UWoLft4SrjCkhDlYR2nk8oGkGeUvubkGQzGDrmURXmQuEzROIb5Y02dI7/a11R5k5ZmQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-resolver</artifactId>
-      <version>4.1.65.Final</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:vyEF/3MMWlhvDpp7eJqWJSSePTv47dHzEqY9aNpiUnlDCaaMtROQnMDcnDfkKp6rkYL3U4ADJVCGdUzxrisYxQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-epoll</artifactId>
-      <version>4.1.65.Final</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <classifier>linux-x86_64</classifier>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:/vdTb3Iw/GPnp0jre5dw/dYJ/0m5sW1WeiYboONjCD8/ZFxGPLtCa8RLI9Pfr6uyf0QkoBNAS0KJgmANLH3cGg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.1.65.Final</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:JlsGfWFFO9Rqr0/8wVF4EZ5EiceZ8HYuUpCjPY4Nd2V3GZTV9oMJSKkLI2nHXR9ZFbOqW2gBJDqnFG+0nVE3Fg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport</artifactId>
-      <version>4.1.65.Final</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:vh2I0HSqgRXc/EFzM9OTLOsdRQGc2exLgwHKWOpV3vlpxFewwdGq3ooBJlA4Hzf0Br13/1sdTNykSLQf3xfYgw==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:JFMzCyeggiu6RAwouYrh2D1g2X36LQQFYt1RJrNUjgyqBA/qO4hqxv6wqFjmwbxFtsVHKxgPHxR5LlyjPjVZWQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.8.1</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-      <dependency-lock:integrity>sha512:+w/pg4VJalZWeKAAwmoyRQgqv7+HnMKaNRErS/GMlmaXp6Y7sf0vrkpCUSzT3loubcnR30pAWDMqbd6uBs32Zw==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.6.1</version>
-      <type>jar</type>
-      <scope>runtime</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:19gHU1hoe5Qu+vNK45EgpeQ/1aeEVfdaHDmHC3NsL3y5VoRcZHjlZpXdXDvFYy2KeUvdgf8IuR6TQHH1WHN81A==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>3.8.3</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>true</optional>
-      <dependency-lock:integrity>sha512:MFF03iSZzGhJGGTCe9UcHPkdm7pOInIqIApg9EhkhV6ngs3pDV4bkjUY6K6CUCRekuHk9fVdxvuyVDCi7gTHyA==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
-      <version>3.8.3</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:Tn01YeHIyb33Nqr3EVgo/8rePR0KAJzAl4fZP8JQXa3XHncZNvWaXxfiE7iXme0tKBqYrvVtbG+gJyAiaguF9w==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>3.8.3</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:gqErFMlsiwQWR3Y9jX1rHUPA1ybTgQtn1LrP82Y7o514LUnt1Pt99Q+9g7XN0GdJgf+K68MkQG/VsAFjBQovoA==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.cargo</groupId>
-      <artifactId>simple-war</artifactId>
-      <version>1.9.8</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-war</artifactId>
+      <version>1.0</version>
       <type>war</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:/uhGDAHj7tXkQwf4w3CiZ6HOhe10fkqykK3dc5airy5R37+s8BVOQT6Y3CVV862fCAk30JUYhkIBB43w3+pAhQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:1Lojgkq/rfOAUIaUXKkI4n6P0nkuJGlDj2NVGUaX2fLrBJurCr135hiQNTRRiL+wMnLvPWbKZvPHB2rBI/hTKw==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-classworlds</artifactId>
-      <version>2.6.0</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>another-leaf</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>true</optional>
+      <dependency-lock:integrity>sha512:0TTX1ABvSaYpbW9zHxntUejpMUeFxxod6u0Umg3Ib86RyemGEAbxWKeRtWYCX19BALAHiVr/ArGfy6osTumUOQ==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>leaf</artifactId>
+      <version>1.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:algEjZ21TmA7nP01Nzz2lbZt2GC+yHjGY7T8U7az1E3VsMkudgNlSRGx945j7yd89rJy/gaaNgmJE4VQVF8nTQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-component-annotations</artifactId>
-      <version>1.5.5</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:LqSvuIiPFXSDxqjpmFL6ioDpCjzwdWs7Isc6i8WaSqPXtQuXWh2BDyigkAI7Jo2rSa8U6PjjPHVT+mExWv4Gsg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.3.0</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:qTA4AFzZeTR2yRO+rqfIwXDRhT3d85v2eUrWRGFl6vU4wsPCMUuqnZGdawvaeOXqPNmH1dus+OO5jjFbz6fbZA==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.inject</artifactId>
-      <version>0.3.5</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:9HkHaMDZWLNCmjJBq7Ffm7bi/X9DpeA03eajpoIOaUHADxCtCE1cOPjtwUTnrL6nuj3IlS8B2rQeRDgD2ypO/A==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.sisu</groupId>
-      <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <version>0.3.5</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:ONfb4CP5dRy14wvxVOMWllkDF9x7f3aIEf4PWUBRP86kZlZwzUfQty3thUU7EPfRKbC3QosVWkHJA8e1bJhujQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:98gbCti9u7jp73/lFrslV7BeOCkxeXUiRQT19E58niRlyEKu69BXPXHB/xM8HQu1os08se3xTkbhWXG5xnGMFw==</dependency-lock:integrity>
     </dependency>
   </dependencies>
 
