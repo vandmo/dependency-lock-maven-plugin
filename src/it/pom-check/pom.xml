@@ -16,32 +16,32 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>3.8.3</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>leaf</artifactId>
+      <version>1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.plugin-tools</groupId>
-      <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.6.1</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>3.8.3</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>another-leaf</artifactId>
+      <version>1.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty-transport-native-epoll</artifactId>
-      <version>4.1.65.Final</version>
-      <classifier>linux-x86_64</classifier>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-third-leaf</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.cargo</groupId>
-      <artifactId>simple-war</artifactId>
-      <version>1.9.8</version>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-classified-leaf</artifactId>
+      <version>1.0</version>
+      <classifier>classy</classifier>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-war</artifactId>
+      <version>1.0</version>
       <type>war</type>
     </dependency>
   </dependencies>
