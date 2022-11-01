@@ -20,6 +20,24 @@
       <artifactId>leaf</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>another-leaf</artifactId>
+      <version>1.0</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-third-leaf</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-war</artifactId>
+      <version>1.0</version>
+      <type>war</type>
+    </dependency>
   </dependencies>
 
   <build>

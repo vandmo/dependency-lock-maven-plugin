@@ -44,6 +44,28 @@
             </configuration>
           </execution>
           <execution>
+            <id>install-a-third-leaf</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>a-third-leaf-1.0.jar</file>
+              <pomFile>a-third-leaf-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-a-war</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>a-war-1.0.war</file>
+              <pomFile>a-war-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-with-dependency</id>
             <phase>validate</phase>
             <goals>

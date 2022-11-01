@@ -1,6 +1,30 @@
 {
   "dependencies" : [ {
     "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-third-leaf",
+    "version" : "1.0",
+    "scope" : "test",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:QjAlcrqmdWL88+sTA4UWoLft4SrjCkhDlYR2nk8oGkGeUvubkGQzGDrmURXmQuEzROIb5Y02dI7/a11R5k5ZmQ=="
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-war",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "war",
+    "optional" : false,
+    "integrity" : "sha512:1Lojgkq/rfOAUIaUXKkI4n6P0nkuJGlDj2NVGUaX2fLrBJurCr135hiQNTRRiL+wMnLvPWbKZvPHB2rBI/hTKw=="
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "another-leaf",
+    "version" : "1.0",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : true,
+    "integrity" : "sha512:0TTX1ABvSaYpbW9zHxntUejpMUeFxxod6u0Umg3Ib86RyemGEAbxWKeRtWYCX19BALAHiVr/ArGfy6osTumUOQ=="
+  }, {
+    "groupId" : "se.vandmo.testing",
     "artifactId" : "leaf",
     "version" : "1.0",
     "scope" : "compile",
