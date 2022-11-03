@@ -111,7 +111,7 @@ public final class PomLockFile {
     String type = null;
     String scope = null;
     String classifier = null;
-    boolean optional = false;
+    Boolean optional = null;
     String integrity = null;
     while (rdr.hasNextEvent()) {
       XMLEvent event = rdr.nextEvent();
@@ -134,6 +134,7 @@ public final class PomLockFile {
           String optionalStr = readSingleTextElement(rdr);
           switch (optionalStr) {
             case "false":
+              optional = false;
               break;
             case "true":
               optional = true;
@@ -166,6 +167,9 @@ public final class PomLockFile {
         }
         if (scope == null) {
           throw new InvalidPomLockFile("Missing scope", event.getLocation());
+        }
+        if (optional == null) {
+          throw new InvalidPomLockFile("Missing optional", event.getLocation());
         }
         if (integrity == null) {
           throw new InvalidPomLockFile("Missing integrity", event.getLocation());

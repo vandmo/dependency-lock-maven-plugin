@@ -51,37 +51,43 @@ public final class PomLockFileTests {
   @Test
   public void no_groupId() {
     InvalidPomLockFile exception = assertInvalid("no-groupId");
-    assertEquals("Missing groupId on line 14", exception.getMessage());
+    assertEquals("Missing groupId on line 15", exception.getMessage());
   }
 
   @Test
   public void no_artifactId() {
     InvalidPomLockFile exception = assertInvalid("no-artifactId");
-    assertEquals("Missing artifactId on line 14", exception.getMessage());
+    assertEquals("Missing artifactId on line 15", exception.getMessage());
   }
 
   @Test
   public void no_version() {
     InvalidPomLockFile exception = assertInvalid("no-version");
-    assertEquals("Missing version on line 14", exception.getMessage());
+    assertEquals("Missing version on line 15", exception.getMessage());
   }
 
   @Test
   public void no_type() {
     InvalidPomLockFile exception = assertInvalid("no-type");
-    assertEquals("Missing type on line 14", exception.getMessage());
+    assertEquals("Missing type on line 15", exception.getMessage());
   }
 
   @Test
   public void no_scope() {
     InvalidPomLockFile exception = assertInvalid("no-scope");
-    assertEquals("Missing scope on line 14", exception.getMessage());
+    assertEquals("Missing scope on line 15", exception.getMessage());
+  }
+
+  @Test
+  public void no_optional() {
+    InvalidPomLockFile exception = assertInvalid("no-optional");
+    assertEquals("Missing optional on line 15", exception.getMessage());
   }
 
   @Test
   public void no_integrity() {
     InvalidPomLockFile exception = assertInvalid("no-integrity");
-    assertEquals("Missing integrity on line 14", exception.getMessage());
+    assertEquals("Missing integrity on line 15", exception.getMessage());
   }
 
   @Test

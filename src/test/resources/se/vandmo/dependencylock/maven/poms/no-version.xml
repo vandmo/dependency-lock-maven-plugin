@@ -10,6 +10,7 @@
       <artifactId>netty-common</artifactId>
       <type>jar</type>
       <scope>compile</scope>
+      <optional>false</optional>
       <dependency-lock:integrity>sha512:5P4zOFbDqM56LQYE7WrcXLKW7QAB0bgU84AWPjwNaV9T7g81XkAxbhUszx45qAtaxobgSCq3b5OQnZLE0B4Bpw==</dependency-lock:integrity>
     </dependency>
   </dependencies>
