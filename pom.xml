@@ -136,6 +136,12 @@
             <artifactId>maven-invoker-plugin</artifactId>
             <version>${maven-invoker-plugin.version}</version>
             <configuration>
+              <setupIncludes>
+                <setupInclude>setup/*/pom.xml</setupInclude>
+              </setupIncludes>
+              <pomIncludes>
+                <pomInclude>*/*/pom.xml</pomInclude>
+              </pomIncludes>
               <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
               <addTestClassPath>true</addTestClassPath>
               <streamLogs>true</streamLogs>
