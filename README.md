@@ -94,9 +94,9 @@ You can achieve this by configuring the plugin like such:
 <configuration>
   <dependencySets>
     <dependencySet>
-      <include>
-        <includes>org.myorg:myapplication-*</includes>
-      </include>
+      <includes>
+        <include>org.myorg:myapplication-*</include>
+      </includes>
       <version>use-project-version</version>
     </dependencySet>
   </dependencySets>

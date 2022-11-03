@@ -41,8 +41,8 @@ public final class LockedDependencies {
   public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
     LockFileExpectationsDiff expectationsDiff =
         new LockFileExpectationsDiff(artifacts, projectVersion, filters);
-    List<String> unexpected = findUnexpected(artifacts, filters);
-    return new Diff(expectationsDiff, unexpected);
+    List<String> extraneous = findExtraneous(artifacts, filters);
+    return new Diff(expectationsDiff, extraneous);
   }
 
   private final class LockFileExpectationsDiff {
@@ -54,7 +54,7 @@ public final class LockedDependencies {
         Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
         if (!possiblyOtherArtifact.isPresent()) {
           if (filters.allowMissing(lockedDependency)) {
-            log.info(format(ROOT, "Ignoring missing %s", lockedDependency));
+            log.info(format(ROOT, "Ignoring missing %s", lockedDependency.identifier));
           } else {
             missing.add(lockedDependency.identifier.toString());
           }
@@ -122,18 +122,18 @@ public final class LockedDependencies {
     }
   }
 
-  private List<String> findUnexpected(Artifacts artifacts, Filters filters) {
-    List<String> unexpected = new ArrayList<>();
+  private List<String> findExtraneous(Artifacts artifacts, Filters filters) {
+    List<String> extraneous = new ArrayList<>();
     for (Artifact artifact : artifacts.artifacts) {
       if (!by(artifact.identifier).isPresent()) {
         if (filters.allowSuperfluous(artifact)) {
-          log.info(format(ROOT, "Ignoring extraneous %s", artifact));
+          log.info(format(ROOT, "Ignoring extraneous %s", artifact.identifier));
         } else {
-          unexpected.add(artifact.toString());
+          extraneous.add(artifact.identifier.toString());
         }
       }
     }
-    return unexpected;
+    return extraneous;
   }
 
   public Optional<Artifact> by(ArtifactIdentifier identifier) {
@@ -148,16 +148,16 @@ public final class LockedDependencies {
   public static final class Diff {
     private final List<String> missing;
     private final List<String> different;
-    private final List<String> added;
+    private final List<String> extraneous;
 
-    private Diff(LockFileExpectationsDiff lockFileExpectationsDiff, List<String> added) {
+    private Diff(LockFileExpectationsDiff lockFileExpectationsDiff, List<String> extraneous) {
       this.missing = lockFileExpectationsDiff.missing;
       this.different = lockFileExpectationsDiff.different;
-      this.added = added;
+      this.extraneous = extraneous;
     }
 
     public boolean equals() {
-      return missing.isEmpty() && different.isEmpty() && added.isEmpty();
+      return missing.isEmpty() && different.isEmpty() && extraneous.isEmpty();
     }
 
     public void logTo(Log log) {
@@ -169,9 +169,9 @@ public final class LockedDependencies {
         log.error("The following dependencies differ:");
         different.forEach(line -> log.error("  " + line));
       }
-      if (!added.isEmpty()) {
+      if (!extraneous.isEmpty()) {
         log.error("Extraneous dependencies:");
-        added.forEach(line -> log.error("  " + line));
+        extraneous.forEach(line -> log.error("  " + line));
       }
     }
   }

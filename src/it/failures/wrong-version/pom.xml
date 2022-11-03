@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>ignore-version</artifactId>
+  <artifactId>wrong-version</artifactId>
   <version>0-SNAPSHOT</version>
 
   <properties>
@@ -28,16 +28,6 @@
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>@project.version@</version>
-        <configuration>
-          <dependencySets>
-            <dependencySet>
-              <includes>
-                <include>se.vandmo.testing</include>
-              </includes>
-              <version>ignore</version>
-            </dependencySet>
-          </dependencySets>
-        </configuration>
       </plugin>
     </plugins>
   </build>
