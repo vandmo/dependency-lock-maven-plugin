@@ -72,6 +72,14 @@ public final class ArtifactIdentifier implements Comparable<ArtifactIdentifier> 
       return new TypeBuilderStage(groupId, artifactId, requireNonNull(possiblyClassifier));
     }
 
+    public FinalBuilderStage type(String type) {
+      return new TypeBuilderStage(groupId, artifactId, Optional.empty()).type(type);
+    }
+
+    public FinalBuilderStage type(Optional<String> possiblyType) {
+      return new TypeBuilderStage(groupId, artifactId, Optional.empty()).type(possiblyType);
+    }
+
     public ArtifactIdentifier build() {
       return new ArtifactIdentifier(groupId, artifactId, Optional.empty(), DEFAULT_TYPE);
     }

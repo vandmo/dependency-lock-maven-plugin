@@ -32,9 +32,8 @@ public final class LockedDependencies {
         return nouns.get(0);
       default:
         int lastIdx = nouns.size() - 1;
-        return String.join(" and ",
-            String.join(", ", nouns.subList(0, lastIdx)),
-            nouns.get(lastIdx));
+        return String.join(
+            " and ", String.join(", ", nouns.subList(0, lastIdx)), nouns.get(lastIdx));
     }
   }
 
@@ -68,7 +67,8 @@ public final class LockedDependencies {
             wrongs.add("scope");
           }
           if (!lockedDependency.integrity.equals(actualArtifact.integrity)) {
-            DependencySetConfiguration.Integrity integrityConfiguration = filters.integrityConfiguration(lockedDependency);
+            DependencySetConfiguration.Integrity integrityConfiguration =
+                filters.integrityConfiguration(lockedDependency);
             switch (integrityConfiguration) {
               case check:
                 wrongs.add("integrity");
@@ -115,7 +115,12 @@ public final class LockedDependencies {
           }
           if (!wrongs.isEmpty()) {
             different.add(
-                format(ROOT, "Expected %s but found %s, wrong %s", lockedDependency, actualArtifact, joinNouns(wrongs)));
+                format(
+                    ROOT,
+                    "Expected %s but found %s, wrong %s",
+                    lockedDependency,
+                    actualArtifact,
+                    joinNouns(wrongs)));
           }
         }
       }
@@ -129,7 +134,7 @@ public final class LockedDependencies {
         if (filters.allowSuperfluous(artifact)) {
           log.info(format(ROOT, "Ignoring extraneous %s", artifact.identifier));
         } else {
-          extraneous.add(artifact.identifier.toString());
+          extraneous.add(artifact.toString_withoutIntegrity());
         }
       }
     }

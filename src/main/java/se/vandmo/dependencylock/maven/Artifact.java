@@ -174,17 +174,22 @@ public final class Artifact implements Comparable<Artifact> {
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(identifier.toString())
+    return toStringBuilder_withoutIntegrity().append('@').append(integrity).toString();
+  }
+
+  public String toString_withoutIntegrity() {
+    return toStringBuilder_withoutIntegrity().toString();
+  }
+
+  private StringBuilder toStringBuilder_withoutIntegrity() {
+    return new StringBuilder()
+        .append(identifier.toString())
         .append(':')
         .append(version)
         .append(':')
         .append(scope)
         .append(":optional=")
-        .append(optional)
-        .append('@')
-        .append(integrity);
-    return sb.toString();
+        .append(optional);
   }
 
   @Override

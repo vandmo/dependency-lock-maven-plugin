@@ -21,5 +21,4 @@ public final class LockedDependenciesTests {
     assertEquals("a, b and c", LockedDependencies.joinNouns(asList("a", "b", "c")));
     assertEquals("a, b, c and d", LockedDependencies.joinNouns(asList("a", "b", "c", "d")));
   }
-
 }
