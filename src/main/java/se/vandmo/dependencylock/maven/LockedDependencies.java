@@ -1,12 +1,16 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
+import static se.vandmo.dependencylock.maven.lang.Strings.joinNouns;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
@@ -23,23 +27,9 @@ public final class LockedDependencies {
     return new LockedDependencies(requireNonNull(artifacts), log);
   }
 
-  // Visible for testing
-  static String joinNouns(List<String> nouns) {
-    switch (nouns.size()) {
-      case 0:
-        return "";
-      case 1:
-        return nouns.get(0);
-      default:
-        int lastIdx = nouns.size() - 1;
-        return String.join(
-            " and ", String.join(", ", nouns.subList(0, lastIdx)), nouns.get(lastIdx));
-    }
-  }
-
-  public Diff compareWith(Artifacts artifacts, String projectVersion, Filters filters) {
+  public Diff compareWith(Artifacts artifacts, Filters filters) {
     LockFileExpectationsDiff expectationsDiff =
-        new LockFileExpectationsDiff(artifacts, projectVersion, filters);
+        new LockFileExpectationsDiff(artifacts, filters);
     List<String> extraneous = findExtraneous(artifacts, filters);
     return new Diff(expectationsDiff, extraneous);
   }
@@ -48,7 +38,7 @@ public final class LockedDependencies {
     private List<String> missing = new ArrayList<>();
     private List<String> different = new ArrayList<>();
 
-    private LockFileExpectationsDiff(Artifacts artifacts, String projectVersion, Filters filters) {
+    private LockFileExpectationsDiff(Artifacts artifacts, Filters filters) {
       for (Artifact lockedDependency : lockedDependencies) {
         Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
         if (!possiblyOtherArtifact.isPresent()) {
@@ -58,70 +48,88 @@ public final class LockedDependencies {
             missing.add(lockedDependency.identifier.toString());
           }
         } else {
-          List<String> wrongs = new ArrayList<>();
           Artifact actualArtifact = possiblyOtherArtifact.get();
-          if (lockedDependency.optional != actualArtifact.optional) {
-            wrongs.add("optional");
-          }
-          if (!lockedDependency.scope.equals(actualArtifact.scope)) {
-            wrongs.add("scope");
-          }
-          if (!lockedDependency.integrity.equals(actualArtifact.integrity)) {
-            DependencySetConfiguration.Integrity integrityConfiguration =
-                filters.integrityConfiguration(lockedDependency);
-            switch (integrityConfiguration) {
-              case check:
-                wrongs.add("integrity");
-                break;
-              case ignore:
-                log.info(format(ROOT, "Ignoring integrity for %s", lockedDependency));
-                break;
-              default:
-                throw new RuntimeException("Unsupported enum value");
-            }
-          }
-          DependencySetConfiguration.Version versionConfiguration =
-              filters.versionConfiguration(lockedDependency);
-          switch (versionConfiguration) {
-            case check:
-              if (!lockedDependency.version.equals(actualArtifact.version)) {
-                wrongs.add("version");
-              }
-              break;
-            case ignore:
-              log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
-              if (!lockedDependency.equals_ignoreVersion(actualArtifact)) {
-                different.add(
-                    format(
-                        ROOT,
-                        "Expected %s with any version but found %s",
-                        lockedDependency,
-                        actualArtifact));
-              }
-              break;
-            case useProjectVersion:
-              log.info(format(ROOT, "Using project version for %s", lockedDependency));
-              if (!lockedDependency.withVersion(projectVersion).equals(actualArtifact)) {
-                different.add(
-                    format(
-                        ROOT,
-                        "Expected %s with project version but found %s",
-                        lockedDependency,
-                        actualArtifact));
-              }
-              break;
-            default:
-              throw new RuntimeException("Unsupported enum value");
-          }
+          AtomicReference<Artifact> lockedDependencyRef = new AtomicReference<>(lockedDependency);
+          List<String> wrongs = findDiffs(lockedDependencyRef, actualArtifact, filters);
           if (!wrongs.isEmpty()) {
             different.add(
                 format(
                     ROOT,
                     "Expected %s but found %s, wrong %s",
-                    lockedDependency,
+                    lockedDependencyRef.get(),
                     actualArtifact,
                     joinNouns(wrongs)));
           }
+        }
+      }
+    }
+
+    private List<String> findDiffs(AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
+      List<String> wrongs = new ArrayList<>();
+      wrongs.addAll(diffOptional(lockedDependencyRef.get(), actualArtifact));
+      wrongs.addAll(diffScope(lockedDependencyRef.get(), actualArtifact));
+      wrongs.addAll(diffIntegrity(lockedDependencyRef.get(), actualArtifact, filters));
+      wrongs.addAll(diffVersion(lockedDependencyRef, actualArtifact, filters));
+      return wrongs;
+    }
+
+    private List<String> diffVersion(AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
+      Artifact lockedDependency = lockedDependencyRef.get();
+      Filters.VersionConfiguration versionConfiguration =
+          filters.versionConfiguration(lockedDependency);
+      switch (versionConfiguration.type) {
+        case check:
+          if (lockedDependency.version.equals(actualArtifact.version)) {
+            return emptyList();
+          } else {
+            return asList("version");
+          }
+        case ignore:
+          log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
+          return emptyList();
+        case useProjectVersion:
+          log.info(format(ROOT, "Using project version for %s", lockedDependency));
+          lockedDependencyRef.set(lockedDependency.withVersion(versionConfiguration.projectVersion));
+          if (lockedDependencyRef.get().equals(actualArtifact)) {
+            return emptyList();
+          } else {
+            return asList("version (expected project version)");
+          }
+        default:
+          throw new RuntimeException("Unsupported enum value");
+      }
+    }
+
+    private List<String> diffOptional(Artifact lockedDependency, Artifact actualArtifact) {
+      if (lockedDependency.optional == actualArtifact.optional) {
+        return emptyList();
+      } else {
+        return asList("optional");
+      }
+    }
+
+    private List<String> diffScope(Artifact lockedDependency, Artifact actualArtifact) {
+      if (lockedDependency.scope.equals(actualArtifact.scope)) {
+        return emptyList();
+      } else {
+        return asList("scope");
+      }
+    }
+
+    private List<String> diffIntegrity(Artifact lockedDependency, Artifact actualArtifact, Filters filters) {
+      if (lockedDependency.integrity.equals(actualArtifact.integrity)) {
+        return emptyList();
+      } else {
+        DependencySetConfiguration.Integrity integrityConfiguration =
+            filters.integrityConfiguration(lockedDependency);
+        switch (integrityConfiguration) {
+          case check:
+            return asList("integrity");
+          case ignore:
+            log.info(format(ROOT, "Ignoring integrity for %s", lockedDependency));
+            return emptyList();
+          default:
+            throw new RuntimeException("Unsupported enum value");
         }
       }
     }
@@ -170,13 +178,13 @@ public final class LockedDependencies {
         log.error("Missing dependencies:");
         missing.forEach(line -> log.error("  " + line));
       }
-      if (!different.isEmpty()) {
-        log.error("The following dependencies differ:");
-        different.forEach(line -> log.error("  " + line));
-      }
       if (!extraneous.isEmpty()) {
         log.error("Extraneous dependencies:");
         extraneous.forEach(line -> log.error("  " + line));
+      }
+      if (!different.isEmpty()) {
+        log.error("The following dependencies differ:");
+        different.forEach(line -> log.error("  " + line));
       }
     }
   }

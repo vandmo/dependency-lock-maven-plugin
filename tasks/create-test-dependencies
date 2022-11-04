@@ -2,7 +2,7 @@
 
 from zipfile import ZIP_DEFLATED, ZipFile
 
-folder = 'src/it/setup-dependencies'
+folder = 'src/it/setup/dependencies'
 
 
 def create(name, extension='jar'):

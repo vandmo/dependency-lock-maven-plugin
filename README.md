@@ -107,6 +107,19 @@ where each pattern segment is optional and supports full and partial `*` wildcar
 An empty pattern segment is treated as an implicit wildcard.
 For example, `org.myorg.*` will match all artifacts whose group id starts with `org.myorg.`, and  `:::*-SNAPSHOT` will match all snapshot artifacts.
 
+#### dependencySets
+dependencySets are ordered in reverse priority which means that a dependencySet at the end of the list will override any previously set configuration for the matching dependencies.
+A dependencySet is configured as follows:
+
+| Field           | Description                                              |
+|-----------------|----------------------------------------------------------|
+| includes        | Patterns describing dependencies that should be included |
+| excludes        | Patterns describing dependencies that should be excluded |
+| allowExtraneous | Whether extraneous dependencies should be allowed or not |
+| allowMissing    | Whether missing dependencies should be allowed or not    |
+| version         | "check", "ignore" or "use-project-version"               |
+| integrity       | "check" or "ignore"                                      |
+
 ### lock
 Creates a lock file from the actual dependencies.
 

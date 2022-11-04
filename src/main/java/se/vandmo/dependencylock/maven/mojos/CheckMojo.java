@@ -35,9 +35,9 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
 
     LockedDependencies lockedDependencies =
         format().dependenciesLockFile_from(lockFile, pomMinimums(), getLog()).read();
-    Filters filters = new Filters(dependencySetConfigurations);
+    Filters filters = new Filters(dependencySetConfigurations, projectVersion());
     LockedDependencies.Diff diff =
-        lockedDependencies.compareWith(projectDependencies(), projectVersion(), filters);
+        lockedDependencies.compareWith(projectDependencies(), filters);
     if (diff.equals()) {
       getLog().info("Actual dependencies matches locked dependencies");
     } else {

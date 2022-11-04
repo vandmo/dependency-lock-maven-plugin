@@ -4,7 +4,7 @@ import base64
 import hashlib
 import os
 
-folder = 'src/it/setup-dependencies'
+folder = 'src/it/setup/dependencies'
 for filename in os.listdir(folder):
     if filename.endswith('.jar') or filename.endswith('.war'):
         sha512 = hashlib.sha512()

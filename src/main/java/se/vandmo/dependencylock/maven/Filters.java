@@ -1,6 +1,7 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,11 +11,13 @@ import java.util.function.Function;
 public final class Filters {
 
   private final List<DependencySetConfiguration> dependencySetConfigurations;
+  private final String projectVersion;
 
-  public Filters(List<DependencySetConfiguration> dependencySets) {
+  public Filters(List<DependencySetConfiguration> dependencySets, String projectVersion) {
     List<DependencySetConfiguration> dependencySetConfigurations = new ArrayList<>(dependencySets);
     Collections.reverse(dependencySetConfigurations);
     this.dependencySetConfigurations = unmodifiableList(dependencySetConfigurations);
+    this.projectVersion = requireNonNull(projectVersion);
   }
 
   private <T> T configurationFor(
@@ -27,8 +30,9 @@ public final class Filters {
         .orElse(defaultValue);
   }
 
-  public DependencySetConfiguration.Version versionConfiguration(Artifact artifact) {
-    return configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
+  public VersionConfiguration versionConfiguration(Artifact artifact) {
+    DependencySetConfiguration.Version type = configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
+    return new VersionConfiguration(type, projectVersion);
   }
 
   public DependencySetConfiguration.Integrity integrityConfiguration(Artifact artifact) {
@@ -41,5 +45,15 @@ public final class Filters {
 
   public boolean allowMissing(Artifact artifact) {
     return configurationFor(artifact, d -> d.allowMissing, Boolean.FALSE);
+  }
+
+  public static final class VersionConfiguration {
+    public final DependencySetConfiguration.Version type;
+    public final String projectVersion;
+
+    private VersionConfiguration(DependencySetConfiguration.Version type, String projectVersion) {
+      this.type = type;
+      this.projectVersion = projectVersion;
+    }
   }
 }
