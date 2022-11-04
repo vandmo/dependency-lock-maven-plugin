@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
@@ -28,8 +30,7 @@ public final class LockedDependencies {
   }
 
   public Diff compareWith(Artifacts artifacts, Filters filters) {
-    LockFileExpectationsDiff expectationsDiff =
-        new LockFileExpectationsDiff(artifacts, filters);
+    LockFileExpectationsDiff expectationsDiff = new LockFileExpectationsDiff(artifacts, filters);
     List<String> extraneous = findExtraneous(artifacts, filters);
     return new Diff(expectationsDiff, extraneous);
   }
@@ -64,7 +65,8 @@ public final class LockedDependencies {
       }
     }
 
-    private List<String> findDiffs(AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
+    private List<String> findDiffs(
+        AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
       List<String> wrongs = new ArrayList<>();
       wrongs.addAll(diffOptional(lockedDependencyRef.get(), actualArtifact));
       wrongs.addAll(diffScope(lockedDependencyRef.get(), actualArtifact));
@@ -73,7 +75,8 @@ public final class LockedDependencies {
       return wrongs;
     }
 
-    private List<String> diffVersion(AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
+    private List<String> diffVersion(
+        AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
       Artifact lockedDependency = lockedDependencyRef.get();
       Filters.VersionConfiguration versionConfiguration =
           filters.versionConfiguration(lockedDependency);
@@ -84,17 +87,25 @@ public final class LockedDependencies {
           } else {
             return asList("version");
           }
-        case ignore:
-          log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
-          return emptyList();
         case useProjectVersion:
           log.info(format(ROOT, "Using project version for %s", lockedDependency));
-          lockedDependencyRef.set(lockedDependency.withVersion(versionConfiguration.projectVersion));
-          if (lockedDependencyRef.get().equals(actualArtifact)) {
+          lockedDependencyRef.set(
+              lockedDependency.withVersion(versionConfiguration.projectVersion));
+          if (versionConfiguration.projectVersion.equals(actualArtifact.version)) {
             return emptyList();
           } else {
             return asList("version (expected project version)");
           }
+        case snapshot:
+          log.info(format(ROOT, "Allowing snapshot version for %s", lockedDependency));
+          if (snapshotMatch(lockedDependency.version, actualArtifact.version)) {
+            return emptyList();
+          } else {
+            return asList("version (allowing snapshot version)");
+          }
+        case ignore:
+          log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
+          return emptyList();
         default:
           throw new RuntimeException("Unsupported enum value");
       }
@@ -116,7 +127,8 @@ public final class LockedDependencies {
       }
     }
 
-    private List<String> diffIntegrity(Artifact lockedDependency, Artifact actualArtifact, Filters filters) {
+    private List<String> diffIntegrity(
+        Artifact lockedDependency, Artifact actualArtifact, Filters filters) {
       if (lockedDependency.integrity.equals(actualArtifact.integrity)) {
         return emptyList();
       } else {
@@ -186,6 +198,30 @@ public final class LockedDependencies {
         log.error("The following dependencies differ:");
         different.forEach(line -> log.error("  " + line));
       }
+    }
+  }
+
+  // Visible for testing
+  static boolean snapshotMatch(String version, String otherVersion) {
+    if (version.equals(otherVersion)) {
+      return true;
+    }
+    return stripSnapshot(version).equals(stripSnapshot(otherVersion));
+  }
+
+  private static final Pattern SNAPSHOT_TIMESTAMP =
+      Pattern.compile("^((?<base>.*)-)?([0-9]{8}\\.[0-9]{6}-[0-9]+)$");
+
+  // Visible for testing
+  static String stripSnapshot(String version) {
+    if (version.endsWith("-SNAPSHOT")) {
+      return version.substring(0, version.length() - 9);
+    }
+    Matcher matcher = SNAPSHOT_TIMESTAMP.matcher(version);
+    if (matcher.matches()) {
+      return matcher.group("base");
+    } else {
+      return version;
     }
   }
 }

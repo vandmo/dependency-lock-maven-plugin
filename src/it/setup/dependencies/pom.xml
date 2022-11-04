@@ -67,6 +67,17 @@
             </configuration>
           </execution>
           <execution>
+            <id>install-a-snapshot-leaf</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>a-snapshot-leaf-1.5-SNAPSHOT.jar</file>
+              <pomFile>a-snapshot-leaf-1.5-SNAPSHOT.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-a-war</id>
             <phase>validate</phase>
             <goals>

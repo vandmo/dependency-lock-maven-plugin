@@ -33,6 +33,7 @@ public final class DependencySetConfiguration {
   public enum Version {
     check,
     useProjectVersion,
+    snapshot,
     ignore
   }
 

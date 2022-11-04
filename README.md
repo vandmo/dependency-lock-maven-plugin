@@ -117,8 +117,10 @@ A dependencySet is configured as follows:
 | excludes        | Patterns describing dependencies that should be excluded |
 | allowExtraneous | Whether extraneous dependencies should be allowed or not |
 | allowMissing    | Whether missing dependencies should be allowed or not    |
-| version         | "check", "ignore" or "use-project-version"               |
+| version         | "check", "ignore", "use-project-version" or "snapshot"   |
 | integrity       | "check" or "ignore"                                      |
+
+"snapshot" version matching means that 1.2.3-SNAPSHOT will match something like 1.2.3-20221104.072032-1 and similar.
 
 ### lock
 Creates a lock file from the actual dependencies.

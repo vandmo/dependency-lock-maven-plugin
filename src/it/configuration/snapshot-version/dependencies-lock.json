@@ -1,0 +1,11 @@
+{
+  "dependencies" : [ {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-snapshot-leaf",
+    "version" : "1.5-20221104.072032-1",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:GnW76HBRFfl8eM3CWdFYca4s4atdCXF0a5gZQT8OSU8iCreju1BQNLH8hblc6uM6SgAyXl6rk06crntJvJHTgw=="
+  } ]
+}

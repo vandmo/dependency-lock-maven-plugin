@@ -36,8 +36,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     LockedDependencies lockedDependencies =
         format().dependenciesLockFile_from(lockFile, pomMinimums(), getLog()).read();
     Filters filters = new Filters(dependencySetConfigurations, projectVersion());
-    LockedDependencies.Diff diff =
-        lockedDependencies.compareWith(projectDependencies(), filters);
+    LockedDependencies.Diff diff = lockedDependencies.compareWith(projectDependencies(), filters);
     if (diff.equals()) {
       getLog().info("Actual dependencies matches locked dependencies");
     } else {
@@ -82,8 +81,10 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
         return DependencySetConfiguration.Version.ignore;
       case "use-project-version":
         return DependencySetConfiguration.Version.useProjectVersion;
+      case "snapshot":
+        return DependencySetConfiguration.Version.snapshot;
       default:
-        throw new RuntimeException("Invalid enum value encountered");
+        throw new RuntimeException("Invalid value for version configuration");
     }
   }
 }

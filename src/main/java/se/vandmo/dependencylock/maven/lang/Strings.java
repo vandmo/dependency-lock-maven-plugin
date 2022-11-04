@@ -17,5 +17,4 @@ public final class Strings {
             " and ", String.join(", ", nouns.subList(0, lastIdx)), nouns.get(lastIdx));
     }
   }
-
 }

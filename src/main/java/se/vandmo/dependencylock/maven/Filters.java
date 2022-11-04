@@ -31,7 +31,8 @@ public final class Filters {
   }
 
   public VersionConfiguration versionConfiguration(Artifact artifact) {
-    DependencySetConfiguration.Version type = configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
+    DependencySetConfiguration.Version type =
+        configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
     return new VersionConfiguration(type, projectVersion);
   }
 

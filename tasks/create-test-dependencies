@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 
+from os import path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 folder = 'src/it/setup/dependencies'
 
 
 def create(name, extension='jar'):
-    with ZipFile(f'{folder}/{name}.{extension}', 'w', ZIP_DEFLATED) as zipf:
-        zipf.writestr(name, name)
+    target_filename = f'{folder}/{name}.{extension}'
+    if path.isfile(target_filename):
+        print(f'Skipping {target_filename} since it already exists')
+    else:
+        with ZipFile(target_filename, 'w', ZIP_DEFLATED) as zipf:
+            zipf.writestr(name, name)
 
 
 create('leaf-1.0')
 create('another-leaf-1.0')
 create('a-third-leaf-1.0')
 create('a-classified-leaf-1.0-classy')
+create('a-snapshot-leaf-1.5-SNAPSHOT')
 create('with-dependency-1.0')
 create('a-war-1.0', 'war')
