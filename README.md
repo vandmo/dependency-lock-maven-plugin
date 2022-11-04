@@ -5,10 +5,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/se.vandmo/dependency-lock-maven-plugin.svg?label=Maven%20Central)](https://search.maven.org/artifact/se.vandmo/dependency-lock-maven-plugin)
 [![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/apache/maven.svg?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
 
-> **Warning**
-> This is the development version for the upcoming 1.x release.
-> For the current released version see [the 0.x branch](https://github.com/vandmo/dependency-lock-maven-plugin/tree/0.x)
-
 Maven only requires you to specify versions of dependencies that you use directly.
 Transitive dependencies aren't visible in the pom.xml and their version is chosen in a seemingly random way.
 
@@ -43,7 +39,7 @@ dependencies are the same as in the _dependencies-lock.json_ file.
     <plugin>
       <groupId>se.vandmo</groupId>
       <artifactId>dependency-lock-maven-plugin</artifactId>
-      <version>use latest version</version>
+      <version>1.0</version>
       <executions>
         <execution>
           <id>check</id>
