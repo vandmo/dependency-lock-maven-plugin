@@ -5,6 +5,7 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
@@ -15,8 +16,16 @@ import se.vandmo.dependencylock.maven.LockedDependencies;
     threadSafe = true)
 public final class CheckMojo extends AbstractDependencyLockMojo {
 
+  @Parameter(property = "skipLockCheck")
+  private Boolean skip = false;
+
   @Override
   public void execute() throws MojoExecutionException {
+    if (skip) {
+      getLog().info("skipping check");
+      return;
+    }
+
     DependenciesLockFileAccessor lockFile = lockFile();
     if (!lockFile.exists()) {
       throw new MojoExecutionException(
