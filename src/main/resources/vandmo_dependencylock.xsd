@@ -1,0 +1,8 @@
+<xs:schema
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        targetNamespace="urn:se.vandmo.dependencylock">
+
+    <xs:element name="integrity" type="xs:string" />
+
+</xs:schema>
