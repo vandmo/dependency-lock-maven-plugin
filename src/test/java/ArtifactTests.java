@@ -1,8 +1,8 @@
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import se.vandmo.dependencylock.maven.Artifact;
-import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import io.mvnpm.maven.locker.Artifact;
+import io.mvnpm.maven.locker.ArtifactIdentifier;
 
 public final class ArtifactTests {
 
