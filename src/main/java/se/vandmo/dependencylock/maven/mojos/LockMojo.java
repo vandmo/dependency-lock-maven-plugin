@@ -9,7 +9,7 @@ import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 
-@Mojo(name = "lock", requiresDependencyResolution = TEST)
+@Mojo(name = "lock", requiresDependencyResolution = TEST, threadSafe = true)
 public final class LockMojo extends AbstractDependencyLockMojo {
 
   @Override

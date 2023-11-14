@@ -17,7 +17,11 @@ import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
-@Mojo(name = "check", defaultPhase = VALIDATE, requiresDependencyResolution = TEST)
+@Mojo(
+    name = "check",
+    defaultPhase = VALIDATE,
+    requiresDependencyResolution = TEST,
+    threadSafe = true)
 public final class CheckMojo extends AbstractDependencyLockMojo {
 
   @Parameter private DependencySet[] dependencySets = new DependencySet[0];
