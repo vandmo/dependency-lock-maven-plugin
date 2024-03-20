@@ -46,6 +46,7 @@
     <freemarker.version>2.3.31</freemarker.version>
     <guava.version>32.0.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
+    <jsr305.version>3.0.2</jsr305.version>
     <junit.version>4.13.2</junit.version>
     <maven-artifact.version>3.8.5</maven-artifact.version>
     <maven-common-artifact-filters.version>3.2.0</maven-common-artifact-filters.version>
@@ -163,6 +164,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>${jsr305.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
