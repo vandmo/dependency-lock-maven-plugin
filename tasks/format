@@ -3,5 +3,5 @@ set -eu -o pipefail
 
 docker run --rm\
  -v "${PWD}":/local\
- vandmo/google-java-format@sha256:3f6ad2e93cac143508cf6a86b949db061cc2a812f2509a50bd6190b6ae70b523\
+ vandmo/google-java-format@sha256:2d9146125a97bef5543da2f373b62e0994efee68e4ac492f75e5fa2ad39eb404\
  find /local/ -name '*.java' -exec google-java-format -i {} \;

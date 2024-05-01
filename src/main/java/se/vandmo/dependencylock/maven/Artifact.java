@@ -100,7 +100,7 @@ public final class Artifact implements Comparable<Artifact> {
 
   private static String checkIntegrityArgument(String integrity) {
     requireNonNull(integrity);
-    if (!StringUtils.startsWith(integrity, ALGORITHM_HEADER)) {
+    if (!StringUtils.startsWith(integrity, ALGORITHM_HEADER) && !"ignored".equals(integrity)) {
       throw new IllegalArgumentException(
           "Encountered unsupported checksum format, consider using a later version of this plugin");
     }
@@ -164,6 +164,10 @@ public final class Artifact implements Comparable<Artifact> {
   }
 
   public Artifact withVersion(String version) {
+    return new Artifact(identifier, version, scope, optional, integrity);
+  }
+
+  public Artifact withIntegrity(String integrity) {
     return new Artifact(identifier, version, scope, optional, integrity);
   }
 

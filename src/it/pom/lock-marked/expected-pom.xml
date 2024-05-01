@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.vandmo.tests</groupId>
+  <artifactId>pom-lock-dependency-lock</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-classified-leaf</artifactId>
+      <version>ignored</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <classifier>classy</classifier>
+      <optional>false</optional>
+      <dependency-lock:integrity>ignored</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-third-leaf</artifactId>
+      <version>ignored</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>ignored</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-war</artifactId>
+      <version>ignored</version>
+      <type>war</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>ignored</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>another-leaf</artifactId>
+      <version>ignored</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>true</optional>
+      <dependency-lock:integrity>ignored</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>leaf</artifactId>
+      <version>ignored</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>ignored</dependency-lock:integrity>
+    </dependency>
+  </dependencies>
+
+</project>

@@ -1,0 +1,44 @@
+{
+  "dependencies" : [ {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-classified-leaf",
+    "version" : "ignored",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "ignored",
+    "classifier" : "classy"
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-third-leaf",
+    "version" : "ignored",
+    "scope" : "test",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "ignored"
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-war",
+    "version" : "ignored",
+    "scope" : "compile",
+    "type" : "war",
+    "optional" : false,
+    "integrity" : "ignored"
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "another-leaf",
+    "version" : "ignored",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : true,
+    "integrity" : "ignored"
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "leaf",
+    "version" : "ignored",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "ignored"
+  } ]
+}
