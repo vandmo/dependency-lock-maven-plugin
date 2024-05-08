@@ -121,6 +121,23 @@ A dependencySet is configured as follows:
 ### lock
 Creates a lock file from the actual dependencies.
 
+Ignored fields can be actually marked as `ignored` in the lock file with `markIgnoredAsIgnored` configuration property.
+
+```xml
+<configuration>
+    <markIgnoredAsIgnored>true</markIgnoredAsIgnored>
+    <dependencySets>
+        <dependencySet>
+            <includes>
+                <include>com.company:our-subproject-*</include>
+            </includes>
+            <version>ignore</version>
+            <integrity>ignore</integrity>
+        </dependencySet>
+    </dependencySets>
+</configuration>
+```
+
 Notes
 -----
 ### Dependabot Updates won't work
