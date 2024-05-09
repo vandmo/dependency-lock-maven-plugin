@@ -21,7 +21,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Maven Plugin Version -->
-    <dependency-lock-maven-plugin.version>0.23</dependency-lock-maven-plugin.version>
+    <dependency-lock-maven-plugin.version>1.0.2</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
