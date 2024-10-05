@@ -20,7 +20,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <!-- Maven Plugin Version -->
+    <!-- Maven Plugin Versions -->
     <dependency-lock-maven-plugin.version>1.1.0</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
@@ -42,10 +42,10 @@
     <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 
     <!-- Libraries -->
-    <commons-io.version>2.11.0</commons-io.version>
-    <commons-lang3.version>3.12.0</commons-lang3.version>
-    <freemarker.version>2.3.31</freemarker.version>
-    <guava.version>32.0.1-jre</guava.version>
+    <commons-io.version>2.17.0</commons-io.version>
+    <commons-lang3.version>3.17.0</commons-lang3.version>
+    <freemarker.version>2.3.33</freemarker.version>
+    <guava.version>33.3.1-jre</guava.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jsr305.version>3.0.2</jsr305.version>
     <junit.version>4.13.2</junit.version>
@@ -60,7 +60,7 @@
     <woodstox-core.version>6.4.0</woodstox-core.version>
 
     <!-- BOMs -->
-    <jackson-bom.version>2.13.4.20221013</jackson-bom.version>
+    <jackson-bom.version>2.18.0</jackson-bom.version>
   </properties>
 
   <licenses>
