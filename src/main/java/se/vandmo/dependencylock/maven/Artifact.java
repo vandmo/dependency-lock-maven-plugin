@@ -5,7 +5,7 @@ import static java.util.Optional.ofNullable;
 import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
+import se.vandmo.dependencylock.maven.lang.Strings;
 
 public final class Artifact implements Comparable<Artifact> {
 
@@ -100,7 +100,7 @@ public final class Artifact implements Comparable<Artifact> {
 
   private static String checkIntegrityArgument(String integrity) {
     requireNonNull(integrity);
-    if (!StringUtils.startsWith(integrity, ALGORITHM_HEADER) && !"ignored".equals(integrity)) {
+    if (!Strings.startsWith(integrity, ALGORITHM_HEADER) && !"ignored".equals(integrity)) {
       throw new IllegalArgumentException(
           "Encountered unsupported checksum format, consider using a later version of this plugin");
     }

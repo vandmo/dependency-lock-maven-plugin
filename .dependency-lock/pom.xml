@@ -161,7 +161,7 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.12.0</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:+9vAlDyzSYsBSOhqObdz+XyOYBN0D3Lbxyf66r6kAgc+LMjE1oGY5fxrCKE7dwAjYpLpnUeF8smYny5frBH9gQ==</dependency-lock:integrity>
     </dependency>

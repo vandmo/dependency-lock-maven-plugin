@@ -17,4 +17,18 @@ public final class Strings {
             " and ", String.join(", ", nouns.subList(0, lastIdx)), nouns.get(lastIdx));
     }
   }
+
+  public static boolean isBlank(String s) {
+    if (s == null) {
+      return true;
+    }
+    return s.trim().equals("");
+  }
+
+  public static boolean startsWith(String s, String prefix) {
+    if (s == null || prefix == null) {
+      return s == null && prefix == null;
+    }
+    return s.startsWith(prefix);
+  }
 }

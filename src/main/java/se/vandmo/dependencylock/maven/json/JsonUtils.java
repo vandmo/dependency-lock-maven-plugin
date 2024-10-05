@@ -2,7 +2,7 @@ package se.vandmo.dependencylock.maven.json;
 
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static se.vandmo.dependencylock.maven.lang.Strings.isBlank;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
