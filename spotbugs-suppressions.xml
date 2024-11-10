@@ -23,4 +23,8 @@
     <Field name="integrity"/>
     <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
+  <Match>
+    <Class name="~se.vandmo.dependencylock.maven.Integrity.*"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
 </FindBugsFilter>

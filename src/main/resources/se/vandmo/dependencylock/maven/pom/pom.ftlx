@@ -22,7 +22,7 @@
       <classifier>${dependency.identifier.classifier.get()}</classifier>
       </#if>
       <optional>${dependency.optional?c}</optional>
-      <dependency-lock:integrity>${dependency.integrity}</dependency-lock:integrity>
+      <dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
     </dependency>
     </#list>
   </dependencies>

@@ -11,6 +11,7 @@ import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Filters;
+import se.vandmo.dependencylock.maven.Integrity;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
@@ -65,7 +66,9 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     if (filters
         .integrityConfiguration(artifact)
         .equals(DependencySetConfiguration.Integrity.ignore)) {
-      artifact = artifact.withIntegrity("ignored");
+      artifact = artifact.withIntegrity(Integrity.Ignored());
+    } else if (artifact.integrity.is_Folder()) {
+
     }
     return artifact;
   }

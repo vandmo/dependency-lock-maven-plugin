@@ -13,7 +13,7 @@ public final class Artifact implements Comparable<Artifact> {
   public final String version;
   public final String scope;
   public final boolean optional;
-  public final String integrity;
+  public final Integrity integrity;
 
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
@@ -94,7 +94,11 @@ public final class Artifact implements Comparable<Artifact> {
 
     public FinalBuilderStage integrity(String integrity) {
       return new FinalBuilderStage(
-          artifactIdentifier, version, scope, optional, checkIntegrityArgument(integrity));
+          artifactIdentifier,
+          version,
+          scope,
+          optional,
+          Integrity.Calculated(checkIntegrityArgument(integrity)));
     }
   }
 
@@ -112,14 +116,14 @@ public final class Artifact implements Comparable<Artifact> {
     private final String version;
     private final String scope;
     private final boolean optional;
-    private final String integrity;
+    private final Integrity integrity;
 
     private FinalBuilderStage(
         ArtifactIdentifier artifactIdentifier,
         String version,
         String scope,
         boolean optional,
-        String integrity) {
+        Integrity integrity) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.scope = scope;
@@ -133,6 +137,10 @@ public final class Artifact implements Comparable<Artifact> {
   }
 
   public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
+    Integrity integrity =
+        artifact.getFile().isDirectory()
+            ? Integrity.Folder()
+            : Integrity.Calculated(Checksum.calculateFor(artifact.getFile()));
     return new Artifact(
         ArtifactIdentifier.builder()
             .groupId(artifact.getGroupId())
@@ -143,7 +151,7 @@ public final class Artifact implements Comparable<Artifact> {
         artifact.getVersion(),
         artifact.getScope(),
         artifact.isOptional(),
-        Checksum.calculateFor(artifact.getFile()));
+        integrity);
   }
 
   public org.apache.maven.artifact.Artifact toMavenArtifact() {
@@ -155,7 +163,7 @@ public final class Artifact implements Comparable<Artifact> {
       String version,
       String scope,
       boolean optional,
-      String integrity) {
+      Integrity integrity) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.scope = requireNonNull(scope);
@@ -167,8 +175,23 @@ public final class Artifact implements Comparable<Artifact> {
     return new Artifact(identifier, version, scope, optional, integrity);
   }
 
-  public Artifact withIntegrity(String integrity) {
+  public Artifact withIntegrity(Integrity integrity) {
     return new Artifact(identifier, version, scope, optional, integrity);
+  }
+
+  public String getIntegrityForLockFile() {
+    return integrity
+        .<String>matching()
+        .Calculated((calculated) -> calculated.checksum)
+        .Folder(
+            (folder) -> {
+              throw new IllegalStateException(
+                  "Can not calculate dependencies for "
+                      + toString_withoutIntegrity()
+                      + " since it is a folder.");
+            })
+        .Ignored((ignored) -> "ignored")
+        .get();
   }
 
   @Override
@@ -178,7 +201,16 @@ public final class Artifact implements Comparable<Artifact> {
 
   @Override
   public String toString() {
-    return toStringBuilder_withoutIntegrity().append('@').append(integrity).toString();
+    return toStringBuilder_withoutIntegrity()
+        .append('@')
+        .append(
+            integrity
+                .<String>matching()
+                .Calculated((calculcated) -> calculcated.checksum)
+                .Folder((folder) -> "<Not Available>")
+                .Ignored((ignored) -> "<Ignored>")
+                .get())
+        .toString();
   }
 
   public String toString_withoutIntegrity() {

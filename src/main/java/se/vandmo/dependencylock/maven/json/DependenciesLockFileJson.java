@@ -117,7 +117,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
     json.put("scope", lockedDependency.scope);
     json.put("type", lockedDependency.identifier.type);
     json.put("optional", lockedDependency.optional);
-    json.put("integrity", lockedDependency.integrity);
+    json.put("integrity", lockedDependency.getIntegrityForLockFile());
     lockedDependency.identifier.classifier.ifPresent(
         actualClassifier -> json.put("classifier", actualClassifier));
     return json;
