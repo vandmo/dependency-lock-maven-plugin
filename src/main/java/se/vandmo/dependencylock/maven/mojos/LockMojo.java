@@ -67,8 +67,6 @@ public final class LockMojo extends AbstractDependencyLockMojo {
         .integrityConfiguration(artifact)
         .equals(DependencySetConfiguration.Integrity.ignore)) {
       artifact = artifact.withIntegrity(Integrity.Ignored());
-    } else if (artifact.integrity.is_Folder()) {
-
     }
     return artifact;
   }
