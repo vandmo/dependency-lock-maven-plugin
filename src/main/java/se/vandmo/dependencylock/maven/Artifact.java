@@ -207,7 +207,7 @@ public final class Artifact implements Comparable<Artifact> {
             integrity
                 .<String>matching()
                 .Calculated((calculcated) -> calculcated.checksum)
-                .Folder((folder) -> "<Not Available>")
+                .Folder((folder) -> "<Folder>")
                 .Ignored((ignored) -> "<Ignored>")
                 .get())
         .toString();

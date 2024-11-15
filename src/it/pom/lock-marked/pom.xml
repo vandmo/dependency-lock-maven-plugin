@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>pom-lock</artifactId>
+  <artifactId>pom-lock-marked</artifactId>
   <version>0-SNAPSHOT</version>
 
   <properties>

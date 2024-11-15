@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>use-project-version</artifactId>
+  <artifactId>snapshot-version</artifactId>
   <version>1.0</version>
 
   <properties>

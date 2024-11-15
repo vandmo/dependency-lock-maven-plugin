@@ -6,19 +6,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>ignore-version-marked</artifactId>
+  <artifactId>dependent</artifactId>
   <version>0-SNAPSHOT</version>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>se.vandmo.testing</groupId>
-      <artifactId>leaf</artifactId>
-      <version>1.0</version>
+      <groupId>se.vandmo.tests</groupId>
+      <artifactId>dependee</artifactId>
+      <version>0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -28,18 +23,16 @@
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>@project.version@</version>
-        <configuration>
-          <dependencySets>
-            <dependencySet>
-              <includes>
-                <include>se.vandmo.testing</include>
-              </includes>
-              <version>ignore</version>
-            </dependencySet>
-          </dependencySets>
-        </configuration>
+        <executions>
+          <execution>
+            <id>check</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
-
 </project>

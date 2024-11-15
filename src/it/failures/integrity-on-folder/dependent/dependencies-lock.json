@@ -1,0 +1,11 @@
+{
+  "dependencies" : [ {
+    "groupId" : "se.vandmo.tests",
+    "artifactId" : "dependee",
+    "version" : "0-SNAPSHOT",
+    "scope" : "compile",
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
+  } ]
+}
