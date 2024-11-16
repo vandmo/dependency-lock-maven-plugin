@@ -39,8 +39,8 @@ jobs:
           server-id: ossrh
           server-username: MAVEN_USERNAME
           server-password: MAVEN_CENTRAL_TOKEN
-          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY_EXP20261116 }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE_EXP20261116
 
       - run: gpg --list-secret-keys
       - run: cat ~/.m2/settings.xml
@@ -66,4 +66,4 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE_EXP20261116 }}
