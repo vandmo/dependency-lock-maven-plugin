@@ -152,6 +152,7 @@ Another approach to automate the creation of PRs would be to have a GitHub workf
 
 ### Changes in version 1.x
 * `<skip>` configuration added for `<check>` goal, also available as user property `dependencyLock.skipCheck`
+* Point to a schema in the generated pom.xml lock file
 
 ### News in version 1.x
 * Integrity checking is enabled by default
