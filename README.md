@@ -118,10 +118,14 @@ A dependencySet is configured as follows:
 
 "snapshot" version matching means that 1.2.3-SNAPSHOT will match something like 1.2.3-20221104.072032-1 and similar.
 
+#### skip
+Skips the check. Also available as user property `dependencyLock.skipCheck`.
+
 ### lock
 Creates a lock file from the actual dependencies.
 
 Ignored fields can be actually marked as `ignored` in the lock file with `markIgnoredAsIgnored` configuration property.
+Also available as user property `dependencyLock.markIgnoredAsIgnored`.
 
 ```xml
 <configuration>
@@ -145,6 +149,9 @@ Dependabot Updates currently creates a single PR for each change.
 If you use pom format and merge all PRs from Dependabot then that combined build might work, but each single PR will fail.
 There are feature requests for combined PRs for Dependabot which, if implemented, could make a combined PR work.
 Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
+
+### Changes in version 1.x
+* `<skip>` configuration added for `<check>` goal, also available as user property `dependencyLock.skipCheck`
 
 ### News in version 1.x
 * Integrity checking is enabled by default

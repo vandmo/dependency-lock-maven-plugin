@@ -16,13 +16,13 @@ import se.vandmo.dependencylock.maven.LockedDependencies;
     threadSafe = true)
 public final class CheckMojo extends AbstractDependencyLockMojo {
 
-  @Parameter(property = "skipLockCheck")
+  @Parameter(property = "dependencyLock.skipCheck")
   private Boolean skip = false;
 
   @Override
   public void execute() throws MojoExecutionException {
     if (skip) {
-      getLog().info("skipping check");
+      getLog().info("Skipping check");
       return;
     }
 
