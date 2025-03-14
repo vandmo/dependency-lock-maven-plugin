@@ -150,7 +150,7 @@ If you use pom format and merge all PRs from Dependabot then that combined build
 There are feature requests for combined PRs for Dependabot which, if implemented, could make a combined PR work.
 Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
 
-### Changes in version 1.x
+### Changes in version 1.2
 * `<skip>` configuration added for `<check>` goal, also available as user property `dependencyLock.skipCheck`
 * Point to a schema in the generated pom.xml lock file
 
