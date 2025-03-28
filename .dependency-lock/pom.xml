@@ -134,7 +134,7 @@
       <artifactId>javax.annotation-api</artifactId>
       <version>1.2</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:JFMzCyeggiu6RAwouYrh2D1g2X36LQQFYt1RJrNUjgyqBA/qO4hqxv6wqFjmwbxFtsVHKxgPHxR5LlyjPjVZWQ==</dependency-lock:integrity>
     </dependency>
@@ -179,7 +179,7 @@
       <artifactId>maven-resolver-api</artifactId>
       <version>1.6.3</version>
       <type>jar</type>
-      <scope>provided</scope>
+      <scope>compile</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:ACy3X24HsnEI55pNN9lPqILomi2zDdKsaezwkHzFSOE/V56/u1wBnabfSpUONCC2naw9Sa6UtWRreWjvfqgRyg==</dependency-lock:integrity>
     </dependency>
@@ -206,25 +206,25 @@
       <artifactId>maven-resolver-util</artifactId>
       <version>1.6.3</version>
       <type>jar</type>
-      <scope>provided</scope>
+      <scope>compile</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:Rb0F7uLi5gYVWRbsBu/bYuShR69+0LsLRDsqcbcldv7I4M7Q7uOuPIZ3gZjeInwcf+XUI8/wuWujgvtWMjlpSg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-common-artifact-filters</artifactId>
-      <version>3.2.0</version>
+      <version>3.4.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:dPny0hJ2FdggGvH3ihxGSni1DnoK0c126WyNkjtORVFfbgrnuh+r95fcvv2ofRbPG9RLQRMXN/RpwJWS+ERk2g==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:UaBjrEVEFIXBsdlMlVTLdMs0NUvXZ4Ouxe1ul4nNfnjppw5tUaOxTZ4caNHwYOFOmWOZr7gBWXAmKwVoFqBmiw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-shared-utils</artifactId>
       <version>3.3.4</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:xmk/igYd50rFnGHRhfWxMMtXRAXPw3/ruOc4Bupk7qgipKdcJAmPtJt4cTcwkVQ6b0xSbAhCWJ5SjKytQOVVSg==</dependency-lock:integrity>
     </dependency>
@@ -341,7 +341,7 @@
       <artifactId>plexus-classworlds</artifactId>
       <version>2.6.0</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:algEjZ21TmA7nP01Nzz2lbZt2GC+yHjGY7T8U7az1E3VsMkudgNlSRGx945j7yd89rJy/gaaNgmJE4VQVF8nTQ==</dependency-lock:integrity>
     </dependency>
@@ -350,7 +350,7 @@
       <artifactId>plexus-component-annotations</artifactId>
       <version>2.1.0</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:zFNP2lQnLwdP6e3VgabD4eqYEnNAx/hSxLSVOkTa0Eis4i36EPMNatzfwV79MZ2sd4oD674g3nd5/R32QFBuiA==</dependency-lock:integrity>
     </dependency>
@@ -377,7 +377,7 @@
       <artifactId>plexus-utils</artifactId>
       <version>3.4.2</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:I6VsiOjBJNbWkLouQAe+L6QQCf0MlcFRKYN3Isb1bzDljyxNk6pSsFvTdpbhUL+2nlQT0Wx7btCLqdrVrbI+ug==</dependency-lock:integrity>
     </dependency>
@@ -391,29 +391,11 @@
       <dependency-lock:integrity>sha512:AO/F1NF1QPsYDFsg1FZjCosyYt/0ZnZomukWuhbw+9mxpxx7rfslT6rWWX+U/tHtuW93wV9AF46vTYzTXOpejQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:M+AxWn7iqBZi9NVMMipw6hYYci2ZMMS1ukRj/GM2TOBLbytdAAMTQHEpIYYCY4gZV3smvyoGe7Iz1HlLFpsLAg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-util</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:wbVzM6IwauGMdzx/DF2qFuyLTLUh5l6BdHkXiauAGmtxU8To+wiDSoKwo1ELXHdw4dRqbVNE8lk758Zw7e8BcQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
       <version>0.3.5</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:9HkHaMDZWLNCmjJBq7Ffm7bi/X9DpeA03eajpoIOaUHADxCtCE1cOPjtwUTnrL6nuj3IlS8B2rQeRDgD2ypO/A==</dependency-lock:integrity>
     </dependency>
@@ -422,7 +404,7 @@
       <artifactId>org.eclipse.sisu.plexus</artifactId>
       <version>0.3.5</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:ONfb4CP5dRy14wvxVOMWllkDF9x7f3aIEf4PWUBRP86kZlZwzUfQty3thUU7EPfRKbC3QosVWkHJA8e1bJhujQ==</dependency-lock:integrity>
     </dependency>
@@ -449,7 +431,7 @@
       <artifactId>slf4j-api</artifactId>
       <version>1.7.32</version>
       <type>jar</type>
-      <scope>provided</scope>
+      <scope>compile</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:TKQEV3WoecPOMCGQjbe0d4I1oyL9jiVn2pYBVvJLnahuaBKklWyNwZkgzYPkxhFBFoxYCCn0PxC7rJJdRlw/0Q==</dependency-lock:integrity>
     </dependency>

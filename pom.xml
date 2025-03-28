@@ -50,7 +50,7 @@
     <jsr305.version>3.0.2</jsr305.version>
     <junit.version>4.13.2</junit.version>
     <maven-artifact.version>3.8.5</maven-artifact.version>
-    <maven-common-artifact-filters.version>3.2.0</maven-common-artifact-filters.version>
+    <maven-common-artifact-filters.version>3.4.0</maven-common-artifact-filters.version>
     <maven-core.version>3.8.5</maven-core.version>
     <maven-model.version>3.8.5</maven-model.version>
     <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
