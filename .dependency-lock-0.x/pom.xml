@@ -23,65 +23,56 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.18.0</version>
+      <version>2.18.3</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:ZJUbmqpmO7tjmsb1yfjUCaaUqsnwPQjt1C1q2+MHQHch4ZbWZrM/oov9xDSQNN5MdJ/Fbad8eajPRs1zBhh+ZQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:qHIkJhPVvnU324rV0ECKqJKNN24WcL69Rzt14JUzcKvne3JeEWAOZ7i/t2UHOejA1poULb6ENxnFF4sAtd7vlg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.18.0</version>
+      <version>2.18.3</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:ifbLcFrV27NyO4QddcQFNFdSan/xtyAipQjMavkQ9JjlqfgmpjuZ2Nna0yQh/59MHe25aTQwA8nun8DPDo7eEA==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:90Hs5aQfHSfAS9voOQkv7A+sGnsTnZ9fySFBtKOW9iK39mj0+pfkLaDW1CNzNOEXhBdT4gmttJ0awKGiJ8+swQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.18.0</version>
+      <version>2.18.3</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:CBBuoalu37/C4rVpmhHmwcKfZA/QKFAyreK0HCphnBLpmb/uJIbpxqUacsmcLmwkG1VkB5SbqF77gkRy7tMLrQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>3.0.2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:uwnbYpGaUPpbVZBgE75spPx6yy6HRV+sXq+e3i5Bzou6/A5aOFpWEmTqTNcbu9PvWkXgLWMneiAdBqCuFjb4BA==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:KlIXmDe5NpuuS/H4fCSUAe+wUlSXqG00qh8Cp5ekeICz6mGOuEZZxsiFsC6CWyvz3h5HA64FK7+d7Ma3BR1oeg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_annotations</artifactId>
-      <version>2.28.0</version>
+      <version>2.36.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:evHeV/pmKyeWXCSJTSsvI8Q+YMxu5IdCxSd4T6OCNy62G8l+jVeKgQSHRXTM2iS6G9qZQnPqMUZy6bIlvA/Cyg==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:vW9WUJAlJtPbBqocx702cjZYFmrPq7gjrKJ9Cyw4FOg64kqCF86RXD4ZTCxpahAlgLTCHvXbph92ELy41YD1Zg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>failureaccess</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.3</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:/07naqZhcImJ1T1FV2z/O+6p672GSB278u6Mgbsi+IIJe0MFiDErcRAl8OiQ8ixnmdcizNQipqcnjeCGYP4vUQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:cr4ijngF2lYj5CvwJN7X2RRwI8ZrIvTb0ErGiYIBr0buguH5LqUesFlfG0kVHEuOy4YmU9SQbBdgnEJUTul6vw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>33.3.1-jre</version>
+      <version>33.4.6-jre</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:X9tAbur7t7QJuugpJLfCa9zeoGx+27ZzkBgUw9NQELyRE55ROWY68LZvj6R/VODpbdhv3/F5fJrkl8EKRmsC4w==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:IdTgnD09cmOThljW94p5SwF1BfqgeyxRGQ1yoZZ82DR8mPbWOQzIj1FIjiBiLchIS+ttmby+71BNISmcW4BOcw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -204,11 +195,11 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-common-artifact-filters</artifactId>
-      <version>3.2.0</version>
+      <version>3.4.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:dPny0hJ2FdggGvH3ihxGSni1DnoK0c126WyNkjtORVFfbgrnuh+r95fcvv2ofRbPG9RLQRMXN/RpwJWS+ERk2g==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:UaBjrEVEFIXBsdlMlVTLdMs0NUvXZ4Ouxe1ul4nNfnjppw5tUaOxTZ4caNHwYOFOmWOZr7gBWXAmKwVoFqBmiw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
@@ -310,15 +301,6 @@
       <dependency-lock:integrity>sha512:Pg0mUhZNvbrczWCrpu4tbKQdQGUIDyn18WVOpIhNKLBUcDqKZKAc+MbM+gLPivKcqxYVFNjoUqvLGzQRq6dL5w==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>org.checkerframework</groupId>
-      <artifactId>checker-qual</artifactId>
-      <version>3.43.0</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:gj6ijjyCL/SOTphaQh+gtTyjQZ4sBjXD1NCpgiOZtkkXgOJqkWHUczhXyXmHv/LXJf9EU7LCLtQS7vRuon9dhA==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-cipher</artifactId>
       <version>2.0</version>
@@ -373,24 +355,6 @@
       <dependency-lock:integrity>sha512:BmjUE1IKcT2SeRI+zK47XpvHn0HdjaOzobp5t7YAhsAJY52R2E3yMOSQGS/mOxA5DzkBR4xpv9RSoSgDZNJIdg==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:M+AxWn7iqBZi9NVMMipw6hYYci2ZMMS1ukRj/GM2TOBLbytdAAMTQHEpIYYCY4gZV3smvyoGe7Iz1HlLFpsLAg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-util</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:wbVzM6IwauGMdzx/DF2qFuyLTLUh5l6BdHkXiauAGmtxU8To+wiDSoKwo1ELXHdw4dRqbVNE8lk758Zw7e8BcQ==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.inject</artifactId>
       <version>0.3.5</version>
@@ -427,13 +391,22 @@
       <dependency-lock:integrity>sha512:axFBMpuDIk9p8HTLkT2/9pIda4aT7ejSWZrLYmSBJV2uY95C6xI8vV9ZomGsMvquASvmTo6QQGrpIVVD+8pVRg==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.32</version>
+      <groupId>org.jspecify</groupId>
+      <artifactId>jspecify</artifactId>
+      <version>1.0.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:TKQEV3WoecPOMCGQjbe0d4I1oyL9jiVn2pYBVvJLnahuaBKklWyNwZkgzYPkxhFBFoxYCCn0PxC7rJJdRlw/0Q==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:797THvWzQvCUIpNQduWZeJB2Qx6Tp0ZoXAYH595VknGbpqrN4L5nCz8GTR6FYw1Y1bzms0rtKiiP2zT3Re+3vA==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.36</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
     </dependency>
   </dependencies>
 
