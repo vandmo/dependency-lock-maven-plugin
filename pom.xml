@@ -175,7 +175,7 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-common-artifact-filters</artifactId>
-      <version>3.2.0</version>
+      <version>3.4.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -245,7 +245,7 @@
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.1</version>
         <configuration>
           <format>pom</format>
         </configuration>

@@ -204,11 +204,11 @@
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
       <artifactId>maven-common-artifact-filters</artifactId>
-      <version>3.2.0</version>
+      <version>3.4.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:dPny0hJ2FdggGvH3ihxGSni1DnoK0c126WyNkjtORVFfbgrnuh+r95fcvv2ofRbPG9RLQRMXN/RpwJWS+ERk2g==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:UaBjrEVEFIXBsdlMlVTLdMs0NUvXZ4Ouxe1ul4nNfnjppw5tUaOxTZ4caNHwYOFOmWOZr7gBWXAmKwVoFqBmiw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
@@ -371,24 +371,6 @@
       <scope>compile</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:BmjUE1IKcT2SeRI+zK47XpvHn0HdjaOzobp5t7YAhsAJY52R2E3yMOSQGS/mOxA5DzkBR4xpv9RSoSgDZNJIdg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-api</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:M+AxWn7iqBZi9NVMMipw6hYYci2ZMMS1ukRj/GM2TOBLbytdAAMTQHEpIYYCY4gZV3smvyoGe7Iz1HlLFpsLAg==</dependency-lock:integrity>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.aether</groupId>
-      <artifactId>aether-util</artifactId>
-      <version>0.9.0.M2</version>
-      <type>jar</type>
-      <scope>compile</scope>
-      <optional>false</optional>
-      <dependency-lock:integrity>sha512:wbVzM6IwauGMdzx/DF2qFuyLTLUh5l6BdHkXiauAGmtxU8To+wiDSoKwo1ELXHdw4dRqbVNE8lk758Zw7e8BcQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
