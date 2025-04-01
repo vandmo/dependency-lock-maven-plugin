@@ -42,9 +42,6 @@ jobs:
           gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY_EXP20261116 }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE_EXP20261116
 
-      - run: gpg --list-secret-keys
-      - run: cat ~/.m2/settings.xml
-
       - id: find-version
         uses: actions/github-script@v7
         with:
