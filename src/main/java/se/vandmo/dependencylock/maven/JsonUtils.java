@@ -1,7 +1,5 @@
 package se.vandmo.dependencylock.maven;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -15,7 +13,7 @@ public final class JsonUtils {
 
   public static String getStringValue(JsonNode json, String fieldName) {
     String value = json.get(fieldName).textValue();
-    if (isBlank(value)) {
+    if (value == null || value.trim().equals("")) {
       throw new IllegalArgumentException("Missing value for "+fieldName);
     }
     return value;

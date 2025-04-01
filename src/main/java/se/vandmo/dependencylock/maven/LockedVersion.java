@@ -1,7 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -42,6 +41,13 @@ public final class LockedVersion implements Comparable<LockedVersion> {
     } else {
       throw new IllegalArgumentException("Invalid value for version "+json);
     }
+  }
+
+  private static boolean isBlank(String s) {
+    if (s == null) {
+      return true;
+    }
+    return s.trim().equals("");
   }
 
   public static LockedVersion fromVersion(String version) {
