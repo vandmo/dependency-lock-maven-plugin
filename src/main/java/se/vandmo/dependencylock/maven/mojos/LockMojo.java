@@ -22,8 +22,15 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   @Parameter(property = "dependencyLock.markIgnoredAsIgnored")
   private boolean markIgnoredAsIgnored = false;
 
+  @Parameter(property = "dependencyLock.skipLock")
+  private Boolean skip = false;
+
   @Override
   public void execute() {
+    if (skip) {
+      getLog().info("Skipping lock");
+      return;
+    }
     DependenciesLockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
