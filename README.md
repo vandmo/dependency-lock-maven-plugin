@@ -141,6 +141,8 @@ Also available as user property `dependencyLock.markIgnoredAsIgnored`.
     </dependencySets>
 </configuration>
 ```
+#### skip
+Skips the check. Also available as user property `dependencyLock.skipLock`.
 
 Notes
 -----
@@ -151,6 +153,7 @@ There are feature requests for combined PRs for Dependabot which, if implemented
 Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
 
 ### Changes in version 1.2
+* `<skip>` configuration added for `<lock>` goal, also available as user property `dependencyLock.skipLock`
 * `<skip>` configuration added for `<check>` goal, also available as user property `dependencyLock.skipCheck`
 * Point to a schema in the generated pom.xml lock file
 
