@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
@@ -24,19 +24,19 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
 
-  private final DependenciesLockFileAccessor dependenciesLockFile;
+  private final LockFileAccessor dependenciesLockFile;
   private final PomMinimums pomMinimums;
   private final Log log;
 
   private DependenciesLockFilePom(
-      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
     this.log = log;
   }
 
   public static DependenciesLockFilePom from(
-      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     return new DependenciesLockFilePom(
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
   }

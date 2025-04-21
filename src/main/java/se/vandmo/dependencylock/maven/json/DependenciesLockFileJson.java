@@ -22,21 +22,20 @@ import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 
 public final class DependenciesLockFileJson implements DependenciesLockFile {
 
-  private final DependenciesLockFileAccessor dependenciesLockFile;
+  private final LockFileAccessor dependenciesLockFile;
   private final Log log;
 
-  private DependenciesLockFileJson(DependenciesLockFileAccessor dependenciesLockFile, Log log) {
+  private DependenciesLockFileJson(LockFileAccessor dependenciesLockFile, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.log = log;
   }
 
-  public static DependenciesLockFileJson from(
-      DependenciesLockFileAccessor dependenciesLockFile, Log log) {
+  public static DependenciesLockFileJson from(LockFileAccessor dependenciesLockFile, Log log) {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
   }
 

@@ -12,9 +12,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
 import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Filters;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockFileFormat;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
@@ -34,7 +34,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
   private @Parameter DependencySet[] dependencySets = new DependencySet[0];
 
-  DependenciesLockFileAccessor lockFile() {
+  LockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 

@@ -8,10 +8,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.Integrity;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
@@ -31,7 +31,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
       getLog().info("Skipping lock");
       return;
     }
-    DependenciesLockFileAccessor lockFile = lockFile();
+    LockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
       case json:
