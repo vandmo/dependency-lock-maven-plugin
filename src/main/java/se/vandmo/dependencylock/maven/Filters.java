@@ -21,31 +21,31 @@ public final class Filters {
   }
 
   private <T> T configurationFor(
-      Dependency dependency, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
+      LockableEntity entity, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
     return dependencySetConfigurations.stream()
-        .filter(d -> d.matches(dependency))
+        .filter(d -> d.matches(entity))
         .map(extractor)
         .filter(v -> v != null)
         .findFirst()
         .orElse(defaultValue);
   }
 
-  public VersionConfiguration versionConfiguration(Dependency artifact) {
+  public VersionConfiguration versionConfiguration(LockableEntity entity) {
     DependencySetConfiguration.Version type =
-        configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
+        configurationFor(entity, d -> d.version, DependencySetConfiguration.Version.check);
     return new VersionConfiguration(type, projectVersion);
   }
 
-  public DependencySetConfiguration.Integrity integrityConfiguration(Dependency artifact) {
-    return configurationFor(artifact, d -> d.integrity, DependencySetConfiguration.Integrity.check);
+  public DependencySetConfiguration.Integrity integrityConfiguration(LockableEntity entity) {
+    return configurationFor(entity, d -> d.integrity, DependencySetConfiguration.Integrity.check);
   }
 
-  public boolean allowSuperfluous(Dependency artifact) {
-    return configurationFor(artifact, d -> d.allowSuperfluous, Boolean.FALSE);
+  public boolean allowSuperfluous(LockableEntity entity) {
+    return configurationFor(entity, d -> d.allowSuperfluous, Boolean.FALSE);
   }
 
-  public boolean allowMissing(Dependency artifact) {
-    return configurationFor(artifact, d -> d.allowMissing, Boolean.FALSE);
+  public boolean allowMissing(LockableEntity entity) {
+    return configurationFor(entity, d -> d.allowMissing, Boolean.FALSE);
   }
 
   public static final class VersionConfiguration {

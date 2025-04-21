@@ -58,7 +58,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
     return Dependencies.fromDependencies(
-        projectDependencies().dependencies.stream()
+        projectDependencies().stream()
             .map(artifact -> modify(artifact, filters))
             .collect(toList()));
   }

@@ -18,7 +18,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.plugin.logging.Log;
-import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
@@ -111,15 +110,14 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
 
   private JsonNode asJson(Dependency lockedDependency) {
     ObjectNode json = JsonNodeFactory.instance.objectNode();
-    final Artifact artifact = lockedDependency.artifact;
-    final ArtifactIdentifier artifactIdentifier = artifact.identifier;
+    final ArtifactIdentifier artifactIdentifier = lockedDependency.getArtifactIdentifier();
     json.put("groupId", artifactIdentifier.groupId);
     json.put("artifactId", artifactIdentifier.artifactId);
-    json.put("version", artifact.version);
+    json.put("version", lockedDependency.getVersion());
     json.put("scope", lockedDependency.scope);
     json.put("type", artifactIdentifier.type);
     json.put("optional", lockedDependency.optional);
-    json.put("integrity", artifact.getIntegrityForLockFile());
+    json.put("integrity", lockedDependency.getIntegrityForLockFile());
     artifactIdentifier.classifier.ifPresent(
         actualClassifier -> json.put("classifier", actualClassifier));
     return json;

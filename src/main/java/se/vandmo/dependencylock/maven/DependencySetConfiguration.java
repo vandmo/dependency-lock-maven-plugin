@@ -1,5 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 
 public final class DependencySetConfiguration {
@@ -25,8 +26,8 @@ public final class DependencySetConfiguration {
     this.allowSuperfluous = allowSuperfluous;
   }
 
-  public boolean matches(Dependency dependency) {
-    org.apache.maven.artifact.Artifact mavenArtifact = dependency.toMavenArtifact();
+  public boolean matches(LockableEntity entity) {
+    Artifact mavenArtifact = entity.getMavenArtifact();
     return includes.include(mavenArtifact) && !excludes.include(mavenArtifact);
   }
 

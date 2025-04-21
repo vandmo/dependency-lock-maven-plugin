@@ -7,11 +7,12 @@ import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 import java.util.Objects;
 import se.vandmo.dependencylock.maven.lang.Strings;
 
-public final class Artifact implements Comparable<Artifact> {
+public final class Artifact extends LockableEntity implements Comparable<Artifact> {
 
   public final ArtifactIdentifier identifier;
   public final String version;
   public final Integrity integrity;
+  private org.apache.maven.artifact.Artifact mavenArtifact;
 
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
@@ -94,8 +95,13 @@ public final class Artifact implements Comparable<Artifact> {
         integrity);
   }
 
-  public org.apache.maven.artifact.Artifact toMavenArtifact() {
-    return new MavenArtifact(this);
+  public org.apache.maven.artifact.Artifact getMavenArtifact() {
+    org.apache.maven.artifact.Artifact result = mavenArtifact;
+    if (result == null) {
+      result = MavenArtifact.unscoped(this);
+      mavenArtifact = result;
+    }
+    return result;
   }
 
   private Artifact(ArtifactIdentifier identifier, String version, Integrity integrity) {
@@ -161,6 +167,26 @@ public final class Artifact implements Comparable<Artifact> {
     hash = 17 * hash + Objects.hashCode(this.version);
     hash = 17 * hash + Objects.hashCode(this.integrity);
     return hash;
+  }
+
+  @Override
+  public ArtifactIdentifier getArtifactIdentifier() {
+    return identifier;
+  }
+
+  @Override
+  public Integrity getIntegrity() {
+    return integrity;
+  }
+
+  @Override
+  public String getArtifactKey() {
+    return toString_withoutIntegrity();
+  }
+
+  @Override
+  public String getVersion() {
+    return version;
   }
 
   @Override

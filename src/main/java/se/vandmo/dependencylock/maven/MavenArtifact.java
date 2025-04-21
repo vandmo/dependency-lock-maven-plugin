@@ -19,12 +19,13 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
   private final String scope;
   private final String baseVersion;
 
-  public MavenArtifact(Dependency delegate) {
-    this(delegate.artifact, delegate.scope);
+  public static MavenArtifact unscoped(se.vandmo.dependencylock.maven.Artifact delegate) {
+    return new MavenArtifact(delegate, null);
   }
 
-  public MavenArtifact(se.vandmo.dependencylock.maven.Artifact delegate) {
-    this(delegate, null);
+  public static MavenArtifact scoped(
+      se.vandmo.dependencylock.maven.Artifact delegate, String scope) {
+    return new MavenArtifact(delegate, scope);
   }
 
   private MavenArtifact(se.vandmo.dependencylock.maven.Artifact delegate, String scope) {

@@ -39,7 +39,7 @@ public final class LockedDependencies {
 
     private LockFileExpectationsDiff(Dependencies artifacts, Filters filters) {
       for (Dependency lockedDependency : lockedDependencies) {
-        final ArtifactIdentifier identifier = lockedDependency.artifact.identifier;
+        final ArtifactIdentifier identifier = lockedDependency.getArtifactIdentifier();
         Optional<Dependency> possiblyOtherArtifact = artifacts.by(identifier);
         if (!possiblyOtherArtifact.isPresent()) {
           if (filters.allowMissing(lockedDependency)) {
@@ -153,9 +153,9 @@ public final class LockedDependencies {
 
   private List<String> findExtraneous(Dependencies dependencies, Filters filters) {
     List<String> extraneous = new ArrayList<>();
-    for (Dependency dependency : dependencies.dependencies) {
+    for (Dependency dependency : dependencies) {
       final Artifact artifact = dependency.artifact;
-      if (!by(artifact.identifier).isPresent()) {
+      if (!lockedDependencies.by(artifact.identifier).isPresent()) {
         if (filters.allowSuperfluous(dependency)) {
           log.info(format(ROOT, "Ignoring extraneous %s", artifact.identifier));
         } else {
@@ -164,15 +164,6 @@ public final class LockedDependencies {
       }
     }
     return extraneous;
-  }
-
-  public Optional<Dependency> by(ArtifactIdentifier identifier) {
-    for (Dependency lockedDependency : lockedDependencies) {
-      if (lockedDependency.artifact.identifier.equals(identifier)) {
-        return Optional.of(lockedDependency);
-      }
-    }
-    return Optional.empty();
   }
 
   public static final class Diff {

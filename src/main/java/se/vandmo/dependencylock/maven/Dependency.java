@@ -4,8 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
-public final class Dependency implements Comparable<Dependency> {
-  public final Artifact artifact;
+public final class Dependency extends LockableEntityWithArtifact implements Comparable<Dependency> {
   public final String scope;
   public final boolean optional;
 
@@ -106,13 +105,13 @@ public final class Dependency implements Comparable<Dependency> {
         artifact.isOptional());
   }
 
-  public org.apache.maven.artifact.Artifact toMavenArtifact() {
-    return new MavenArtifact(this);
+  @Override
+  org.apache.maven.artifact.Artifact toMavenArtifact() {
+    return MavenArtifact.scoped(this.artifact, this.scope);
   }
 
   private Dependency(Artifact artifact, String scope, boolean optional) {
-    super();
-    this.artifact = requireNonNull(artifact);
+    super(artifact);
     this.scope = requireNonNull(scope);
     this.optional = optional;
   }
