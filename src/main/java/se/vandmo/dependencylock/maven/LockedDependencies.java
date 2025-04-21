@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
@@ -103,7 +101,8 @@ public final class LockedDependencies {
           }
         case snapshot:
           log.info(format(ROOT, "Allowing snapshot version for %s", lockedDependency));
-          if (snapshotMatch(lockedDependency.artifact.version, actualDependency.artifact.version)) {
+          if (VersionUtils.snapshotMatch(
+              lockedDependency.artifact.version, actualDependency.artifact.version)) {
             return emptyList();
           } else {
             return asList("version (allowing snapshot version)");
@@ -204,30 +203,6 @@ public final class LockedDependencies {
         log.error("The following dependencies differ:");
         different.forEach(line -> log.error("  " + line));
       }
-    }
-  }
-
-  // Visible for testing
-  static boolean snapshotMatch(String version, String otherVersion) {
-    if (version.equals(otherVersion)) {
-      return true;
-    }
-    return stripSnapshot(version).equals(stripSnapshot(otherVersion));
-  }
-
-  private static final Pattern SNAPSHOT_TIMESTAMP =
-      Pattern.compile("^((?<base>.*)-)?([0-9]{8}\\.[0-9]{6}-[0-9]+)$");
-
-  // Visible for testing
-  static String stripSnapshot(String version) {
-    if (version.endsWith("-SNAPSHOT")) {
-      return version.substring(0, version.length() - 9);
-    }
-    Matcher matcher = SNAPSHOT_TIMESTAMP.matcher(version);
-    if (matcher.matches()) {
-      return matcher.group("base");
-    } else {
-      return version;
     }
   }
 }
