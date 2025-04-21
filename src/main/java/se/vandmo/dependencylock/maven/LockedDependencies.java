@@ -16,10 +16,12 @@ import org.apache.maven.plugin.logging.Log;
 public final class LockedDependencies {
 
   public final Dependencies lockedDependencies;
+  private final DiffHelper diffHelper;
   private final Log log;
 
   private LockedDependencies(Dependencies lockedDependencies, Log log) {
     this.lockedDependencies = lockedDependencies;
+    this.diffHelper = new DiffHelper(log);
     this.log = log;
   }
 
@@ -80,39 +82,8 @@ public final class LockedDependencies {
         AtomicReference<Dependency> lockedDependencyRef,
         Dependency actualDependency,
         Filters filters) {
-      Dependency lockedDependency = lockedDependencyRef.get();
-      Filters.VersionConfiguration versionConfiguration =
-          filters.versionConfiguration(lockedDependency);
-      switch (versionConfiguration.type) {
-        case check:
-          if (lockedDependency.artifact.version.equals(actualDependency.artifact.version)) {
-            return emptyList();
-          } else {
-            return asList("version");
-          }
-        case useProjectVersion:
-          log.info(format(ROOT, "Using project version for %s", lockedDependency));
-          lockedDependencyRef.set(
-              lockedDependency.withVersion(versionConfiguration.projectVersion));
-          if (versionConfiguration.projectVersion.equals(actualDependency.artifact.version)) {
-            return emptyList();
-          } else {
-            return asList("version (expected project version)");
-          }
-        case snapshot:
-          log.info(format(ROOT, "Allowing snapshot version for %s", lockedDependency));
-          if (VersionUtils.snapshotMatch(
-              lockedDependency.artifact.version, actualDependency.artifact.version)) {
-            return emptyList();
-          } else {
-            return asList("version (allowing snapshot version)");
-          }
-        case ignore:
-          log.info(format(ROOT, "Ignoring version for %s", lockedDependency));
-          return emptyList();
-        default:
-          throw new RuntimeException("Unsupported enum value");
-      }
+      return diffHelper.diffVersion(
+          lockedDependencyRef, actualDependency, Dependency::withVersion, filters);
     }
 
     private List<String> diffOptional(Dependency lockedDependency, Dependency actualDependency) {
@@ -132,38 +103,13 @@ public final class LockedDependencies {
     }
 
     private List<String> diffIntegrity(
-        Dependency lockedDependency, Dependency actualArtifact, Filters filters) {
-      if (lockedDependency.artifact.integrity.equals(actualArtifact.artifact.integrity)) {
-        return emptyList();
-      } else {
-        DependencySetConfiguration.Integrity integrityConfiguration =
-            filters.integrityConfiguration(lockedDependency);
-        switch (integrityConfiguration) {
-          case check:
-            return asList("integrity");
-          case ignore:
-            log.info(format(ROOT, "Ignoring integrity for %s", lockedDependency));
-            return emptyList();
-          default:
-            throw new RuntimeException("Unsupported enum value");
-        }
-      }
+        Dependency lockedDependency, Dependency actualDependency, Filters filters) {
+      return diffHelper.diffIntegrity(lockedDependency, actualDependency, filters);
     }
   }
 
   private List<String> findExtraneous(Dependencies dependencies, Filters filters) {
-    List<String> extraneous = new ArrayList<>();
-    for (Dependency dependency : dependencies) {
-      final Artifact artifact = dependency.artifact;
-      if (!lockedDependencies.by(artifact.identifier).isPresent()) {
-        if (filters.allowSuperfluous(dependency)) {
-          log.info(format(ROOT, "Ignoring extraneous %s", artifact.identifier));
-        } else {
-          extraneous.add(dependency.toString_withoutIntegrity());
-        }
-      }
-    }
-    return extraneous;
+    return diffHelper.findExtraneous(dependencies, lockedDependencies, filters);
   }
 
   public static final class Diff {
