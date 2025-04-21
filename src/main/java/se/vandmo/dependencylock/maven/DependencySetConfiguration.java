@@ -25,8 +25,8 @@ public final class DependencySetConfiguration {
     this.allowSuperfluous = allowSuperfluous;
   }
 
-  public boolean matches(Artifact artifact) {
-    org.apache.maven.artifact.Artifact mavenArtifact = artifact.toMavenArtifact();
+  public boolean matches(Dependency dependency) {
+    org.apache.maven.artifact.Artifact mavenArtifact = dependency.toMavenArtifact();
     return includes.include(mavenArtifact) && !excludes.include(mavenArtifact);
   }
 

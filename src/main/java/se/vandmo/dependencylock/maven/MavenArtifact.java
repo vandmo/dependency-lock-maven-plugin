@@ -16,10 +16,20 @@ import org.apache.maven.artifact.versioning.VersionRange;
 public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
 
   private final se.vandmo.dependencylock.maven.Artifact delegate;
+  private final String scope;
   private final String baseVersion;
 
+  public MavenArtifact(Dependency delegate) {
+    this(delegate.artifact, delegate.scope);
+  }
+
   public MavenArtifact(se.vandmo.dependencylock.maven.Artifact delegate) {
+    this(delegate, null);
+  }
+
+  private MavenArtifact(se.vandmo.dependencylock.maven.Artifact delegate, String scope) {
     this.delegate = delegate;
+    this.scope = scope;
     this.baseVersion = ArtifactUtils.toSnapshotVersion(delegate.version);
   }
 
@@ -45,7 +55,7 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
 
   @Override
   public String getScope() {
-    return delegate.scope;
+    return scope;
   }
 
   @Override

@@ -11,8 +11,6 @@ public final class Artifact implements Comparable<Artifact> {
 
   public final ArtifactIdentifier identifier;
   public final String version;
-  public final String scope;
-  public final boolean optional;
   public final Integrity integrity;
 
   public static ArtifactIdentifierBuilderStage builder() {
@@ -34,71 +32,23 @@ public final class Artifact implements Comparable<Artifact> {
       this.artifactIdentifier = artifactIdentifier;
     }
 
-    public ScopeBuilderStage version(String version) {
-      return new ScopeBuilderStage(artifactIdentifier, requireNonNull(version));
-    }
-  }
-
-  public static final class ScopeBuilderStage {
-    private final ArtifactIdentifier artifactIdentifier;
-    private final String version;
-
-    private ScopeBuilderStage(ArtifactIdentifier artifactIdentifier, String version) {
-      this.artifactIdentifier = artifactIdentifier;
-      this.version = version;
-    }
-
-    public OptionalBuilderStage scope(String scope) {
-      return new OptionalBuilderStage(artifactIdentifier, version, requireNonNull(scope));
-    }
-  }
-
-  public static final class OptionalBuilderStage {
-    private final ArtifactIdentifier artifactIdentifier;
-    private final String version;
-    private final String scope;
-
-    private OptionalBuilderStage(
-        ArtifactIdentifier artifactIdentifier, String version, String scope) {
-      this.artifactIdentifier = artifactIdentifier;
-      this.version = version;
-      this.scope = scope;
-    }
-
-    public IntegrityBuilderStage optional(boolean optional) {
-      return integrityBuilderStage(optional);
-    }
-
-    public FinalBuilderStage integrity(String integrity) {
-      return integrityBuilderStage(false).integrity(integrity);
-    }
-
-    private IntegrityBuilderStage integrityBuilderStage(boolean optional) {
-      return new IntegrityBuilderStage(artifactIdentifier, version, scope, optional);
+    public IntegrityBuilderStage version(String version) {
+      return new IntegrityBuilderStage(artifactIdentifier, requireNonNull(version));
     }
   }
 
   public static final class IntegrityBuilderStage {
     private final ArtifactIdentifier artifactIdentifier;
     private final String version;
-    private final String scope;
-    private final boolean optional;
 
-    private IntegrityBuilderStage(
-        ArtifactIdentifier artifactIdentifier, String version, String scope, boolean optional) {
+    private IntegrityBuilderStage(ArtifactIdentifier artifactIdentifier, String version) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
-      this.scope = scope;
-      this.optional = optional;
     }
 
     public FinalBuilderStage integrity(String integrity) {
       return new FinalBuilderStage(
-          artifactIdentifier,
-          version,
-          scope,
-          optional,
-          Integrity.Calculated(checkIntegrityArgument(integrity)));
+          artifactIdentifier, version, Integrity.Calculated(checkIntegrityArgument(integrity)));
     }
   }
 
@@ -114,25 +64,17 @@ public final class Artifact implements Comparable<Artifact> {
   public static final class FinalBuilderStage {
     private final ArtifactIdentifier artifactIdentifier;
     private final String version;
-    private final String scope;
-    private final boolean optional;
     private final Integrity integrity;
 
     private FinalBuilderStage(
-        ArtifactIdentifier artifactIdentifier,
-        String version,
-        String scope,
-        boolean optional,
-        Integrity integrity) {
+        ArtifactIdentifier artifactIdentifier, String version, Integrity integrity) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
-      this.scope = scope;
-      this.optional = optional;
       this.integrity = integrity;
     }
 
     public Artifact build() {
-      return new Artifact(artifactIdentifier, version, scope, optional, integrity);
+      return new Artifact(artifactIdentifier, version, integrity);
     }
   }
 
@@ -149,8 +91,6 @@ public final class Artifact implements Comparable<Artifact> {
             .type(ofNullable(artifact.getType()))
             .build(),
         artifact.getVersion(),
-        artifact.getScope(),
-        artifact.isOptional(),
         integrity);
   }
 
@@ -158,25 +98,18 @@ public final class Artifact implements Comparable<Artifact> {
     return new MavenArtifact(this);
   }
 
-  private Artifact(
-      ArtifactIdentifier identifier,
-      String version,
-      String scope,
-      boolean optional,
-      Integrity integrity) {
+  private Artifact(ArtifactIdentifier identifier, String version, Integrity integrity) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
-    this.scope = requireNonNull(scope);
-    this.optional = optional;
     this.integrity = integrity;
   }
 
   public Artifact withVersion(String version) {
-    return new Artifact(identifier, version, scope, optional, integrity);
+    return new Artifact(identifier, version, integrity);
   }
 
   public Artifact withIntegrity(Integrity integrity) {
-    return new Artifact(identifier, version, scope, optional, integrity);
+    return new Artifact(identifier, version, integrity);
   }
 
   public String getIntegrityForLockFile() {
@@ -217,15 +150,8 @@ public final class Artifact implements Comparable<Artifact> {
     return toStringBuilder_withoutIntegrity().toString();
   }
 
-  private StringBuilder toStringBuilder_withoutIntegrity() {
-    return new StringBuilder()
-        .append(identifier.toString())
-        .append(':')
-        .append(version)
-        .append(':')
-        .append(scope)
-        .append(":optional=")
-        .append(optional);
+  StringBuilder toStringBuilder_withoutIntegrity() {
+    return new StringBuilder().append(identifier.toString()).append(':').append(version);
   }
 
   @Override
@@ -233,8 +159,6 @@ public final class Artifact implements Comparable<Artifact> {
     int hash = 7;
     hash = 17 * hash + Objects.hashCode(this.identifier);
     hash = 17 * hash + Objects.hashCode(this.version);
-    hash = 17 * hash + Objects.hashCode(this.scope);
-    hash = 17 * hash + Objects.hashCode(this.optional);
     hash = 17 * hash + Objects.hashCode(this.integrity);
     return hash;
   }
@@ -257,12 +181,6 @@ public final class Artifact implements Comparable<Artifact> {
     if (!Objects.equals(this.version, other.version)) {
       return false;
     }
-    if (!Objects.equals(this.scope, other.scope)) {
-      return false;
-    }
-    if (!Objects.equals(this.optional, other.optional)) {
-      return false;
-    }
     if (!Objects.equals(this.integrity, other.integrity)) {
       return false;
     }
@@ -280,12 +198,6 @@ public final class Artifact implements Comparable<Artifact> {
       return false;
     }
     if (!Objects.equals(this.identifier, other.identifier)) {
-      return false;
-    }
-    if (!Objects.equals(this.scope, other.scope)) {
-      return false;
-    }
-    if (!Objects.equals(this.optional, other.optional)) {
       return false;
     }
     if (!Objects.equals(this.integrity, other.integrity)) {

@@ -14,7 +14,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.logging.Log;
-import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
@@ -42,7 +42,7 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   @Override
-  public void write(Artifacts projectDependencies) {
+  public void write(Dependencies projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -54,7 +54,8 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
     }
   }
 
-  private static Map<String, Object> makeDataModel(PomMinimums pomMinimums, Artifacts artifacts) {
+  private static Map<String, Object> makeDataModel(
+      PomMinimums pomMinimums, Dependencies artifacts) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", artifacts);
@@ -81,7 +82,8 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   @Override
   public LockedDependencies read() {
-    Artifacts artifacts = Artifacts.fromArtifacts(PomLockFile.read(dependenciesLockFile.file));
+    Dependencies artifacts =
+        Dependencies.fromDependencies(PomLockFile.read(dependenciesLockFile.file));
     return LockedDependencies.from(artifacts, log);
   }
 }

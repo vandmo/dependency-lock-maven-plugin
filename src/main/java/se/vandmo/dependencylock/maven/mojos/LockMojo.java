@@ -6,8 +6,8 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import se.vandmo.dependencylock.maven.Artifact;
-import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Dependencies;
+import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.Integrity;
@@ -50,31 +50,31 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     }
   }
 
-  private Artifacts filteredProjectDependencies() {
-    Artifacts projectDependencies = projectDependencies();
+  private Dependencies filteredProjectDependencies() {
+    Dependencies projectDependencies = projectDependencies();
     if (!markIgnoredAsIgnored) {
       return projectDependencies;
     }
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
-    return Artifacts.fromArtifacts(
-        projectDependencies().artifacts.stream()
+    return Dependencies.fromDependencies(
+        projectDependencies().dependencies.stream()
             .map(artifact -> modify(artifact, filters))
             .collect(toList()));
   }
 
-  private static Artifact modify(Artifact artifact, Filters filters) {
+  private static Dependency modify(Dependency dependency, Filters filters) {
     if (filters
-        .versionConfiguration(artifact)
+        .versionConfiguration(dependency)
         .type
         .equals(DependencySetConfiguration.Version.ignore)) {
-      artifact = artifact.withVersion("ignored");
+      dependency = dependency.withVersion("ignored");
     }
     if (filters
-        .integrityConfiguration(artifact)
+        .integrityConfiguration(dependency)
         .equals(DependencySetConfiguration.Integrity.ignore)) {
-      artifact = artifact.withIntegrity(Integrity.Ignored());
+      dependency = dependency.withIntegrity(Integrity.Ignored());
     }
-    return artifact;
+    return dependency;
   }
 }

@@ -17,21 +17,21 @@ import org.apache.maven.plugin.logging.Log;
 
 public final class LockedDependencies {
 
-  public final Artifacts lockedDependencies;
+  public final Dependencies lockedDependencies;
   private final Log log;
 
-  private LockedDependencies(Artifacts lockedDependencies, Log log) {
+  private LockedDependencies(Dependencies lockedDependencies, Log log) {
     this.lockedDependencies = lockedDependencies;
     this.log = log;
   }
 
-  public static LockedDependencies from(Artifacts artifacts, Log log) {
+  public static LockedDependencies from(Dependencies artifacts, Log log) {
     return new LockedDependencies(requireNonNull(artifacts), log);
   }
 
-  public Diff compareWith(Artifacts artifacts, Filters filters) {
-    LockFileExpectationsDiff expectationsDiff = new LockFileExpectationsDiff(artifacts, filters);
-    List<String> extraneous = findExtraneous(artifacts, filters);
+  public Diff compareWith(Dependencies dependencies, Filters filters) {
+    LockFileExpectationsDiff expectationsDiff = new LockFileExpectationsDiff(dependencies, filters);
+    List<String> extraneous = findExtraneous(dependencies, filters);
     return new Diff(expectationsDiff, extraneous);
   }
 
@@ -39,26 +39,27 @@ public final class LockedDependencies {
     private List<String> missing = new ArrayList<>();
     private List<String> different = new ArrayList<>();
 
-    private LockFileExpectationsDiff(Artifacts artifacts, Filters filters) {
-      for (Artifact lockedDependency : lockedDependencies) {
-        Optional<Artifact> possiblyOtherArtifact = artifacts.by(lockedDependency.identifier);
+    private LockFileExpectationsDiff(Dependencies artifacts, Filters filters) {
+      for (Dependency lockedDependency : lockedDependencies) {
+        final ArtifactIdentifier identifier = lockedDependency.artifact.identifier;
+        Optional<Dependency> possiblyOtherArtifact = artifacts.by(identifier);
         if (!possiblyOtherArtifact.isPresent()) {
           if (filters.allowMissing(lockedDependency)) {
-            log.info(format(ROOT, "Ignoring missing %s", lockedDependency.identifier));
+            log.info(format(ROOT, "Ignoring missing %s", identifier));
           } else {
-            missing.add(lockedDependency.identifier.toString());
+            missing.add(identifier.toString());
           }
         } else {
-          Artifact actualArtifact = possiblyOtherArtifact.get();
-          AtomicReference<Artifact> lockedDependencyRef = new AtomicReference<>(lockedDependency);
-          List<String> wrongs = findDiffs(lockedDependencyRef, actualArtifact, filters);
+          Dependency actualDependency = possiblyOtherArtifact.get();
+          AtomicReference<Dependency> lockedDependencyRef = new AtomicReference<>(lockedDependency);
+          List<String> wrongs = findDiffs(lockedDependencyRef, actualDependency, filters);
           if (!wrongs.isEmpty()) {
             different.add(
                 format(
                     ROOT,
                     "Expected %s but found %s, wrong %s",
                     lockedDependencyRef.get(),
-                    actualArtifact,
+                    actualDependency,
                     joinNouns(wrongs)));
           }
         }
@@ -66,23 +67,27 @@ public final class LockedDependencies {
     }
 
     private List<String> findDiffs(
-        AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
+        AtomicReference<Dependency> lockedDependencyRef,
+        Dependency actualDependency,
+        Filters filters) {
       List<String> wrongs = new ArrayList<>();
-      wrongs.addAll(diffOptional(lockedDependencyRef.get(), actualArtifact));
-      wrongs.addAll(diffScope(lockedDependencyRef.get(), actualArtifact));
-      wrongs.addAll(diffIntegrity(lockedDependencyRef.get(), actualArtifact, filters));
-      wrongs.addAll(diffVersion(lockedDependencyRef, actualArtifact, filters));
+      wrongs.addAll(diffOptional(lockedDependencyRef.get(), actualDependency));
+      wrongs.addAll(diffScope(lockedDependencyRef.get(), actualDependency));
+      wrongs.addAll(diffIntegrity(lockedDependencyRef.get(), actualDependency, filters));
+      wrongs.addAll(diffVersion(lockedDependencyRef, actualDependency, filters));
       return wrongs;
     }
 
     private List<String> diffVersion(
-        AtomicReference<Artifact> lockedDependencyRef, Artifact actualArtifact, Filters filters) {
-      Artifact lockedDependency = lockedDependencyRef.get();
+        AtomicReference<Dependency> lockedDependencyRef,
+        Dependency actualDependency,
+        Filters filters) {
+      Dependency lockedDependency = lockedDependencyRef.get();
       Filters.VersionConfiguration versionConfiguration =
           filters.versionConfiguration(lockedDependency);
       switch (versionConfiguration.type) {
         case check:
-          if (lockedDependency.version.equals(actualArtifact.version)) {
+          if (lockedDependency.artifact.version.equals(actualDependency.artifact.version)) {
             return emptyList();
           } else {
             return asList("version");
@@ -91,14 +96,14 @@ public final class LockedDependencies {
           log.info(format(ROOT, "Using project version for %s", lockedDependency));
           lockedDependencyRef.set(
               lockedDependency.withVersion(versionConfiguration.projectVersion));
-          if (versionConfiguration.projectVersion.equals(actualArtifact.version)) {
+          if (versionConfiguration.projectVersion.equals(actualDependency.artifact.version)) {
             return emptyList();
           } else {
             return asList("version (expected project version)");
           }
         case snapshot:
           log.info(format(ROOT, "Allowing snapshot version for %s", lockedDependency));
-          if (snapshotMatch(lockedDependency.version, actualArtifact.version)) {
+          if (snapshotMatch(lockedDependency.artifact.version, actualDependency.artifact.version)) {
             return emptyList();
           } else {
             return asList("version (allowing snapshot version)");
@@ -111,16 +116,16 @@ public final class LockedDependencies {
       }
     }
 
-    private List<String> diffOptional(Artifact lockedDependency, Artifact actualArtifact) {
-      if (lockedDependency.optional == actualArtifact.optional) {
+    private List<String> diffOptional(Dependency lockedDependency, Dependency actualDependency) {
+      if (lockedDependency.optional == actualDependency.optional) {
         return emptyList();
       } else {
         return asList("optional");
       }
     }
 
-    private List<String> diffScope(Artifact lockedDependency, Artifact actualArtifact) {
-      if (lockedDependency.scope.equals(actualArtifact.scope)) {
+    private List<String> diffScope(Dependency lockedDependency, Dependency actualDependency) {
+      if (lockedDependency.scope.equals(actualDependency.scope)) {
         return emptyList();
       } else {
         return asList("scope");
@@ -128,8 +133,8 @@ public final class LockedDependencies {
     }
 
     private List<String> diffIntegrity(
-        Artifact lockedDependency, Artifact actualArtifact, Filters filters) {
-      if (lockedDependency.integrity.equals(actualArtifact.integrity)) {
+        Dependency lockedDependency, Dependency actualArtifact, Filters filters) {
+      if (lockedDependency.artifact.integrity.equals(actualArtifact.artifact.integrity)) {
         return emptyList();
       } else {
         DependencySetConfiguration.Integrity integrityConfiguration =
@@ -147,23 +152,24 @@ public final class LockedDependencies {
     }
   }
 
-  private List<String> findExtraneous(Artifacts artifacts, Filters filters) {
+  private List<String> findExtraneous(Dependencies dependencies, Filters filters) {
     List<String> extraneous = new ArrayList<>();
-    for (Artifact artifact : artifacts.artifacts) {
+    for (Dependency dependency : dependencies.dependencies) {
+      final Artifact artifact = dependency.artifact;
       if (!by(artifact.identifier).isPresent()) {
-        if (filters.allowSuperfluous(artifact)) {
+        if (filters.allowSuperfluous(dependency)) {
           log.info(format(ROOT, "Ignoring extraneous %s", artifact.identifier));
         } else {
-          extraneous.add(artifact.toString_withoutIntegrity());
+          extraneous.add(dependency.toString_withoutIntegrity());
         }
       }
     }
     return extraneous;
   }
 
-  public Optional<Artifact> by(ArtifactIdentifier identifier) {
-    for (Artifact lockedDependency : lockedDependencies) {
-      if (lockedDependency.identifier.equals(identifier)) {
+  public Optional<Dependency> by(ArtifactIdentifier identifier) {
+    for (Dependency lockedDependency : lockedDependencies) {
+      if (lockedDependency.artifact.identifier.equals(identifier)) {
         return Optional.of(lockedDependency);
       }
     }

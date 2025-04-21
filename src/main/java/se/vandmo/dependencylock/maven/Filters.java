@@ -21,30 +21,30 @@ public final class Filters {
   }
 
   private <T> T configurationFor(
-      Artifact artifact, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
+      Dependency dependency, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
     return dependencySetConfigurations.stream()
-        .filter(d -> d.matches(artifact))
+        .filter(d -> d.matches(dependency))
         .map(extractor)
         .filter(v -> v != null)
         .findFirst()
         .orElse(defaultValue);
   }
 
-  public VersionConfiguration versionConfiguration(Artifact artifact) {
+  public VersionConfiguration versionConfiguration(Dependency artifact) {
     DependencySetConfiguration.Version type =
         configurationFor(artifact, d -> d.version, DependencySetConfiguration.Version.check);
     return new VersionConfiguration(type, projectVersion);
   }
 
-  public DependencySetConfiguration.Integrity integrityConfiguration(Artifact artifact) {
+  public DependencySetConfiguration.Integrity integrityConfiguration(Dependency artifact) {
     return configurationFor(artifact, d -> d.integrity, DependencySetConfiguration.Integrity.check);
   }
 
-  public boolean allowSuperfluous(Artifact artifact) {
+  public boolean allowSuperfluous(Dependency artifact) {
     return configurationFor(artifact, d -> d.allowSuperfluous, Boolean.FALSE);
   }
 
-  public boolean allowMissing(Artifact artifact) {
+  public boolean allowMissing(Dependency artifact) {
     return configurationFor(artifact, d -> d.allowMissing, Boolean.FALSE);
   }
 

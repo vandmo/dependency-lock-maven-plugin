@@ -1,35 +1,44 @@
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Dependency;
 
-public final class ArtifactTests {
+public final class DependencyTests {
 
   @Test(expected = NullPointerException.class)
   public void from_null() {
-    Artifact.from(null);
+    Dependency.from(null);
   }
 
   @Test(expected = NullPointerException.class)
   public void builder_artifactIdentifier_null() {
-    Artifact.builder().artifactIdentifier(null);
+    Dependency.builder().artifactIdentifier(null);
   }
 
   @Test(expected = NullPointerException.class)
   public void builder_version_null() {
-    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version(null);
+    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version(null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void builder_scope_null() {
+    Dependency.builder()
+        .artifactIdentifier(anArtifactIdentifier())
+        .version("1")
+        .integrity("sha512:123abc")
+        .scope(null);
   }
 
   @Test(expected = NullPointerException.class)
   public void builder_integrity_null() {
-    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity(null);
+    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity(null);
   }
 
   @Test
   public void toString_withoutIntegrity() {
-    Artifact artifact =
-        Artifact.builder()
+    Dependency dependency =
+        Dependency.builder()
             .artifactIdentifier(
                 ArtifactIdentifier.builder()
                     .groupId("the_groupId")
@@ -39,10 +48,11 @@ public final class ArtifactTests {
                     .build())
             .version("1.2.3")
             .integrity("sha512:123abc")
+            .scope("compile")
             .build();
     assertEquals(
-        "the_groupId:the_artifactId:the_classifier:war:1.2.3",
-        artifact.toString_withoutIntegrity());
+        "the_groupId:the_artifactId:the_classifier:war:1.2.3:compile:optional=false",
+        dependency.toString_withoutIntegrity());
   }
 
   private static ArtifactIdentifier anArtifactIdentifier() {

@@ -19,8 +19,8 @@ import javax.xml.stream.Location;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
 import org.codehaus.stax2.XMLEventReader2;
-import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Dependency;
 
 public final class PomLockFile {
 
@@ -38,7 +38,7 @@ public final class PomLockFile {
   private static final QName OPTIONAL = new QName(POM_NS, "optional");
   private static final QName INTEGRITY = new QName(DEPENDENCY_LOCK_NS, "integrity");
 
-  public static List<Artifact> read(File file) {
+  public static List<Dependency> read(File file) {
     try {
       return doRead(file);
     } catch (IOException e) {
@@ -48,7 +48,7 @@ public final class PomLockFile {
     }
   }
 
-  private static List<Artifact> doRead(File file) throws IOException, XMLStreamException {
+  private static List<Dependency> doRead(File file) throws IOException, XMLStreamException {
     WstxInputFactory inputFactory = createInputFactory();
     XMLEventReader2 reader = inputFactory.createXMLEventReader(file);
     while (reader.hasNextEvent()) {
@@ -73,7 +73,7 @@ public final class PomLockFile {
     return inputFactory;
   }
 
-  private static List<Artifact> fromProject(XMLEventReader2 reader) throws XMLStreamException {
+  private static List<Dependency> fromProject(XMLEventReader2 reader) throws XMLStreamException {
     while (reader.hasNextEvent()) {
       XMLEvent event = reader.nextEvent();
       if (event.isStartElement()) {
@@ -88,8 +88,8 @@ public final class PomLockFile {
     throw new InvalidPomLockFile("Missing 'dependencies'-element");
   }
 
-  private static List<Artifact> fromDependencies(XMLEventReader2 rdr) throws XMLStreamException {
-    List<Artifact> result = new ArrayList<>();
+  private static List<Dependency> fromDependencies(XMLEventReader2 rdr) throws XMLStreamException {
+    List<Dependency> result = new ArrayList<>();
     while (rdr.hasNextEvent()) {
       XMLEvent evt = rdr.nextEvent();
       if (evt.isStartElement()) {
@@ -104,7 +104,7 @@ public final class PomLockFile {
     return result;
   }
 
-  private static Artifact fromDependency(XMLEventReader2 rdr) throws XMLStreamException {
+  private static Dependency fromDependency(XMLEventReader2 rdr) throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
     String version = null;
@@ -174,7 +174,7 @@ public final class PomLockFile {
         if (integrity == null) {
           throw new InvalidPomLockFile("Missing integrity", event.getLocation());
         }
-        return Artifact.builder()
+        return Dependency.builder()
             .artifactIdentifier(
                 ArtifactIdentifier.builder()
                     .groupId(groupId)
@@ -183,9 +183,9 @@ public final class PomLockFile {
                     .type(type)
                     .build())
             .version(version)
+            .integrity(integrity)
             .scope(scope)
             .optional(optional)
-            .integrity(integrity)
             .build();
       }
     }
