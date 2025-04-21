@@ -113,33 +113,20 @@ public final class LockedDependencies {
   }
 
   public static final class Diff {
-    private final List<String> missing;
-    private final List<String> different;
-    private final List<String> extraneous;
+    private final DiffReport diffReport;
 
     private Diff(LockFileExpectationsDiff lockFileExpectationsDiff, List<String> extraneous) {
-      this.missing = lockFileExpectationsDiff.missing;
-      this.different = lockFileExpectationsDiff.different;
-      this.extraneous = extraneous;
+      this.diffReport =
+          new DiffReport(
+              lockFileExpectationsDiff.different, lockFileExpectationsDiff.missing, extraneous);
     }
 
     public boolean equals() {
-      return missing.isEmpty() && different.isEmpty() && extraneous.isEmpty();
+      return this.diffReport.equals();
     }
 
     public void logTo(Log log) {
-      if (!missing.isEmpty()) {
-        log.error("Missing dependencies:");
-        missing.forEach(line -> log.error("  " + line));
-      }
-      if (!extraneous.isEmpty()) {
-        log.error("Extraneous dependencies:");
-        extraneous.forEach(line -> log.error("  " + line));
-      }
-      if (!different.isEmpty()) {
-        log.error("The following dependencies differ:");
-        different.forEach(line -> log.error("  " + line));
-      }
+      this.diffReport.report("dependencies").forEach(log::error);
     }
   }
 }
