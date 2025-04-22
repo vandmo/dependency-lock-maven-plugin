@@ -121,6 +121,10 @@ public final class LockedDependencies {
               lockFileExpectationsDiff.different, lockFileExpectationsDiff.missing, extraneous);
     }
 
+    DiffReport getReport() {
+      return diffReport;
+    }
+
     public boolean equals() {
       return this.diffReport.equals();
     }
