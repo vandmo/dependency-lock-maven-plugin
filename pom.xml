@@ -254,6 +254,11 @@
       <version>${maven-model.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.maven.resolver</groupId>
+      <artifactId>maven-resolver-api</artifactId>
+      <version>1.6.3</version>
+    </dependency>
     <!-- For tests -->
     <dependency>
       <groupId>commons-io</groupId>

@@ -8,6 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.LockedProject;
 
 @Mojo(
     name = "check",
@@ -32,14 +33,30 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
           "No lock file found, create one by running 'mvn"
               + " se.vandmo:dependency-lock-maven-plugin:lock'");
     }
-    LockedDependencies lockedDependencies =
-        format().dependenciesLockFile_from(lockFile, pomMinimums(), getLog()).read();
-    LockedDependencies.Diff diff = lockedDependencies.compareWith(projectDependencies(), filters());
-    if (diff.equals()) {
-      getLog().info("Actual dependencies matches locked dependencies");
+    if (alsoLockBuild()) {
+      LockedProject lockedProjectDependencies =
+          format().lockFile_from(lockFile, pomMinimums(), getLog()).read();
+      LockedProject.Diff diff = lockedProjectDependencies.compareWith(project(), filters());
+      if (diff.equals()) {
+        getLog()
+            .info(
+                "Actual dependencies, plugins and extensions matches locked dependencies, plugins"
+                    + " and extensions");
+      } else {
+        diff.logTo(getLog());
+        throw new MojoExecutionException("Dependencies / Plugins / Extensions differ");
+      }
     } else {
-      diff.logTo(getLog());
-      throw new MojoExecutionException("Dependencies differ");
+      LockedDependencies lockedDependencies =
+          format().dependenciesLockFile_from(lockFile, pomMinimums(), getLog()).read();
+      LockedDependencies.Diff diff =
+          lockedDependencies.compareWith(projectDependencies(), filters());
+      if (diff.equals()) {
+        getLog().info("Actual dependencies matches locked dependencies");
+      } else {
+        diff.logTo(getLog());
+        throw new MojoExecutionException("Dependencies differ");
+      }
     }
   }
 }
