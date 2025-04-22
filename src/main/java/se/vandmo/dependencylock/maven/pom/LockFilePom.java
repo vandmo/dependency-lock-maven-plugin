@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.DependenciesLockFile;
+import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.LockedProject;
+import se.vandmo.dependencylock.maven.Lockfile;
+import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
-public final class DependenciesLockFilePom implements DependenciesLockFile {
+public final class LockFilePom implements Lockfile {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
 
@@ -28,24 +30,23 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   private final PomMinimums pomMinimums;
   private final Log log;
 
-  private DependenciesLockFilePom(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+  private LockFilePom(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
     this.log = log;
   }
 
-  public static DependenciesLockFilePom from(
+  public static LockFilePom from(
       LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
-    return new DependenciesLockFilePom(
+    return new LockFilePom(
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
   }
 
   @Override
-  public void write(Dependencies projectDependencies) {
+  public void write(LockedProject projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
-      Template template = cfg.getTemplate("pom.ftlx");
+      Template template = cfg.getTemplate("pom-with-plugins.ftlx");
       try (Writer writer = dependenciesLockFile.writer()) {
         template.process(makeDataModel(pomMinimums, projectDependencies), writer);
       }
@@ -55,16 +56,18 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums, Dependencies artifacts) {
+      PomMinimums pomMinimums, LockedProject lockedProject) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", artifacts);
+    dataModel.put("dependencies", lockedProject.dependencies);
+    dataModel.put("extensions", lockedProject.extensions);
+    dataModel.put("plugins", lockedProject.plugins);
     return dataModel;
   }
 
   private static Configuration createConfiguration() {
     Configuration cfg = new Configuration(VERSION);
-    cfg.setClassForTemplateLoading(DependenciesLockFilePom.class, "");
+    cfg.setClassForTemplateLoading(LockFilePom.class, "");
     cfg.setDefaultEncoding("UTF-8");
     cfg.setTemplateExceptionHandler(RETHROW_HANDLER);
     cfg.setLogTemplateExceptions(false);
@@ -81,9 +84,11 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   @Override
-  public LockedDependencies read() {
-    Dependencies artifacts =
-        Dependencies.fromDependencies(PomLockFile.read(dependenciesLockFile.file).dependencies);
-    return LockedDependencies.from(artifacts, log);
+  public LockedProject read() {
+    final PomLockFile.Contents contents = PomLockFile.read(dependenciesLockFile.file);
+    Dependencies artifacts = Dependencies.fromDependencies(contents.dependencies);
+    Plugins plugins = Plugins.from(contents.plugins);
+    Extensions extensions = Extensions.from(contents.extensions);
+    return LockedProject.from(plugins, artifacts, extensions, log);
   }
 }

@@ -93,7 +93,7 @@ public final class PomLockFileTests {
   @Test
   public void no_dependencies() {
     InvalidPomLockFile exception = assertInvalid("no-dependencies");
-    assertEquals("Missing 'dependencies'-element", exception.getMessage());
+    assertEquals("Missing 'dependencies' element", exception.getMessage());
   }
 
   @Test
@@ -119,7 +119,9 @@ public final class PomLockFileTests {
 
   private static List<Dependency> read(String name) {
     return PomLockFile.read(
-        new File(
-            format(ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)));
+            new File(
+                format(
+                    ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)))
+        .dependencies;
   }
 }
