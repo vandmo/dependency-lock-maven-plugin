@@ -2,9 +2,6 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.stream.Collectors;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
-
 public final class Plugin extends LockableEntityWithArtifact<Plugin> {
   public final Artifacts dependencies;
 
@@ -14,16 +11,6 @@ public final class Plugin extends LockableEntityWithArtifact<Plugin> {
 
   public static ArtifactsBuilderStage forArtifact(Artifact dependency) {
     return new ArtifactsBuilderStage(dependency);
-  }
-
-  public static Plugin fromPluginDescriptor(PluginDescriptor descriptor) {
-    final org.apache.maven.artifact.Artifact pluginArtifact = descriptor.getPluginArtifact();
-    return new Plugin(
-        Artifact.from(pluginArtifact),
-        Artifacts.fromMavenArtifacts(
-            descriptor.getArtifacts().stream()
-                .filter(a -> !a.equals(pluginArtifact))
-                .collect(Collectors.toList())));
   }
 
   public Plugin withIntegrity(Integrity integrity) {
