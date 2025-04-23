@@ -102,7 +102,7 @@ public final class DependenciesLockFileJson implements DependenciesLockFile {
 
   private JsonNode asJson(LockedDependencies lockedDependencies) {
     ArrayNode json = JsonNodeFactory.instance.arrayNode();
-    for (Dependency lockedDependency : lockedDependencies.lockedDependencies) {
+    for (Dependency lockedDependency : lockedDependencies.lockedEntities) {
       json.add(asJson(lockedDependency));
     }
     return json;
