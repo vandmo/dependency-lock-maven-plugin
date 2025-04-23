@@ -85,14 +85,16 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   }
 
   Plugins projectPlugins() throws MojoExecutionException {
-    List<PluginDescriptor> pluginDescriptors = new ArrayList<>();
-    for (Plugin plugin : project.getBuildPlugins()) {
+    final List<Plugin> buildPlugins = project.getBuildPlugins();
+    final List<se.vandmo.dependencylock.maven.Plugin> result = new ArrayList<>(buildPlugins.size());
+    for (Plugin plugin : buildPlugins) {
       final PluginDescriptor descriptor;
       try {
         descriptor =
             mavenPluginManager.getPluginDescriptor(
                 plugin, project.getRemotePluginRepositories(), mavenSession.getRepositorySession());
         mavenPluginManager.setupPluginRealm(descriptor, mavenSession, null, null, null);
+        result.add(se.vandmo.dependencylock.maven.Plugin.fromPluginDescriptor(descriptor));
       } catch (PluginResolutionException e) {
         throw new MojoExecutionException("Failed resolving plugin " + plugin, e);
       } catch (PluginDescriptorParsingException e) {
@@ -102,9 +104,8 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
       } catch (PluginContainerException e) {
         throw new MojoExecutionException("Failed loading container for plugin " + plugin, e);
       }
-      pluginDescriptors.add(descriptor);
     }
-    return Plugins.fromMavenPlugins(pluginDescriptors);
+    return Plugins.from(result);
   }
 
   PomMinimums pomMinimums() {
