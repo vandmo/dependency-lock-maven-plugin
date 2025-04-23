@@ -7,7 +7,7 @@ import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 import java.util.Objects;
 import se.vandmo.dependencylock.maven.lang.Strings;
 
-public final class Artifact extends LockableEntity implements Comparable<Artifact> {
+public final class Artifact extends LockableEntity<Artifact> implements Comparable<Artifact> {
 
   public final ArtifactIdentifier identifier;
   public final String version;

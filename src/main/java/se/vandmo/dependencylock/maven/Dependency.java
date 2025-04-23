@@ -4,7 +4,8 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
-public final class Dependency extends LockableEntityWithArtifact implements Comparable<Dependency> {
+public final class Dependency extends LockableEntityWithArtifact<Dependency>
+    implements Comparable<Dependency> {
   public final String scope;
   public final boolean optional;
 

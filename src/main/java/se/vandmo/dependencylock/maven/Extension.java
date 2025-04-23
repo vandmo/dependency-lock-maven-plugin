@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.apache.maven.plugin.ExtensionRealmCache;
 
-public final class Extension extends LockableEntityWithArtifact {
+public final class Extension extends LockableEntityWithArtifact<Extension> {
   public static ArtifactIdentifierBuilderStage builder() {
     return new ArtifactIdentifierBuilderStage();
   }

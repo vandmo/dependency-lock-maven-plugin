@@ -7,14 +7,14 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
-import se.vandmo.dependencylock.maven.Extension;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.Integrity;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
+import se.vandmo.dependencylock.maven.LockableEntity;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.LockedProject;
 import se.vandmo.dependencylock.maven.Plugin;
@@ -120,51 +120,44 @@ public final class LockMojo extends AbstractDependencyLockMojo {
         projectExtensions.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
   }
 
-  private static Dependency modify(Dependency dependency, Filters filters) {
+  private static <T extends LockableEntity<T>> T modify(T lockableEntity, Filters filters) {
+    T result = lockableEntity;
+    result = ignoreVersionIfRelevant(result, filters);
+    result = ignoreIntegrityIfRelevant(result, filters);
+    return result;
+  }
+
+  private static <T extends LockableEntity<T>> T ignoreIntegrityIfRelevant(
+      T lockableEntity, Filters filters) {
     if (filters
-        .versionConfiguration(dependency)
+        .integrityConfiguration(lockableEntity)
+        .equals(DependencySetConfiguration.Integrity.ignore)) {
+      return lockableEntity.withIntegrity(Integrity.Ignored());
+    }
+    return lockableEntity;
+  }
+
+  private static <T extends LockableEntity<T>> T ignoreVersionIfRelevant(
+      T lockableEntity, Filters filters) {
+    if (filters
+        .versionConfiguration(lockableEntity)
         .type
         .equals(DependencySetConfiguration.Version.ignore)) {
-      dependency = dependency.withVersion("ignored");
+      return lockableEntity.withVersion("ignored");
     }
-    if (filters
-        .integrityConfiguration(dependency)
-        .equals(DependencySetConfiguration.Integrity.ignore)) {
-      dependency = dependency.withIntegrity(Integrity.Ignored());
-    }
-    return dependency;
+    return lockableEntity;
   }
 
   private Plugin modify(Plugin plugin, Filters filters) {
     Plugin result = plugin;
-    if (filters
-        .versionConfiguration(plugin)
-        .type
-        .equals(DependencySetConfiguration.Version.ignore)) {
-      result = result.withVersion("ignored");
-    }
-    if (filters
-        .integrityConfiguration(plugin)
-        .equals(DependencySetConfiguration.Integrity.ignore)) {
-      result = result.withIntegrity(Integrity.Ignored());
-    }
-    // TODO modify artifacts
-    return result;
-  }
-
-  private static Extension modify(Extension plugin, Filters filters) {
-    Extension result = plugin;
-    if (filters
-        .versionConfiguration(plugin)
-        .type
-        .equals(DependencySetConfiguration.Version.ignore)) {
-      result = result.withVersion("ignored");
-    }
-    if (filters
-        .integrityConfiguration(result)
-        .equals(DependencySetConfiguration.Integrity.ignore)) {
-      result = result.withIntegrity(Integrity.Ignored());
-    }
+    result = ignoreVersionIfRelevant(result, filters);
+    result = ignoreIntegrityIfRelevant(result, filters);
+    result =
+        result.withDependencies(
+            Artifacts.fromArtifacts(
+                result.dependencies.stream()
+                    .map(artifact -> modify(artifact, filters))
+                    .collect(toList())));
     return result;
   }
 }

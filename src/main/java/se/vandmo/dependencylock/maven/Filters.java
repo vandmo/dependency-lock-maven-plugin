@@ -21,7 +21,7 @@ public final class Filters {
   }
 
   private <T> T configurationFor(
-      LockableEntity entity, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
+      LockableEntity<?> entity, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
     return dependencySetConfigurations.stream()
         .filter(d -> d.matches(entity))
         .map(extractor)
@@ -30,21 +30,21 @@ public final class Filters {
         .orElse(defaultValue);
   }
 
-  public VersionConfiguration versionConfiguration(LockableEntity entity) {
+  public VersionConfiguration versionConfiguration(LockableEntity<?> entity) {
     DependencySetConfiguration.Version type =
         configurationFor(entity, d -> d.version, DependencySetConfiguration.Version.check);
     return new VersionConfiguration(type, projectVersion);
   }
 
-  public DependencySetConfiguration.Integrity integrityConfiguration(LockableEntity entity) {
+  public DependencySetConfiguration.Integrity integrityConfiguration(LockableEntity<?> entity) {
     return configurationFor(entity, d -> d.integrity, DependencySetConfiguration.Integrity.check);
   }
 
-  public boolean allowSuperfluous(LockableEntity entity) {
+  public boolean allowSuperfluous(LockableEntity<?> entity) {
     return configurationFor(entity, d -> d.allowSuperfluous, Boolean.FALSE);
   }
 
-  public boolean allowMissing(LockableEntity entity) {
+  public boolean allowMissing(LockableEntity<?> entity) {
     return configurationFor(entity, d -> d.allowMissing, Boolean.FALSE);
   }
 

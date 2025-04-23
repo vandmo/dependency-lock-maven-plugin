@@ -3,11 +3,15 @@ package se.vandmo.dependencylock.maven;
 /**
  * Instances of this class shall represent a versioned entity which can be checked for integrity.
  */
-public abstract class LockableEntity {
+public abstract class LockableEntity<T extends LockableEntity<T>> {
 
   LockableEntity() {
     super();
   }
+
+  public abstract T withVersion(String version);
+
+  public abstract T withIntegrity(Integrity integrity);
 
   public abstract Integrity getIntegrity();
 

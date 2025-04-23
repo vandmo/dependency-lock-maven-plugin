@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 
-public final class Plugin extends LockableEntityWithArtifact {
+public final class Plugin extends LockableEntityWithArtifact<Plugin> {
   public final Artifacts dependencies;
 
   public static PluginIdentifierBuilderStage builder() {

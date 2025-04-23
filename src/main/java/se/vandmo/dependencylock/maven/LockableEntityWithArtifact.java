@@ -3,7 +3,8 @@ package se.vandmo.dependencylock.maven;
 import static java.util.Objects.requireNonNull;
 
 /** Instances of this class shall represent a lockable entity which is attached to an artifact. */
-public class LockableEntityWithArtifact extends LockableEntity {
+public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArtifact<T>>
+    extends LockableEntity<T> {
   final Artifact artifact;
   private org.apache.maven.artifact.Artifact mavenArtifact;
 
@@ -11,6 +12,12 @@ public class LockableEntityWithArtifact extends LockableEntity {
     super();
     this.artifact = requireNonNull(artifact);
   }
+
+  @Override
+  public abstract T withIntegrity(Integrity integrity);
+
+  @Override
+  public abstract T withVersion(String version);
 
   @Override
   public final Integrity getIntegrity() {
