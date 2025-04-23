@@ -1,9 +1,9 @@
 package se.vandmo.dependencylock.maven;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -27,20 +27,36 @@ public final class Checksum {
           }
         }
       };
+  private static final int BUFFER_SIZE = 8192;
 
   static {
   }
 
   public static String calculateFor(File file) {
     try {
-      return calculateFor(Files.readAllBytes(file.toPath()));
+      byte[] hashed;
+      byte[] buffer = new byte[BUFFER_SIZE];
+      try (FileInputStream fis = new FileInputStream(file)) {
+        MessageDigest messageDigest = digest.get();
+        int bytesRead = fis.read(buffer);
+        while (bytesRead >= 0) {
+          messageDigest.update(buffer, 0, bytesRead);
+          bytesRead = fis.read(buffer);
+        }
+        hashed = messageDigest.digest();
+      }
+      return encodeHashed(hashed);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
+  private static String encodeHashed(byte[] hashed) {
+    return ALGORITHM_HEADER + Base64.getEncoder().encodeToString(hashed);
+  }
+
   static String calculateFor(byte[] bytes) {
     byte[] hashed = digest.get().digest(bytes);
-    return ALGORITHM_HEADER + Base64.getEncoder().encodeToString(hashed);
+    return encodeHashed(hashed);
   }
 }
