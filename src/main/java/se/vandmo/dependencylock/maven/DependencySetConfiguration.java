@@ -26,7 +26,7 @@ public final class DependencySetConfiguration {
     this.allowSuperfluous = allowSuperfluous;
   }
 
-  public boolean matches(LockableEntity entity) {
+  public boolean matches(LockableEntity<?> entity) {
     Artifact mavenArtifact = entity.getMavenArtifact();
     return includes.include(mavenArtifact) && !excludes.include(mavenArtifact);
   }
