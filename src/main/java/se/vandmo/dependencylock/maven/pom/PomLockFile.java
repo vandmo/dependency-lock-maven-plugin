@@ -182,7 +182,7 @@ public final class PomLockFile {
         }
       }
     }
-    return result;
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static List<Artifact> fromPluginDependencies(XMLEventReader2 rdr)
@@ -204,7 +204,7 @@ public final class PomLockFile {
         }
       }
     }
-    return result;
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static List<Extension> fromExtensions(XMLEventReader2 rdr) throws XMLStreamException {
@@ -225,7 +225,7 @@ public final class PomLockFile {
         }
       }
     }
-    return result;
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static List<Plugin> fromPlugins(XMLEventReader2 rdr) throws XMLStreamException {
@@ -246,7 +246,7 @@ public final class PomLockFile {
         }
       }
     }
-    return result;
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static Dependency fromDependency(XMLEventReader2 rdr) throws XMLStreamException {
