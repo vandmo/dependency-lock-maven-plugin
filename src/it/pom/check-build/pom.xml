@@ -54,7 +54,7 @@
         <version>@project.version@</version>
         <configuration>
           <format>pom</format>
-          <alsoLockBuild>true</alsoLockBuild>
+          <lockBuild>true</lockBuild>
           <dependencySets>
             <dependencySet>
               <includes>

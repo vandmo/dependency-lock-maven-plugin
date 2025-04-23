@@ -33,7 +33,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
           "No lock file found, create one by running 'mvn"
               + " se.vandmo:dependency-lock-maven-plugin:lock'");
     }
-    if (alsoLockBuild()) {
+    if (isLockBuild()) {
       LockedProject lockedProjectDependencies =
           format().lockFile_from(lockFile, pomMinimums(), getLog()).read();
       LockedProject.Diff diff = lockedProjectDependencies.compareWith(project(), filters());

@@ -55,7 +55,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   }
 
   private void dumpPomLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
-    if (alsoLockBuild()) {
+    if (isLockBuild()) {
       LockFilePom lockFileJson = LockFilePom.from(lockFile, pomMinimums(), getLog());
       LockedProject lockedProject = LockedProject.from(project(), getLog());
       lockFileJson.write(lockedProject);
@@ -73,7 +73,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   }
 
   private void dumpJsonLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
-    if (alsoLockBuild()) {
+    if (isLockBuild()) {
       LockfileJson lockFileJson = LockfileJson.from(lockFile, getLog());
       LockedProject lockedProject = LockedProject.from(project(), getLog());
       lockFileJson.write(lockedProject);

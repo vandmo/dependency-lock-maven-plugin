@@ -53,7 +53,7 @@
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>@project.version@</version>
         <configuration>
-          <alsoLockBuild>true</alsoLockBuild>
+          <lockBuild>true</lockBuild>
           <markIgnoredAsIgnored>true</markIgnoredAsIgnored>
           <dependencySets>
             <dependencySet>

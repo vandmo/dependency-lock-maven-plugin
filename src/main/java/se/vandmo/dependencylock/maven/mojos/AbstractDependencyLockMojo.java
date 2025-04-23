@@ -47,8 +47,8 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   @Parameter(defaultValue = "${session}", required = true, readonly = true)
   private MavenSession mavenSession;
 
-  @Parameter(property = "dependencyLock.alsoLockBuild")
-  private boolean alsoLockBuild;
+  @Parameter(property = "dependencyLock.lockBuild")
+  private boolean lockBuild;
 
   @Parameter(property = "dependencyLock.filename")
   private String filename;
@@ -68,8 +68,8 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return Dependencies.fromMavenArtifacts(project.getArtifacts());
   }
 
-  boolean alsoLockBuild() {
-    return alsoLockBuild;
+  boolean isLockBuild() {
+    return lockBuild;
   }
 
   Project project() throws MojoExecutionException {
