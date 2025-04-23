@@ -1,5 +1,7 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.util.Collections.emptyList;
+
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.apache.maven.plugin.ExtensionRealmCache;
@@ -20,5 +22,9 @@ public final class Extensions extends LockableEntitiesWithArtifact<Extension> {
         extensionRealms.stream()
             .map(cacheRecord -> Extension.fromMavenExtensionRealm(cacheRecord))
             .collect(Collectors.toList()));
+  }
+
+  public static Extensions empty() {
+    return from(emptyList());
   }
 }

@@ -1,17 +1,21 @@
 package se.vandmo.dependencylock.maven;
 
-public final class Project {
-  public final Plugins plugins;
-  public final Dependencies dependencies;
-  public final Extensions extensions;
+import java.util.Optional;
 
-  private Project(Plugins plugins, Dependencies dependencies, Extensions extensions) {
-    this.plugins = plugins;
+public final class Project {
+  public final Optional<Build> build;
+  public final Dependencies dependencies;
+
+  private Project(Optional<Build> build, Dependencies dependencies) {
+    this.build = build;
     this.dependencies = dependencies;
-    this.extensions = extensions;
   }
 
-  public static Project from(Plugins plugins, Dependencies dependencies, Extensions extensions) {
-    return new Project(plugins, dependencies, extensions);
+  public static Project from(Dependencies dependencies, Build build) {
+    return new Project(Optional.of(build), dependencies);
+  }
+
+  public static Project from(Dependencies dependencies) {
+    return new Project(Optional.empty(), dependencies);
   }
 }

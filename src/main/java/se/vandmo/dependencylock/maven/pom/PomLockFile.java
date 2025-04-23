@@ -29,17 +29,29 @@ import se.vandmo.dependencylock.maven.Extension;
 import se.vandmo.dependencylock.maven.Plugin;
 
 public final class PomLockFile {
+  public static final class Build {
+    public final List<Plugin> plugins;
+    public final List<Extension> extensions;
+
+    public Build(List<Plugin> plugins, List<Extension> extensions) {
+      this.plugins = unmodifiableList(new ArrayList<>(plugins));
+      this.extensions = unmodifiableList(new ArrayList<>(extensions));
+    }
+  }
 
   public static final class Contents {
     public final List<Dependency> dependencies;
-    public final List<Plugin> plugins;
-    public final List<Extension> extensions;
+    public final Optional<Build> build;
+
+    public Contents(List<Dependency> dependencies) {
+      this.dependencies = unmodifiableList(new ArrayList<>(dependencies));
+      this.build = Optional.empty();
+    }
 
     public Contents(
         List<Dependency> dependencies, List<Plugin> plugins, List<Extension> extensions) {
       this.dependencies = unmodifiableList(new ArrayList<>(dependencies));
-      this.plugins = unmodifiableList(new ArrayList<>(plugins));
-      this.extensions = unmodifiableList(new ArrayList<>(extensions));
+      this.build = Optional.of(new Build(plugins, extensions));
     }
   }
 
@@ -140,10 +152,16 @@ public final class PomLockFile {
     if (null == dependencies) {
       throw new InvalidPomLockFile("Missing 'dependencies' element");
     }
-    return new Contents(
-        dependencies,
-        plugins == null ? emptyList() : plugins,
-        extensions == null ? emptyList() : extensions);
+    if (buildFound) {
+      if (extensions == null) {
+        throw new InvalidPomLockFile("Missing 'extensions' element");
+      }
+      if (plugins == null) {
+        throw new InvalidPomLockFile("Missing 'plugins' element");
+      }
+      return new Contents(dependencies, plugins, extensions);
+    }
+    return new Contents(dependencies);
   }
 
   private static List<Dependency> fromDependencies(XMLEventReader2 rdr) throws XMLStreamException {

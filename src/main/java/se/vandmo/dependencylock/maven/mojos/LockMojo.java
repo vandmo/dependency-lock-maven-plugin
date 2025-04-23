@@ -8,6 +8,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Extensions;
@@ -33,6 +34,9 @@ public final class LockMojo extends AbstractDependencyLockMojo {
 
   @Parameter(property = "dependencyLock.skipLock")
   private Boolean skip = false;
+
+  @Parameter(property = "dependencyLock.lockBuild")
+  private boolean lockBuild;
 
   @Override
   public void execute() throws MojoExecutionException {
@@ -66,10 +70,17 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     }
   }
 
-  @Override
+  boolean isLockBuild() {
+    return lockBuild;
+  }
+
   Project project() throws MojoExecutionException {
-    return Project.from(
-        filteredProjectPlugins(), filteredProjectDependencies(), filteredProjectExtensions());
+    if (isLockBuild()) {
+      return Project.from(
+          filteredProjectDependencies(),
+          Build.from(filteredProjectPlugins(), filteredProjectExtensions()));
+    }
+    return Project.from(filteredProjectDependencies());
   }
 
   private void dumpJsonLockfile(LockFileAccessor lockFile) throws MojoExecutionException {

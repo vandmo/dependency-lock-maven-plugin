@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
@@ -60,8 +62,11 @@ public final class LockFilePom implements Lockfile {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", lockedProject.dependencies);
-    dataModel.put("extensions", lockedProject.extensions);
-    dataModel.put("plugins", lockedProject.plugins);
+    final Optional<Build> build = lockedProject.build;
+    if (build.isPresent()) {
+      dataModel.put("extensions", build.get().extensions);
+      dataModel.put("plugins", build.get().plugins);
+    }
     return dataModel;
   }
 
@@ -87,8 +92,13 @@ public final class LockFilePom implements Lockfile {
   public LockedProject read() {
     final PomLockFile.Contents contents = PomLockFile.read(dependenciesLockFile.file);
     Dependencies artifacts = Dependencies.fromDependencies(contents.dependencies);
-    Plugins plugins = Plugins.from(contents.plugins);
-    Extensions extensions = Extensions.from(contents.extensions);
-    return LockedProject.from(plugins, artifacts, extensions, log);
+    if (contents.build.isPresent()) {
+      Build build =
+          Build.from(
+              Plugins.from(contents.build.get().plugins),
+              Extensions.from(contents.build.get().extensions));
+      return LockedProject.from(artifacts, build, log);
+    }
+    return LockedProject.from(artifacts, log);
   }
 }

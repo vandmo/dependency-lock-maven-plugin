@@ -34,7 +34,6 @@ import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockFileFormat;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
-import se.vandmo.dependencylock.maven.Project;
 
 public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
@@ -46,9 +45,6 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
   @Parameter(defaultValue = "${session}", required = true, readonly = true)
   private MavenSession mavenSession;
-
-  @Parameter(property = "dependencyLock.lockBuild")
-  private boolean lockBuild;
 
   @Parameter(property = "dependencyLock.filename")
   private String filename;
@@ -66,14 +62,6 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
   Dependencies projectDependencies() {
     return Dependencies.fromMavenArtifacts(project.getArtifacts());
-  }
-
-  boolean isLockBuild() {
-    return lockBuild;
-  }
-
-  Project project() throws MojoExecutionException {
-    return Project.from(projectPlugins(), projectDependencies(), projectExtensions());
   }
 
   Extensions projectExtensions() throws MojoExecutionException {
