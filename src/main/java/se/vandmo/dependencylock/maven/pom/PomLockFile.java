@@ -438,7 +438,7 @@ public final class PomLockFile {
         }
         return Extension.builder()
             .artifactIdentifier(
-                ArtifactIdentifier.builder().groupId(groupId).artifactId(artifactId).build())
+                ArtifactIdentifier.builder().groupId(groupId).artifactId(artifactId).type("maven-plugin").build())
             .version(version)
             .integrity(integrity)
             .build();
