@@ -1254,42 +1254,6 @@
       "type" : "jar",
       "integrity" : "sha512:mpjkk8TXcTIrEzHsBasONjqD2Kwq+AGNlqRN8r9b/JfTPr5vb5PkarEL8VNvDCnp2VaTGO1JvBi06Wsai0dtNw=="
     },
-    "se.vandmo.testing:a-classified-leaf:classy:jar:1.0" : {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "a-classified-leaf",
-      "version" : "1.0",
-      "classifier" : "classy",
-      "type" : "jar",
-      "integrity" : "sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w=="
-    },
-    "se.vandmo.testing:a-third-leaf:jar:1.0" : {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "a-third-leaf",
-      "version" : "1.0",
-      "type" : "jar",
-      "integrity" : "sha512:QjAlcrqmdWL88+sTA4UWoLft4SrjCkhDlYR2nk8oGkGeUvubkGQzGDrmURXmQuEzROIb5Y02dI7/a11R5k5ZmQ=="
-    },
-    "se.vandmo.testing:a-war:war:1.0" : {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "a-war",
-      "version" : "1.0",
-      "type" : "war",
-      "integrity" : "sha512:1Lojgkq/rfOAUIaUXKkI4n6P0nkuJGlDj2NVGUaX2fLrBJurCr135hiQNTRRiL+wMnLvPWbKZvPHB2rBI/hTKw=="
-    },
-    "se.vandmo.testing:another-leaf:jar:1.0" : {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "another-leaf",
-      "version" : "1.0",
-      "type" : "jar",
-      "integrity" : "sha512:0TTX1ABvSaYpbW9zHxntUejpMUeFxxod6u0Umg3Ib86RyemGEAbxWKeRtWYCX19BALAHiVr/ArGfy6osTumUOQ=="
-    },
-    "se.vandmo.testing:leaf:jar:1.0" : {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "leaf",
-      "version" : "1.0",
-      "type" : "jar",
-      "integrity" : "sha512:98gbCti9u7jp73/lFrslV7BeOCkxeXUiRQT19E58niRlyEKu69BXPXHB/xM8HQu1os08se3xTkbhWXG5xnGMFw=="
-    },
     "se.vandmo:dependency-lock-maven-plugin:maven-plugin:ignored" : {
       "groupId" : "se.vandmo",
       "artifactId" : "dependency-lock-maven-plugin",
@@ -1330,24 +1294,45 @@
     "extensions" : [ ]
   },
   "dependencies" : [ {
-    "artifact" : "se.vandmo.testing:a-classified-leaf:classy:jar:1.0",
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-classified-leaf",
+    "version" : "1.0",
     "scope" : "compile",
-    "optional" : false
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==",
+    "classifier" : "classy"
   }, {
-    "artifact" : "se.vandmo.testing:a-third-leaf:jar:1.0",
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-third-leaf",
+    "version" : "1.0",
     "scope" : "test",
-    "optional" : false
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:QjAlcrqmdWL88+sTA4UWoLft4SrjCkhDlYR2nk8oGkGeUvubkGQzGDrmURXmQuEzROIb5Y02dI7/a11R5k5ZmQ=="
   }, {
-    "artifact" : "se.vandmo.testing:a-war:war:1.0",
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-war",
+    "version" : "1.0",
     "scope" : "compile",
-    "optional" : false
+    "type" : "war",
+    "optional" : false,
+    "integrity" : "sha512:1Lojgkq/rfOAUIaUXKkI4n6P0nkuJGlDj2NVGUaX2fLrBJurCr135hiQNTRRiL+wMnLvPWbKZvPHB2rBI/hTKw=="
   }, {
-    "artifact" : "se.vandmo.testing:another-leaf:jar:1.0",
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "another-leaf",
+    "version" : "1.0",
     "scope" : "compile",
-    "optional" : true
+    "type" : "jar",
+    "optional" : true,
+    "integrity" : "sha512:0TTX1ABvSaYpbW9zHxntUejpMUeFxxod6u0Umg3Ib86RyemGEAbxWKeRtWYCX19BALAHiVr/ArGfy6osTumUOQ=="
   }, {
-    "artifact" : "se.vandmo.testing:leaf:jar:1.0",
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "leaf",
+    "version" : "1.0",
     "scope" : "compile",
-    "optional" : false
+    "type" : "jar",
+    "optional" : false,
+    "integrity" : "sha512:98gbCti9u7jp73/lFrslV7BeOCkxeXUiRQT19E58niRlyEKu69BXPXHB/xM8HQu1os08se3xTkbhWXG5xnGMFw=="
   } ]
 }
