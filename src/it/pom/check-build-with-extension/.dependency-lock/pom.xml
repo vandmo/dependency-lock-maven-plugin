@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>se.vandmo.tests</groupId>
-  <artifactId>pom-check-build-dependency-lock</artifactId>
+  <artifactId>pom-check-build-with-extension-dependency-lock</artifactId>
   <version>0-SNAPSHOT</version>
 
   <dependencies>
@@ -63,6 +63,12 @@
 
   <build>
     <extensions>
+      <extension>
+        <groupId>org.apache.maven.extensions</groupId>
+        <artifactId>maven-enforcer-extension</artifactId>
+        <version>3.5.0</version>
+        <dependency-lock:integrity>sha512:wnRrq40de1k0a5eIA174WhJ5iWAd5f2rOcLwwMjaCBJ5327oDm5aN0rRtIfSkK+Z2HYJcOnmbjQNmIaZd3IoVA==</dependency-lock:integrity>
+      </extension>
     </extensions>
     <plugins>
       <plugin>
