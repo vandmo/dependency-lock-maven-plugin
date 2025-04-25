@@ -15,13 +15,13 @@
   <dependencies>
     <#list dependencies as dependency>
     <dependency>
-      <groupId>${dependency.identifier.groupId}</groupId>
-      <artifactId>${dependency.identifier.artifactId}</artifactId>
+      <groupId>${dependency.artifactIdentifier.groupId}</groupId>
+      <artifactId>${dependency.artifactIdentifier.artifactId}</artifactId>
       <version>${dependency.version}</version>
-      <type>${dependency.identifier.type}</type>
+      <type>${dependency.artifactIdentifier.type}</type>
       <scope>${dependency.scope}</scope>
-      <#if dependency.identifier.classifier.isPresent()>
-      <classifier>${dependency.identifier.classifier.get()}</classifier>
+      <#if dependency.artifactIdentifier.classifier.isPresent()>
+      <classifier>${dependency.artifactIdentifier.classifier.get()}</classifier>
       </#if>
       <optional>${dependency.optional?c}</optional>
       <dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>

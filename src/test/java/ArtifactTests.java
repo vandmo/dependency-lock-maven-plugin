@@ -22,17 +22,8 @@ public final class ArtifactTests {
   }
 
   @Test(expected = NullPointerException.class)
-  public void builder_scope_null() {
-    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version("1").scope(null);
-  }
-
-  @Test(expected = NullPointerException.class)
   public void builder_integrity_null() {
-    Artifact.builder()
-        .artifactIdentifier(anArtifactIdentifier())
-        .version("1")
-        .scope("compile")
-        .integrity(null);
+    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity(null);
   }
 
   @Test
@@ -47,11 +38,10 @@ public final class ArtifactTests {
                     .type("war")
                     .build())
             .version("1.2.3")
-            .scope("compile")
             .integrity("sha512:123abc")
             .build();
     assertEquals(
-        "the_groupId:the_artifactId:the_classifier:war:1.2.3:compile:optional=false",
+        "the_groupId:the_artifactId:the_classifier:war:1.2.3",
         artifact.toString_withoutIntegrity());
   }
 

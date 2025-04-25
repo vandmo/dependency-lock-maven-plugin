@@ -14,9 +14,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.plugin.logging.Log;
-import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependenciesLockFile;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
@@ -24,25 +24,25 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
 
-  private final DependenciesLockFileAccessor dependenciesLockFile;
+  private final LockFileAccessor dependenciesLockFile;
   private final PomMinimums pomMinimums;
   private final Log log;
 
   private DependenciesLockFilePom(
-      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
     this.log = log;
   }
 
   public static DependenciesLockFilePom from(
-      DependenciesLockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
     return new DependenciesLockFilePom(
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
   }
 
   @Override
-  public void write(Artifacts projectDependencies) {
+  public void write(Dependencies projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -54,7 +54,8 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
     }
   }
 
-  private static Map<String, Object> makeDataModel(PomMinimums pomMinimums, Artifacts artifacts) {
+  private static Map<String, Object> makeDataModel(
+      PomMinimums pomMinimums, Dependencies artifacts) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", artifacts);
@@ -81,7 +82,8 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
 
   @Override
   public LockedDependencies read() {
-    Artifacts artifacts = Artifacts.fromArtifacts(PomLockFile.read(dependenciesLockFile.file));
+    Dependencies artifacts =
+        Dependencies.fromDependencies(PomLockFile.read(dependenciesLockFile.file).dependencies);
     return LockedDependencies.from(artifacts, log);
   }
 }

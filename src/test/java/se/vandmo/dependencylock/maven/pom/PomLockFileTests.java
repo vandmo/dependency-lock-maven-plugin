@@ -12,8 +12,8 @@ import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
-import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Dependency;
 
 public final class PomLockFileTests {
 
@@ -93,22 +93,22 @@ public final class PomLockFileTests {
   @Test
   public void no_dependencies() {
     InvalidPomLockFile exception = assertInvalid("no-dependencies");
-    assertEquals("Missing 'dependencies'-element", exception.getMessage());
+    assertEquals("Missing 'dependencies' element", exception.getMessage());
   }
 
   @Test
   public void valid() {
     assertEquals(
         Arrays.asList(
-            Artifact.builder()
+            Dependency.builder()
                 .artifactIdentifier(
                     ArtifactIdentifier.builder()
                         .groupId("io.netty")
                         .artifactId("netty-buffer")
                         .build())
                 .version("4.1.65.Final")
-                .scope("compile")
                 .integrity("sha512:something")
+                .scope("compile")
                 .build()),
         read("valid"));
   }
@@ -117,9 +117,11 @@ public final class PomLockFileTests {
     return assertThrows(InvalidPomLockFile.class, () -> read(name));
   }
 
-  private static List<Artifact> read(String name) {
+  private static List<Dependency> read(String name) {
     return PomLockFile.read(
-        new File(
-            format(ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)));
+            new File(
+                format(
+                    ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)))
+        .dependencies;
   }
 }

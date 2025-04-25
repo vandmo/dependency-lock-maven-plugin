@@ -1,0 +1,329 @@
+package se.vandmo.dependencylock.maven.json;
+
+import static java.util.Objects.requireNonNull;
+import static se.vandmo.dependencylock.maven.json.JsonUtils.getNonBlankStringValue;
+import static se.vandmo.dependencylock.maven.json.JsonUtils.possiblyGetStringValue;
+import static se.vandmo.dependencylock.maven.json.JsonUtils.readJson;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Stream;
+import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.Artifact;
+import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Build;
+import se.vandmo.dependencylock.maven.Dependencies;
+import se.vandmo.dependencylock.maven.Dependency;
+import se.vandmo.dependencylock.maven.Extension;
+import se.vandmo.dependencylock.maven.Extensions;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
+import se.vandmo.dependencylock.maven.LockedProject;
+import se.vandmo.dependencylock.maven.Lockfile;
+import se.vandmo.dependencylock.maven.Plugin;
+import se.vandmo.dependencylock.maven.Plugins;
+import se.vandmo.dependencylock.maven.pom.InvalidPomLockFile;
+
+public final class LockfileJson implements Lockfile {
+
+  private static final String V2 = "2";
+  private final LockFileAccessor dependenciesLockFile;
+  private final Log log;
+
+  private LockfileJson(LockFileAccessor dependenciesLockFile, Log log) {
+    this.dependenciesLockFile = dependenciesLockFile;
+    this.log = log;
+  }
+
+  public static LockfileJson from(LockFileAccessor dependenciesLockFile, Log log) {
+    return new LockfileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
+  }
+
+  public LockedProject read() {
+    JsonNode json = readJsonNode();
+    if (!json.isObject()) {
+      throw new IllegalStateException("Expected top level type to be an object");
+    }
+    return fromJson(json, log);
+  }
+
+  private static LockedProject fromJson(JsonNode json, Log log) {
+    final JsonNode dependencies = json.get("dependencies");
+    if (dependencies == null) {
+      throw new IllegalStateException("Missing dependencies field");
+    }
+    final JsonNode version = json.get("version");
+    if (version == null) {
+      return LockedProject.from(loadDependenciesFromJson(dependencies), log);
+    }
+    if (V2.equals(version.asText())) {
+      final JsonNode artifacts = json.get("artifacts");
+      if (artifacts == null) {
+        throw new IllegalStateException("Missing artifacts field");
+      }
+      final JsonNode buildNode = json.get("build");
+      if (buildNode == null) {
+        throw new IllegalStateException("Missing build field");
+      }
+      final Map<String, Artifact> artifactMap = loadArtifactsFromJson(artifacts);
+      final Build build = loadBuildFromJson(buildNode, artifactMap);
+      final Dependencies projectDependencies = loadDependenciesFromJson(dependencies, artifactMap);
+      return LockedProject.from(projectDependencies, build, log);
+    } else {
+      throw new IllegalStateException("Unexpected version: " + version.asText());
+    }
+  }
+
+  private static Map<String, Artifact> loadArtifactsFromJson(JsonNode json) {
+    if (null == json) {
+      return Collections.emptyMap();
+    }
+    Iterator<Map.Entry<String, JsonNode>> entries = json.fields();
+    Map<String, Artifact> artifacts = new HashMap<>();
+    while (entries.hasNext()) {
+      final Map.Entry<String, JsonNode> entry = entries.next();
+      artifacts.put(entry.getKey(), parseArtifact(entry.getValue()));
+    }
+    return artifacts;
+  }
+
+  private static Artifact parseArtifact(JsonNode json) {
+    return Artifact.builder()
+        .artifactIdentifier(
+            ArtifactIdentifier.builder()
+                .groupId(getNonBlankStringValue(json, "groupId"))
+                .artifactId(getNonBlankStringValue(json, "artifactId"))
+                .classifier(possiblyGetStringValue(json, "classifier"))
+                .type(possiblyGetStringValue(json, "type"))
+                .build())
+        .version(getNonBlankStringValue(json, "version"))
+        .integrity(getNonBlankStringValue(json, "integrity"))
+        .build();
+  }
+
+  private static Dependencies loadDependenciesFromJson(JsonNode json) {
+    if (!json.isArray()) {
+      throw new IllegalStateException("Needs to be an array");
+    }
+    final List<Dependency> dependencies = new ArrayList<>(json.size());
+    for (JsonNode dependency : json) {
+      final Artifact artifact = parseArtifact(dependency);
+      final String scope = possiblyGetStringValue(dependency, "scope").orElse(null);
+      final boolean optional = dependency.get("optional").asBoolean();
+      dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
+    }
+    return Dependencies.fromDependencies(dependencies);
+  }
+
+  private static Dependencies loadDependenciesFromJson(
+      JsonNode json, Map<String, Artifact> artifacts) {
+    final List<Dependency> dependencies = new ArrayList<>();
+    if (!json.isArray()) {
+      throw new IllegalStateException("Needs to be an array");
+    }
+    for (JsonNode dependency : json) {
+      final String artifactKey = getNonBlankStringValue(dependency, "artifact");
+      final Artifact artifact = artifacts.get(artifactKey);
+      if (artifact == null) {
+        throw new IllegalStateException("Artifact not found: " + artifactKey);
+      }
+      final String scope = possiblyGetStringValue(dependency, "scope").orElse(null);
+      final boolean optional = dependency.get("optional").asBoolean();
+      dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
+    }
+    return Dependencies.fromDependencies(dependencies);
+  }
+
+  private static Build loadBuildFromJson(JsonNode json, Map<String, Artifact> artifacts)
+      throws InvalidPomLockFile {
+    final JsonNode plugins = json.get("plugins");
+    if (plugins == null) {
+      throw new IllegalStateException("Missing plugins field");
+    }
+    final JsonNode extensions = json.get("extensions");
+    if (extensions == null) {
+      throw new IllegalStateException("Missing extensions field");
+    }
+    return Build.from(
+        loadPluginsFromJson(plugins, artifacts), loadExtensionsFromJson(extensions, artifacts));
+  }
+
+  private static Plugins loadPluginsFromJson(JsonNode json, Map<String, Artifact> artifacts) {
+    if (!json.isArray()) {
+      throw new IllegalStateException("Needs to be an array");
+    }
+    List<Plugin> lockedPlugins = new ArrayList<>();
+    for (JsonNode entry : json) {
+      lockedPlugins.add(lockedPluginFromJson(entry, artifacts));
+    }
+    return Plugins.from(lockedPlugins);
+  }
+
+  private static Extensions loadExtensionsFromJson(JsonNode json, Map<String, Artifact> artifacts) {
+    if (!json.isArray()) {
+      throw new IllegalStateException("Needs to be an array");
+    }
+    final List<Extension> lockedPlugins = new ArrayList<>(json.size());
+    for (JsonNode entry : json) {
+      lockedPlugins.add(lockedExtensionFromJson(entry, artifacts));
+    }
+    return Extensions.from(lockedPlugins);
+  }
+
+  private static Plugin lockedPluginFromJson(JsonNode json, Map<String, Artifact> artifacts) {
+    final String artifactKey = getNonBlankStringValue(json, "artifact");
+    final Artifact artifact = artifacts.get(artifactKey);
+    if (null == artifact) {
+      throw new IllegalArgumentException("Artifact not found: " + artifactKey);
+    }
+    final Plugin.ArtifactsBuilderStage builderStage = Plugin.forArtifact(artifact);
+    JsonNode dependenciesNode = json.get("dependencies");
+    final List<Artifact> dependencies;
+    if (null == dependenciesNode) {
+      dependencies = Collections.emptyList();
+    } else {
+      if (!dependenciesNode.isArray()) {
+        throw new IllegalStateException("Needs to be an array");
+      }
+      dependencies = new ArrayList<>(dependenciesNode.size());
+      for (JsonNode dependency : dependenciesNode) {
+        final String dependencyKey = dependency.asText();
+        final Artifact artifactDependency = artifacts.get(dependencyKey);
+        if (null == artifactDependency) {
+          throw new IllegalArgumentException("Dependency not found: " + dependencyKey);
+        }
+        dependencies.add(artifactDependency);
+      }
+    }
+    return builderStage.artifacts(Artifacts.fromArtifacts(dependencies)).build();
+  }
+
+  private static Extension lockedExtensionFromJson(JsonNode json, Map<String, Artifact> artifacts) {
+    final String artifactKey = getNonBlankStringValue(json, "artifact");
+    final Artifact artifact = artifacts.get(artifactKey);
+    if (null == artifact) {
+      throw new IllegalArgumentException("Artifact not found: " + artifactKey);
+    }
+    return Extension.of(artifact);
+  }
+
+  private JsonNode readJsonNode() {
+    try (Reader reader = dependenciesLockFile.reader()) {
+      return readJson(reader);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  public void write(LockedProject contents) {
+    JsonNode json = write(contents, JsonNodeFactory.instance);
+    try (Writer writer = dependenciesLockFile.writer()) {
+      JsonUtils.writeJson(writer, json);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private JsonNode write(LockedProject contents, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
+    ObjectNode output = jsonNodeFactory.objectNode();
+    collectArtifacts(contents)
+        .forEach((key, value) -> output.set(key, writeJson(value, jsonNodeFactory)));
+    json.put("version", V2);
+    json.set("artifacts", output);
+    contents.build.ifPresent(build -> json.set("build", toJson(build, jsonNodeFactory)));
+    json.set("dependencies", toJson(contents.dependencies, jsonNodeFactory));
+    return json;
+  }
+
+  private JsonNode toJson(Build contents, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.set("plugins", toJson(contents.plugins, jsonNodeFactory));
+    json.set("extensions", toJson(contents.extensions, jsonNodeFactory));
+    return json;
+  }
+
+  private JsonNode writeJson(Artifact artifact, JsonNodeFactory factory) {
+    ObjectNode output = factory.objectNode();
+    final ArtifactIdentifier artifactIdentifier = artifact.identifier;
+    output.put("groupId", artifactIdentifier.groupId);
+    output.put("artifactId", artifactIdentifier.artifactId);
+    output.put("version", artifact.version);
+    artifactIdentifier.classifier.ifPresent(
+        actualClassifier -> output.put("classifier", actualClassifier));
+    output.put("type", artifactIdentifier.type);
+    output.put("integrity", artifact.getIntegrityForLockFile());
+    return output;
+  }
+
+  private Map<String, Artifact> collectArtifacts(LockedProject contents) {
+    Map<String, Artifact> artifacts = new HashMap<>();
+    Stream.concat(
+            contents.dependencies.artifacts(),
+            contents.build.map(Build::artifacts).orElse(Stream.empty()))
+        .forEach(artifact -> artifacts.putIfAbsent(artifact.getArtifactKey(), artifact));
+    return new TreeMap<>(artifacts);
+  }
+
+  private JsonNode toJson(Plugins plugins, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode json = jsonNodeFactory.arrayNode();
+    for (Plugin lockedPlugin : plugins) {
+      json.add(toJson(lockedPlugin, jsonNodeFactory));
+    }
+    return json;
+  }
+
+  private JsonNode toJson(Dependencies dependencies, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode json = jsonNodeFactory.arrayNode();
+    for (Dependency dependency : dependencies) {
+      json.add(toJson(dependency, jsonNodeFactory));
+    }
+    return json;
+  }
+
+  private JsonNode toJson(Extensions extensions, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode json = jsonNodeFactory.arrayNode();
+    for (Extension extension : extensions) {
+      json.add(toJson(extension, jsonNodeFactory));
+    }
+    return json;
+  }
+
+  private JsonNode toJson(Plugin lockedPlugin, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.put("artifact", lockedPlugin.toString_withoutIntegrity());
+    ArrayNode dependencies = jsonNodeFactory.arrayNode();
+    for (Artifact artifact : lockedPlugin.dependencies) {
+      dependencies.add(artifact.getArtifactKey());
+    }
+    json.set("dependencies", dependencies);
+    return json;
+  }
+
+  private JsonNode toJson(Extension lockedExtension, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.put("artifact", lockedExtension.getArtifactKey());
+    return json;
+  }
+
+  private JsonNode toJson(Dependency dependency, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.put("artifact", dependency.getArtifactKey());
+    json.put("scope", dependency.scope);
+    json.put("optional", dependency.optional);
+    return json;
+  }
+}

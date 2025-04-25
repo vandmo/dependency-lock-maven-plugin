@@ -13,16 +13,16 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-public final class DependenciesLockFileAccessor {
+public final class LockFileAccessor {
 
   public final File file;
 
-  private DependenciesLockFileAccessor(File file) {
+  private LockFileAccessor(File file) {
     this.file = file;
   }
 
-  public static DependenciesLockFileAccessor fromBasedir(File basedir, String filename) {
-    return new DependenciesLockFileAccessor(new File(basedir, filename));
+  public static LockFileAccessor fromBasedir(File basedir, String filename) {
+    return new LockFileAccessor(new File(basedir, filename));
   }
 
   public Reader reader() {

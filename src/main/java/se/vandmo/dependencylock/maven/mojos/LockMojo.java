@@ -4,17 +4,27 @@ import static java.util.Locale.ROOT;
 import static java.util.stream.Collectors.toList;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.DependenciesLockFileAccessor;
+import se.vandmo.dependencylock.maven.Build;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
+import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.Integrity;
+import se.vandmo.dependencylock.maven.LockFileAccessor;
+import se.vandmo.dependencylock.maven.LockableEntity;
 import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.LockedProject;
+import se.vandmo.dependencylock.maven.Plugin;
+import se.vandmo.dependencylock.maven.Plugins;
+import se.vandmo.dependencylock.maven.Project;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
+import se.vandmo.dependencylock.maven.json.LockfileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
+import se.vandmo.dependencylock.maven.pom.LockFilePom;
 
 @Mojo(name = "lock", requiresDependencyResolution = TEST, threadSafe = true)
 public final class LockMojo extends AbstractDependencyLockMojo {
@@ -25,56 +35,140 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   @Parameter(property = "dependencyLock.skipLock")
   private Boolean skip = false;
 
+  @Parameter(property = "dependencyLock.lockBuild")
+  private boolean lockBuild;
+
   @Override
-  public void execute() {
+  public void execute() throws MojoExecutionException {
     if (skip) {
       getLog().info("Skipping lock");
       return;
     }
-    DependenciesLockFileAccessor lockFile = lockFile();
+    LockFileAccessor lockFile = lockFile();
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
       case json:
-        DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
-        LockedDependencies lockedDependencies =
-            LockedDependencies.from(filteredProjectDependencies(), getLog());
-        lockFileJson.write(lockedDependencies);
+        dumpJsonLockfile(lockFile);
         break;
       case pom:
-        DependenciesLockFilePom lockFilePom =
-            DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
-        lockFilePom.write(filteredProjectDependencies());
+        dumpPomLockfile(lockFile);
         break;
       default:
         throw new RuntimeException("This should not happen!");
     }
   }
 
-  private Artifacts filteredProjectDependencies() {
-    Artifacts projectDependencies = projectDependencies();
+  private void dumpPomLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
+    if (isLockBuild()) {
+      LockFilePom lockFileJson = LockFilePom.from(lockFile, pomMinimums(), getLog());
+      LockedProject lockedProject = LockedProject.from(project(), getLog());
+      lockFileJson.write(lockedProject);
+    } else {
+      DependenciesLockFilePom lockFilePom =
+          DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
+      lockFilePom.write(filteredProjectDependencies());
+    }
+  }
+
+  boolean isLockBuild() {
+    return lockBuild;
+  }
+
+  Project project() throws MojoExecutionException {
+    if (isLockBuild()) {
+      return Project.from(
+          filteredProjectDependencies(),
+          Build.from(filteredProjectPlugins(), filteredProjectExtensions()));
+    }
+    return Project.from(filteredProjectDependencies());
+  }
+
+  private void dumpJsonLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
+    if (isLockBuild()) {
+      LockfileJson lockFileJson = LockfileJson.from(lockFile, getLog());
+      LockedProject lockedProject = LockedProject.from(project(), getLog());
+      lockFileJson.write(lockedProject);
+    } else {
+      DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
+      LockedDependencies lockedDependencies =
+          LockedDependencies.from(filteredProjectDependencies(), getLog());
+      lockFileJson.write(lockedDependencies);
+    }
+  }
+
+  private Dependencies filteredProjectDependencies() {
+    Dependencies projectDependencies = projectDependencies();
     if (!markIgnoredAsIgnored) {
       return projectDependencies;
     }
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
-    return Artifacts.fromArtifacts(
-        projectDependencies().artifacts.stream()
+    return Dependencies.fromDependencies(
+        projectDependencies().stream()
             .map(artifact -> modify(artifact, filters))
             .collect(toList()));
   }
 
-  private static Artifact modify(Artifact artifact, Filters filters) {
+  private Plugins filteredProjectPlugins() throws MojoExecutionException {
+    Plugins projectPlugins = projectPlugins();
+    if (!markIgnoredAsIgnored) {
+      return projectPlugins;
+    }
+    getLog().info("Marking ignored version and integrity as ignored in lock file");
+    Filters filters = filters();
+    return Plugins.from(
+        projectPlugins.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
+  }
+
+  private Extensions filteredProjectExtensions() throws MojoExecutionException {
+    Extensions projectExtensions = projectExtensions();
+    if (!markIgnoredAsIgnored) {
+      return projectExtensions;
+    }
+    getLog().info("Marking ignored version and integrity as ignored in lock file");
+    Filters filters = filters();
+    return Extensions.from(
+        projectExtensions.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
+  }
+
+  private static <T extends LockableEntity<T>> T modify(T lockableEntity, Filters filters) {
+    T result = lockableEntity;
+    result = ignoreVersionIfRelevant(result, filters);
+    result = ignoreIntegrityIfRelevant(result, filters);
+    return result;
+  }
+
+  private static <T extends LockableEntity<T>> T ignoreIntegrityIfRelevant(
+      T lockableEntity, Filters filters) {
     if (filters
-        .versionConfiguration(artifact)
+        .integrityConfiguration(lockableEntity)
+        .equals(DependencySetConfiguration.Integrity.ignore)) {
+      return lockableEntity.withIntegrity(Integrity.Ignored());
+    }
+    return lockableEntity;
+  }
+
+  private static <T extends LockableEntity<T>> T ignoreVersionIfRelevant(
+      T lockableEntity, Filters filters) {
+    if (filters
+        .versionConfiguration(lockableEntity)
         .type
         .equals(DependencySetConfiguration.Version.ignore)) {
-      artifact = artifact.withVersion("ignored");
+      return lockableEntity.withVersion("ignored");
     }
-    if (filters
-        .integrityConfiguration(artifact)
-        .equals(DependencySetConfiguration.Integrity.ignore)) {
-      artifact = artifact.withIntegrity(Integrity.Ignored());
-    }
-    return artifact;
+    return lockableEntity;
+  }
+
+  private Plugin modify(Plugin plugin, Filters filters) {
+    Plugin result = plugin;
+    result = ignoreVersionIfRelevant(result, filters);
+    result = ignoreIntegrityIfRelevant(result, filters);
+    result =
+        result.withDependencies(
+            Artifacts.fromArtifacts(
+                result.dependencies.stream()
+                    .map(artifact -> modify(artifact, filters))
+                    .collect(toList())));
+    return result;
   }
 }
