@@ -16,6 +16,24 @@
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="Extension">
+      <xs:complexContent>
+        <xs:extension base="Extension">
+          <xs:all>
+            <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
+          </xs:all>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Plugin">
+      <xs:complexContent>
+        <xs:extension base="Plugin">
+          <xs:all>
+            <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
+          </xs:all>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
   </xs:redefine>
 
 </xs:schema>
