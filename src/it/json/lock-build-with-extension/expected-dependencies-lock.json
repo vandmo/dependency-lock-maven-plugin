@@ -1,4 +1,5 @@
 {
+  "version" : "2",
   "artifacts" : {
     "aopalliance:aopalliance:jar:1.0" : {
       "groupId" : "aopalliance",

@@ -39,6 +39,7 @@ import se.vandmo.dependencylock.maven.pom.InvalidPomLockFile;
 
 public final class LockfileJson implements Lockfile {
 
+  private static final String V2 = "2";
   private final LockFileAccessor dependenciesLockFile;
   private final Log log;
 
@@ -64,18 +65,26 @@ public final class LockfileJson implements Lockfile {
     if (dependencies == null) {
       throw new IllegalStateException("Missing dependencies field");
     }
-    final JsonNode artifacts = json.get("artifacts");
-    if (artifacts == null) {
+    final JsonNode version = json.get("version");
+    if (version == null) {
       return LockedProject.from(loadDependenciesFromJson(dependencies), log);
     }
-    final JsonNode buildNode = json.get("build");
-    if (buildNode == null) {
-      throw new IllegalStateException("Missing build field");
+    if (V2.equals(version.asText())) {
+      final JsonNode artifacts = json.get("artifacts");
+      if (artifacts == null) {
+        throw new IllegalStateException("Missing artifacts field");
+      }
+      final JsonNode buildNode = json.get("build");
+      if (buildNode == null) {
+        throw new IllegalStateException("Missing build field");
+      }
+      final Map<String, Artifact> artifactMap = loadArtifactsFromJson(artifacts);
+      final Build build = loadBuildFromJson(buildNode, artifactMap);
+      final Dependencies projectDependencies = loadDependenciesFromJson(dependencies, artifactMap);
+      return LockedProject.from(projectDependencies, build, log);
+    } else {
+      throw new IllegalStateException("Unexpected version: " + version.asText());
     }
-    final Map<String, Artifact> artifactMap = loadArtifactsFromJson(artifacts);
-    final Build build = loadBuildFromJson(buildNode, artifactMap);
-    final Dependencies projectDependencies = loadDependenciesFromJson(dependencies, artifactMap);
-    return LockedProject.from(projectDependencies, build, log);
   }
 
   private static Map<String, Artifact> loadArtifactsFromJson(JsonNode json) {
@@ -233,6 +242,7 @@ public final class LockfileJson implements Lockfile {
     ObjectNode output = jsonNodeFactory.objectNode();
     collectArtifacts(contents)
         .forEach((key, value) -> output.set(key, writeJson(value, jsonNodeFactory)));
+    json.put("version", V2);
     json.set("artifacts", output);
     contents.build.ifPresent(build -> json.set("build", toJson(build, jsonNodeFactory)));
     json.set("dependencies", toJson(contents.dependencies, jsonNodeFactory));
