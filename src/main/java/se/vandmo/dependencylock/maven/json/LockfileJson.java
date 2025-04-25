@@ -64,10 +64,9 @@ public final class LockfileJson implements Lockfile {
     if (dependencies == null) {
       throw new IllegalStateException("Missing dependencies field");
     }
-    final Dependencies projectDependencies = loadDependenciesFromJson(dependencies);
     final JsonNode artifacts = json.get("artifacts");
     if (artifacts == null) {
-      return LockedProject.from(projectDependencies, log);
+      return LockedProject.from(loadDependenciesFromJson(dependencies), log);
     }
     final JsonNode buildNode = json.get("build");
     if (buildNode == null) {
@@ -75,6 +74,7 @@ public final class LockfileJson implements Lockfile {
     }
     final Map<String, Artifact> artifactMap = loadArtifactsFromJson(artifacts);
     final Build build = loadBuildFromJson(buildNode, artifactMap);
+    final Dependencies projectDependencies = loadDependenciesFromJson(dependencies, artifactMap);
     return LockedProject.from(projectDependencies, build, log);
   }
 
@@ -112,6 +112,25 @@ public final class LockfileJson implements Lockfile {
     final List<Dependency> dependencies = new ArrayList<>(json.size());
     for (JsonNode dependency : json) {
       final Artifact artifact = parseArtifact(dependency);
+      final String scope = possiblyGetStringValue(dependency, "scope").orElse(null);
+      final boolean optional = dependency.get("optional").asBoolean();
+      dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
+    }
+    return Dependencies.fromDependencies(dependencies);
+  }
+
+  private static Dependencies loadDependenciesFromJson(
+      JsonNode json, Map<String, Artifact> artifacts) {
+    final List<Dependency> dependencies = new ArrayList<>();
+    if (!json.isArray()) {
+      throw new IllegalStateException("Needs to be an array");
+    }
+    for (JsonNode dependency : json) {
+      final String artifactKey = getNonBlankStringValue(dependency, "artifact");
+      final Artifact artifact = artifacts.get(artifactKey);
+      if (artifact == null) {
+        throw new IllegalStateException("Artifact not found: " + artifactKey);
+      }
       final String scope = possiblyGetStringValue(dependency, "scope").orElse(null);
       final boolean optional = dependency.get("optional").asBoolean();
       dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
@@ -242,10 +261,9 @@ public final class LockfileJson implements Lockfile {
 
   private Map<String, Artifact> collectArtifacts(LockedProject contents) {
     Map<String, Artifact> artifacts = new HashMap<>();
-    contents
-        .build
-        .map(Build::artifacts)
-        .orElse(Stream.empty())
+    Stream.concat(
+            contents.dependencies.artifacts(),
+            contents.build.map(Build::artifacts).orElse(Stream.empty()))
         .forEach(artifact -> artifacts.putIfAbsent(artifact.getArtifactKey(), artifact));
     return new TreeMap<>(artifacts);
   }
@@ -293,16 +311,7 @@ public final class LockfileJson implements Lockfile {
 
   private JsonNode toJson(Dependency dependency, JsonNodeFactory jsonNodeFactory) {
     ObjectNode json = jsonNodeFactory.objectNode();
-    final ArtifactIdentifier artifactIdentifier = dependency.getArtifactIdentifier();
-    json.put("groupId", artifactIdentifier.groupId);
-    json.put("artifactId", artifactIdentifier.artifactId);
-    json.put("version", dependency.getVersion());
-    json.put("scope", dependency.scope);
-    json.put("type", artifactIdentifier.type);
-    json.put("optional", dependency.optional);
-    json.put("integrity", dependency.getIntegrityForLockFile());
-    artifactIdentifier.classifier.ifPresent(
-        actualClassifier -> json.put("classifier", actualClassifier));
+    json.put("artifact", dependency.getArtifactKey());
     json.put("scope", dependency.scope);
     json.put("optional", dependency.optional);
     return json;
