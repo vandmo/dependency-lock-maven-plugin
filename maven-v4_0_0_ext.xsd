@@ -1,8 +1,8 @@
 <xs:schema
-    targetNamespace="http://maven.apache.org/POM/4.0.0"
-    elementFormDefault="qualified"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+  targetNamespace="http://maven.apache.org/POM/4.0.0"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock">
 
   <xs:import schemaLocation="https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
 
