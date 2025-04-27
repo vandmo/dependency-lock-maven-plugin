@@ -4,7 +4,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:dependency-lock="urn:se.vandmo.dependencylock">
 
-  <xs:import schemaLocation="./dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
+  <xs:import schemaLocation="https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
 
   <xs:redefine schemaLocation="http://maven.apache.org/maven-v4_0_0.xsd">
     <xs:complexType name="Model">
