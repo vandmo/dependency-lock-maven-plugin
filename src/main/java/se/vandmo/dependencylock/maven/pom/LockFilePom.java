@@ -14,6 +14,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.Dependencies;
@@ -89,8 +90,13 @@ public final class LockFilePom implements Lockfile {
   }
 
   @Override
-  public LockedProject read() {
-    final PomLockFile.Contents contents = PomLockFile.read(dependenciesLockFile.file);
+  public LockedProject read() throws MojoExecutionException {
+    final PomLockFile.Contents contents;
+    try {
+      contents = PomLockFile.read(dependenciesLockFile.file);
+    } catch (InvalidPomLockFile e) {
+      throw new MojoExecutionException(e.getMessage(), e);
+    }
     Dependencies artifacts = Dependencies.fromDependencies(contents.dependencies);
     if (contents.build.isPresent()) {
       Build build =
