@@ -10,7 +10,7 @@
     <xs:complexType name="Model">
       <xs:complexContent>
         <xs:extension base="Model">
-          <xs:attribute ref="dependency-lock:version" />
+          <xs:attribute ref="dependency-lock:version" use="optional" />
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
