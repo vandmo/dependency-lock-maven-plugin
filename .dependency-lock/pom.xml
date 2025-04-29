@@ -341,11 +341,11 @@
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-utils</artifactId>
-      <version>3.4.2</version>
+      <version>3.5.1</version>
       <type>jar</type>
       <scope>provided</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:I6VsiOjBJNbWkLouQAe+L6QQCf0MlcFRKYN3Isb1bzDljyxNk6pSsFvTdpbhUL+2nlQT0Wx7btCLqdrVrbI+ug==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:4tTnvJGd6wItD8xCjaBm1iw0oC0kixhP/D7c6gj/vcNUzQGCQLIaBJXq/NAXI6aS5YOAPMsQ2Z+/qX9YpJ+Wfw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
@@ -425,15 +425,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
-        <dependency-lock:integrity>sha512:Wf9vlOrQHnFRHoQiUEkp3IPSpbMNbYj5rqlHjFKry3BKdLRLZV0D1GcZ0NfdwGo2YsCTEj8L2Evv9veYPBHlGA==</dependency-lock:integrity>
+        <version>3.14.0</version>
+        <dependency-lock:integrity>sha512:dsFef0S8TmWnKyn2eP6yBZH7DuTVMFIJ6WVCc6iH7n20WhSfI0vfXB+7Zqp6T5RyqkkhrLonuEmqnfBr5SiwdA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.thoughtworks.qdox</groupId>
             <artifactId>qdox</artifactId>
-            <version>2.0.3</version>
+            <version>2.2.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:8YRMGhdSxqt76kgyc28slGG8HTbi5lE48ok+SAVw8fyEy4Wl9ynPWPOmOi2Bp1PfcAf3Hr4rpFakjNxR2Fecyw==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:P+yVMr0Py+aVrGxMOuVL3YOzXsAx6oGshTpJ1UjWwUv6uS5iZUW5BWT4QkzCLZwsaCYVzwpGEnO2DxJxhAlXWA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>commons-io</groupId>
@@ -487,30 +487,30 @@
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-java</artifactId>
-            <version>1.2.0</version>
+            <version>1.4.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:wiGpt1RzTQUA4MsO2n8s90jEj/qtPwfRcEWfDN2lV170QiZ2fOQspaemQuS110J1wmrwASLSqxNxyPXl2UjPAA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:ZGLrHblEIyuxtKrpypwH2uDtw0n0KwCQrRypaygJHwEXUTqVtYYcbwt6HxbszMdLus2XFMzBCcW+K0Tx0BofKQ==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:HE3ePjbDfEs7OGC1SEj8X7uA9TbS7+CVoGYpqnggRK62k63toxBqyMdzBp52bz3vYWmQwERFl9IMC8nx1zSL0Q==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:7PYJ1JXJ53KEdso11CkMlNhiw5OvxqmAkFcfQEfUGE0cUjH9avS8aP59gy7KJhcfhq9exZDW8vcHQLcgpvY2tQ==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-xml</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:MbaKAlqyZY/lnV+7eaJCVWA5Lj2ydGsKuAWEaliBbEI13W1Q7T7S1JGfdJTgWAdTcbspaU9KquNwyeDKouVSRQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:Qi8szdoA3YyQwvW19K1vBBD7byvLNCnRlvfznJakSmcJxwU5ZIIU1bdoanAkCmwWx7mFuUP4AC0xj5CJYjCiWQ==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>9.6</version>
+            <version>9.7.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:AaXqb1tDvwlMUqUOGDJaYK97sC500k+bwscn1D5RRXj9losw/yL50nIMrsBxRY+f+C0Roh+7HrxC2CA+c3xLUg==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:R2ewFgPa1cecweK183IvcrEFnZKPGE9Ea6EbresbOBs6OpqAHMQ9JdOW35ULCdGVl8cxc8QRsdqJDegIuU8fUA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.slf4j</groupId>
@@ -2244,6 +2244,13 @@
             <dependency-lock:integrity>sha512:2bsTNF06QandvQ1PvZpKuTb4/5isvLNzlM0OdapeVQiI1RuTx2/qhini8s853ksP6Uq/hTtG20JuQGdM3o1p1Q==</dependency-lock:integrity>
           </dependency>
           <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.17.1</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:p9uY20cOatM4Jm/0QvvfvCd7odB6WRM299FdxJ/ayITafawE2AZiixJDf5k9i15qS4AKZlkP8Rk22/i+3NjoYA==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.11.0</version>
@@ -2260,9 +2267,16 @@
           <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.25.0</version>
+            <version>1.27.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:JiundxzvWz7unoeQECy+Aiu1L15L1/aeOrEyVjRyu9WubeZT30Z7+9fpgo1e35uBpsQyNrOuZax1e6dFq7T3ZA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:Xh/Pn1UquGvs7vZ0NgnpfXANy6pbXuWIWOdlwSOM1NvKKFLh60FbwqCdrUeNMRl93wmyuhSN0wvoyezVZXdSJg==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.16.0</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:LctblAOubeG+ddBtELPArzRGUZl4GHjdQWHQDDDrR6Y+fFzOAxf7MBZGqsfcnLCm4Zfma0WhF38sI1NC2bsnMg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
@@ -2431,8 +2445,8 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.13</version>
-        <dependency-lock:integrity>sha512:lYTozSUFFTGOXxI9Lwi3OCZFXYXL7xETJpZB2F3lB365ppk1PyyVXu4xiJx9uZrY3Pai9tYEqqrAfSmftvwEnw==</dependency-lock:integrity>
+        <version>1.7.0</version>
+        <dependency-lock:integrity>sha512:WSV4PD5aYc5ZNZ4vnJJoxxPcASXmLvfO0LiI3IJHCQ+S3M4eZ5QJ1Y2y53QXD8pbS3KHW/uJVMD+Ir5YAqHRXA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>aopalliance</groupId>
@@ -2444,16 +2458,16 @@
           <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
+            <version>1.5.18</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:bfi0I5bF0yV/EfsZwoBTOqKNZuZHEVgW1Ov9aljJta3w4JhQR3ImGylDXfdbhssrmkf4Ru1F13AXnJ0Q85lB3g==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:SO32LQiaE9w6Vyrt6/n4gdYWkJg/A4MYOMecrssTz3SXhuohUVbZvznBuTb8wyujfdJl99GRcIxeJLo7plTuUA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.11</version>
+            <version>1.5.18</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:hrEqdMKoIqEroumnsNtQE4A/GHhKPLEgHJXV94cqaqjPBtWGGlw1d3p97MfqJt97Q4j6s7O3GqtydFJ9mzOTGA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:/m4lkjjzSYObajDnHlM7Xy+gozpGLv6dCRUlGNOtd1nOA298ZnRPHt+V7sT3wrcmHeYWre0o3vk96FuMerd9jw==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -2472,9 +2486,9 @@
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.2.2</version>
+            <version>2.13.4.2</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:DpOYWR2G+A8W/C1v8N2j54IQM+LFlHKYHqq2FEO+PXcZhlVoKQW4UmD7IYaizw8zmIr/aJpJu1TlbAfgL2B+ig==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:ibX1hBTVQdefY93tvPTV+vq8aNm/nK0J81TBUeloVRLhQz8uIvan/8gQDDxf3bu5n9ZNfG1JdLKRXttSP5nKFg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
@@ -2556,9 +2570,9 @@
           <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.19</version>
+            <version>1.4.21</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:Bf5CzJw2wOQx1sj0DBXyHw80ecFWUbNWY7XW4D9n06CPRot9gx8BitbNIO9wgBQMyk0ur6yQAHtody6htPi4UQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:268CIpUDycaRmMf5DzYaINaMbxpcYjjSmME7+MUJCx66mTB8ZoSBpMeQH+I6cXX2pSGMz0DEVCK8RolPKcyHxQ==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>commons-beanutils</groupId>
@@ -2710,9 +2724,9 @@
           <dependency>
             <groupId>org.apache.maven.wagon</groupId>
             <artifactId>wagon-provider-api</artifactId>
-            <version>2.2</version>
+            <version>3.5.3</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:JiUvF+TJHHR8F7a3TAOO4Ij9KEeSKX9rkOxIocCPiRXyBNEGchb6s855ChY/qGwbBg1NsBFvxKghAuF1Wr/X7A==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:5pCqv84OchfZgQ/6j8aIvMoeefufRAiA9ExuXiBIJOaYXf5BcWgqOtYNiVZtLZW87f4M1i9ZhY7widvYGTtifA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
@@ -2731,9 +2745,9 @@
           <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-compat</artifactId>
-            <version>3.0.4</version>
+            <version>3.9.9</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:hkWLloa5dQQuIUldAugyvwAln2JJlwHah55m01o4eAYQoKMeDxoy7DGxJMxSLR2gzYKKHujkBb6bYwNaesE8/A==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:m3LesgLGez97/qLhFzHiBGoLnOgpqGQiyj1I+5pH0Pg4DQBRLn25G4ExRNCZiddiN5P3Y3wATrx5ErlW/gniOw==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
@@ -2892,9 +2906,9 @@
           <dependency>
             <groupId>org.sonatype.nexus.maven</groupId>
             <artifactId>nexus-common</artifactId>
-            <version>1.6.13</version>
+            <version>1.7.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:9iYKkYabTCUxNJTQZ92F78FxdTHJ2IHGg3bC7vvQLedqiU8Y9/zH1TB2m25lTwFqZqS9o3cKUi0qqVxKpd5MEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:Hgwb8S6olUJX4QLNUDFkMaAerbTqOKGVc9kbQJJpSm+EYZ7x6GEQYhhwosmsADTa8Rqbz7TxKN+G0LXeh6uTYg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.sonatype.nexus.plugins</groupId>

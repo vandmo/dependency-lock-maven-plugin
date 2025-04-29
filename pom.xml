@@ -23,7 +23,7 @@
     <!-- Maven Plugin Versions -->
     <dependency-lock-maven-plugin.version>0.0.564595d3d136a64558118b24b3c2ec1a55e9013e</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
     <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
@@ -39,7 +39,7 @@
     <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     <maven-wrapper-plugin.version>3.2.0</maven-wrapper-plugin.version>
     <mrm-maven-plugin.version>1.6.0</mrm-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+    <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
 
     <!-- Libraries -->
     <commons-io.version>2.17.0</commons-io.version>
@@ -51,6 +51,7 @@
     <junit.version>4.13.2</junit.version>
     <maven-artifact.version>3.8.5</maven-artifact.version>
     <maven-common-artifact-filters.version>3.4.0</maven-common-artifact-filters.version>
+    <maven-compat.version>3.9.9</maven-compat.version>
     <maven-core.version>3.9.9</maven-core.version>
     <maven-model.version>3.8.5</maven-model.version>
     <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
@@ -343,6 +344,13 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.27.1</version>
+          </dependency>
+        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -398,6 +406,31 @@
           <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
         <dependencies>
+          <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.4.2</version>
+          </dependency>
+          <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.4.21</version>
+          </dependency>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.18</version>
+          </dependency>
+          <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.5.18</version>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-compat</artifactId>
+            <version>${maven-compat.version}</version>
+          </dependency>
           <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
