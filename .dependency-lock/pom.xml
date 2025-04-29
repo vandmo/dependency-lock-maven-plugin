@@ -438,9 +438,9 @@
           <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.19.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:W9eO7UVu3jARkxnFvtjj5MRDtv172zp6VoZke9gwlNDD4oMqdXXPtg5O8l8IEGuTR2k5063P7PVTPMAwswOeEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:mK08uSwxtRRhxE0GwiOkJcPuglStPd/cNyTn0URE0u6sOwVPcL5dRQAmj3EsHwh3n9XkNgQ3tKiDxAbA3DosfA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>javax.inject</groupId>
@@ -757,9 +757,9 @@
           <dependency>
             <groupId>org.iq80.snappy</groupId>
             <artifactId>snappy</artifactId>
-            <version>0.4</version>
+            <version>0.5</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:39JVm/A4jG8Zh9E5NJekIyA7KnL+u+ZIs0KeTQe0elBHlyKObk45qUxoAMXT3403koY6O4Qebo9lz9zakbbwqw==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:weacb7J28HT0oWMzNVzwv4hwS4/t2OTAo6/0NNGUE047/xX3VHNJg0JBHlcDTo5qCFXshLVfWw6p3PZc8u9WNg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.slf4j</groupId>
@@ -1607,9 +1607,9 @@
           <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.19.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:W9eO7UVu3jARkxnFvtjj5MRDtv172zp6VoZke9gwlNDD4oMqdXXPtg5O8l8IEGuTR2k5063P7PVTPMAwswOeEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:mK08uSwxtRRhxE0GwiOkJcPuglStPd/cNyTn0URE0u6sOwVPcL5dRQAmj3EsHwh3n9XkNgQ3tKiDxAbA3DosfA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>javax.inject</groupId>
@@ -1867,9 +1867,9 @@
           <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.19.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:W9eO7UVu3jARkxnFvtjj5MRDtv172zp6VoZke9gwlNDD4oMqdXXPtg5O8l8IEGuTR2k5063P7PVTPMAwswOeEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:mK08uSwxtRRhxE0GwiOkJcPuglStPd/cNyTn0URE0u6sOwVPcL5dRQAmj3EsHwh3n9XkNgQ3tKiDxAbA3DosfA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>commons-logging</groupId>
@@ -2253,9 +2253,9 @@
           <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.19.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:W9eO7UVu3jARkxnFvtjj5MRDtv172zp6VoZke9gwlNDD4oMqdXXPtg5O8l8IEGuTR2k5063P7PVTPMAwswOeEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:mK08uSwxtRRhxE0GwiOkJcPuglStPd/cNyTn0URE0u6sOwVPcL5dRQAmj3EsHwh3n9XkNgQ3tKiDxAbA3DosfA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>javax.inject</groupId>
@@ -2316,9 +2316,9 @@
           <dependency>
             <groupId>org.iq80.snappy</groupId>
             <artifactId>snappy</artifactId>
-            <version>0.4</version>
+            <version>0.5</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:39JVm/A4jG8Zh9E5NJekIyA7KnL+u+ZIs0KeTQe0elBHlyKObk45qUxoAMXT3403koY6O4Qebo9lz9zakbbwqw==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:weacb7J28HT0oWMzNVzwv4hwS4/t2OTAo6/0NNGUE047/xX3VHNJg0JBHlcDTo5qCFXshLVfWw6p3PZc8u9WNg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.slf4j</groupId>
@@ -2514,9 +2514,16 @@
           <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>2.0.1</version>
+            <version>3.0.2</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:s7gySJ75JJsi2KC51u7hiVydk+9T1ZaHJKZRhMs/BOF8x0k4EouYkW2ngpxlZr4LxtYPqIASSMwkYgcwoGDqxg==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:uwnbYpGaUPpbVZBgE75spPx6yy6HRV+sXq+e3i5Bzou6/A5aOFpWEmTqTNcbu9PvWkXgLWMneiAdBqCuFjb4BA==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
+            <groupId>com.google.errorprone</groupId>
+            <artifactId>error_prone_annotations</artifactId>
+            <version>2.28.0</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:evHeV/pmKyeWXCSJTSsvI8Q+YMxu5IdCxSd4T6OCNy62G8l+jVeKgQSHRXTM2iS6G9qZQnPqMUZy6bIlvA/Cyg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.google.guava</groupId>
@@ -2528,9 +2535,16 @@
           <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>14.0.1</version>
+            <version>33.3.1-jre</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:6SBUDb3uefuhpeCWaukqw3NYqkEmwEoIcy5CYJFoB5AdjepBMiA373kI/AIEKB0Fob+pVAH8/Ec2MMC8joE0Og==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:X9tAbur7t7QJuugpJLfCa9zeoGx+27ZzkBgUw9NQELyRE55ROWY68LZvj6R/VODpbdhv3/F5fJrkl8EKRmsC4w==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>listenablefuture</artifactId>
+            <version>9999.0-empty-to-avoid-conflict-with-guava</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:xZh6l5F0y6yuLnizGfCAQgzHG82894k3RXMe65PCPtE7/41FmUQfNz86JGAj0z3wPogt4wFe6TKnSndK/dB4Lw==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.google.inject</groupId>
@@ -2538,6 +2552,13 @@
             <version>5.1.0</version>
             <type>jar</type>
             <dependency-lock:integrity>sha512:ucepuBXZzjh+v21YpxVB2hvjy42Ec1gTPcHzXKRTFbudsRwT8yOK22Q2cHWaWP0QYkcDn0LBB1k3Sps2HGLpng==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
+            <groupId>com.google.j2objc</groupId>
+            <artifactId>j2objc-annotations</artifactId>
+            <version>3.0.0</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:FAaxqlOxn4JpEp2WzotkvzbyFerPfY8eCtre4xYU5Tuz96z0/5dBjFv8dWd6bzzWN8PZiJ0ehRF7b6EkZ8kenw==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.intellij</groupId>
@@ -2598,9 +2619,9 @@
           <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.8.0</version>
+            <version>2.19.0</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:cgQO0pOgg/l5w/I7AMNZGVzw5MInqcuWLZmATL4H2G4k0oZKqMUzu3nkrR+D09F/KQyMJGMEEOuAc01tEmbn7A==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:mK08uSwxtRRhxE0GwiOkJcPuglStPd/cNyTn0URE0u6sOwVPcL5dRQAmj3EsHwh3n9XkNgQ3tKiDxAbA3DosfA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>commons-lang</groupId>
@@ -2804,6 +2825,13 @@
             <version>3.9.9</version>
             <type>jar</type>
             <dependency-lock:integrity>sha512:D3RmxHkbCD445ab0YxsDMX9Xve7mvx0VKkt1gwv2UsgOH5cHs/ZPz9X3kIhutVJ5pMM/vru0K1yXBmyzAQsRNw==</dependency-lock:integrity>
+          </dependency>
+          <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>3.43.0</version>
+            <type>jar</type>
+            <dependency-lock:integrity>sha512:gj6ijjyCL/SOTphaQh+gtTyjQZ4sBjXD1NCpgiOZtkkXgOJqkWHUczhXyXmHv/LXJf9EU7LCLtQS7vRuon9dhA==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
