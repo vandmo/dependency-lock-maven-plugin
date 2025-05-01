@@ -1421,23 +1421,23 @@
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.18.0</version>
+            <version>2.18.3</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:ZJUbmqpmO7tjmsb1yfjUCaaUqsnwPQjt1C1q2+MHQHch4ZbWZrM/oov9xDSQNN5MdJ/Fbad8eajPRs1zBhh+ZQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:qHIkJhPVvnU324rV0ECKqJKNN24WcL69Rzt14JUzcKvne3JeEWAOZ7i/t2UHOejA1poULb6ENxnFF4sAtd7vlg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.18.0</version>
+            <version>2.18.3</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:ifbLcFrV27NyO4QddcQFNFdSan/xtyAipQjMavkQ9JjlqfgmpjuZ2Nna0yQh/59MHe25aTQwA8nun8DPDo7eEA==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:90Hs5aQfHSfAS9voOQkv7A+sGnsTnZ9fySFBtKOW9iK39mj0+pfkLaDW1CNzNOEXhBdT4gmttJ0awKGiJ8+swQ==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.18.0</version>
+            <version>2.18.3</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:CBBuoalu37/C4rVpmhHmwcKfZA/QKFAyreK0HCphnBLpmb/uJIbpxqUacsmcLmwkG1VkB5SbqF77gkRy7tMLrQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:KlIXmDe5NpuuS/H4fCSUAe+wUlSXqG00qh8Cp5ekeICz6mGOuEZZxsiFsC6CWyvz3h5HA64FK7+d7Ma3BR1oeg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>com.fasterxml.woodstox</groupId>

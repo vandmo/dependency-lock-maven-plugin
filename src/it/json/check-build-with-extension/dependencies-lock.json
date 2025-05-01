@@ -1,5 +1,5 @@
 {
-  "version": "2",
+  "version" : "2",
   "artifacts" : {
     "aopalliance:aopalliance:jar:1.0" : {
       "groupId" : "aopalliance",
@@ -8,26 +8,26 @@
       "type" : "jar",
       "integrity" : "sha512:P0SpMtjADP7uLrBXvNfDAaLQKQY+CpFuHiCzrsSHfRnWei/YqvWPotWgATPRYCEop/UJEv+2yrx7D9x/vaP4oQ=="
     },
-    "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.0" : {
+    "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.3" : {
       "groupId" : "com.fasterxml.jackson.core",
       "artifactId" : "jackson-annotations",
-      "version" : "2.18.0",
+      "version" : "2.18.3",
       "type" : "jar",
-      "integrity" : "sha512:ZJUbmqpmO7tjmsb1yfjUCaaUqsnwPQjt1C1q2+MHQHch4ZbWZrM/oov9xDSQNN5MdJ/Fbad8eajPRs1zBhh+ZQ=="
+      "integrity" : "sha512:qHIkJhPVvnU324rV0ECKqJKNN24WcL69Rzt14JUzcKvne3JeEWAOZ7i/t2UHOejA1poULb6ENxnFF4sAtd7vlg=="
     },
-    "com.fasterxml.jackson.core:jackson-core:jar:2.18.0" : {
+    "com.fasterxml.jackson.core:jackson-core:jar:2.18.3" : {
       "groupId" : "com.fasterxml.jackson.core",
       "artifactId" : "jackson-core",
-      "version" : "2.18.0",
+      "version" : "2.18.3",
       "type" : "jar",
-      "integrity" : "sha512:ifbLcFrV27NyO4QddcQFNFdSan/xtyAipQjMavkQ9JjlqfgmpjuZ2Nna0yQh/59MHe25aTQwA8nun8DPDo7eEA=="
+      "integrity" : "sha512:90Hs5aQfHSfAS9voOQkv7A+sGnsTnZ9fySFBtKOW9iK39mj0+pfkLaDW1CNzNOEXhBdT4gmttJ0awKGiJ8+swQ=="
     },
-    "com.fasterxml.jackson.core:jackson-databind:jar:2.18.0" : {
+    "com.fasterxml.jackson.core:jackson-databind:jar:2.18.3" : {
       "groupId" : "com.fasterxml.jackson.core",
       "artifactId" : "jackson-databind",
-      "version" : "2.18.0",
+      "version" : "2.18.3",
       "type" : "jar",
-      "integrity" : "sha512:CBBuoalu37/C4rVpmhHmwcKfZA/QKFAyreK0HCphnBLpmb/uJIbpxqUacsmcLmwkG1VkB5SbqF77gkRy7tMLrQ=="
+      "integrity" : "sha512:KlIXmDe5NpuuS/H4fCSUAe+wUlSXqG00qh8Cp5ekeICz6mGOuEZZxsiFsC6CWyvz3h5HA64FK7+d7Ma3BR1oeg=="
     },
     "com.fasterxml.woodstox:woodstox-core:jar:6.4.0" : {
       "groupId" : "com.fasterxml.woodstox",
@@ -1306,7 +1306,7 @@
       "integrity" : "ignored"
     }
   },
-  "build": {
+  "build" : {
     "plugins" : [ {
       "artifact" : "org.apache.maven.plugins:maven-clean-plugin:maven-plugin:3.2.0",
       "dependencies" : [ "commons-io:commons-io:jar:2.6", "org.apache.maven.shared:maven-shared-utils:jar:3.3.4" ]
@@ -1333,7 +1333,7 @@
       "dependencies" : [ "com.thoughtworks.qdox:qdox:jar:2.0.3", "commons-io:commons-io:jar:2.15.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.1.1", "org.apache.maven.surefire:maven-surefire-common:jar:3.2.5", "org.apache.maven.surefire:surefire-api:jar:3.2.5", "org.apache.maven.surefire:surefire-booter:jar:3.2.5", "org.apache.maven.surefire:surefire-extensions-api:jar:3.2.5", "org.apache.maven.surefire:surefire-extensions-spi:jar:3.2.5", "org.apache.maven.surefire:surefire-logger-api:jar:3.2.5", "org.apache.maven.surefire:surefire-shared-utils:jar:3.2.5", "org.codehaus.plexus:plexus-java:jar:1.2.0", "org.eclipse.aether:aether-api:jar:1.0.0.v20140518", "org.eclipse.aether:aether-util:jar:1.0.0.v20140518", "org.ow2.asm:asm:jar:9.6" ]
     }, {
       "artifact" : "se.vandmo:dependency-lock-maven-plugin:maven-plugin:ignored",
-      "dependencies" : [ "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.0", "com.fasterxml.jackson.core:jackson-core:jar:2.18.0", "com.fasterxml.jackson.core:jackson-databind:jar:2.18.0", "com.fasterxml.woodstox:woodstox-core:jar:6.4.0", "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.6.4", "org.apache.maven.resolver:maven-resolver-api:jar:1.6.3", "org.apache.maven.resolver:maven-resolver-util:jar:1.4.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.4.0", "org.codehaus.woodstox:stax2-api:jar:4.2.1", "org.freemarker:freemarker:jar:2.3.33", "org.slf4j:slf4j-api:jar:1.7.36" ]
+      "dependencies" : [ "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.3", "com.fasterxml.jackson.core:jackson-core:jar:2.18.3", "com.fasterxml.jackson.core:jackson-databind:jar:2.18.3", "com.fasterxml.woodstox:woodstox-core:jar:6.4.0", "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.6.4", "org.apache.maven.resolver:maven-resolver-api:jar:1.6.3", "org.apache.maven.resolver:maven-resolver-util:jar:1.4.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.4.0", "org.codehaus.woodstox:stax2-api:jar:4.2.1", "org.freemarker:freemarker:jar:2.3.33", "org.slf4j:slf4j-api:jar:1.7.36" ]
     } ],
     "extensions" : [ {
       "artifact" : "org.apache.maven.extensions:maven-enforcer-extension:maven-plugin:3.5.0"
