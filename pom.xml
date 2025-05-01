@@ -377,7 +377,6 @@
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>${dependency-lock-maven-plugin.version}</version>
         <configuration>
-          <lockBuild>true</lockBuild>
           <format>pom</format>
         </configuration>
         <executions>
