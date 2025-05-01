@@ -60,6 +60,15 @@
       <dependency-lock:integrity>sha512:faTNUfcILlmzy3iYjNp4vxYuKwJFfK8XJCy5zqm4ACraFdTf53TKA1Ws3qlciLZ8TQaiemFlPLhMmkbSeycmxg==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>1.5.6-3</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:vyN+LrW/AxiggujdSA2JiHp8P6BoJkuZMT+ERgowIDZJUFopNQCUn1iBSKkHSlSkpKMk6diqgEdVNsQmAJHOYQ==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>failureaccess</artifactId>
       <version>1.0.2</version>
@@ -87,6 +96,15 @@
       <dependency-lock:integrity>sha512:ucepuBXZzjh+v21YpxVB2hvjy42Ec1gTPcHzXKRTFbudsRwT8yOK22Q2cHWaWP0QYkcDn0LBB1k3Sps2HGLpng==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.17.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:y5w7IFXQsx0QYpPwvDaW+QoRowlT5bBaGjxFPpilY0dck9fG0XB+dfWdCAb7pf2ORIa4vXLli7aumVvbvut+Fw==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.17.0</version>
@@ -96,13 +114,13 @@
       <dependency-lock:integrity>sha512:mLxmXBYmj/EHT0FfSTumbSFKwjZltulkCGtg1SOzWxsD/S55IR6Eqo6/CSHqAo+ZKCfkZC/QhtcQSkCLRU04zg==</dependency-lock:integrity>
     </dependency>
     <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <version>1.2</version>
+      <groupId>io.airlift</groupId>
+      <artifactId>aircompressor</artifactId>
+      <version>0.27</version>
       <type>jar</type>
-      <scope>provided</scope>
+      <scope>test</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:JFMzCyeggiu6RAwouYrh2D1g2X36LQQFYt1RJrNUjgyqBA/qO4hqxv6wqFjmwbxFtsVHKxgPHxR5LlyjPjVZWQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:1u8gXF5WuevAyHH8i1I83iJtBdNTG8iTLLhQ5GB8i/SrVU3vAgaZT1XirpJFUYr3o3niKCJHzY3Ol7NhK4ThPg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
@@ -123,6 +141,33 @@
       <dependency-lock:integrity>sha512:oxuZUPkpp+WmANiXh+9A5CqKjiOS4hDQwPRbNXKTdnChilJPGBVQjNEVLNHqpydct0MLpFwFO+NlyDwjG8zT8A==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy-agent</artifactId>
+      <version>1.15.4</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:IAbZ8ALIeTVqcssjUscZOFRsuoHRgE7W8o4ZmkD/9ebXa3OFW59vnGoGihogZs/tuGF/F+55GNAzNMyWBB0YZQ==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>net.bytebuddy</groupId>
+      <artifactId>byte-buddy</artifactId>
+      <version>1.15.4</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:tzxsdNfz2Gz1IL2TEG4lCzXqASLAoejHzlTgg9eNKy41ch2PABywIPny3IfXQz0YTUofXDzQjYAExEmyFnjIww==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.26.2</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:cQanItJtqUX21u6m8MYbQgv/RXSb9gxXLZksVFsQzNkm3EuanzZv8p1ZQMmfJt/sqY9sHEtjBjKmXwTC17lLJg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.17.0</version>
@@ -130,6 +175,15 @@
       <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:39X/f+f4UrnKq8geWgDiBhb5hAUIXwWbZNwhIf61+myzJ+EaPS+VTAeYEcMfb9SE6Q+TLUUHh5b7+n2/Hx61qg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugin-testing</groupId>
+      <artifactId>maven-plugin-testing-harness</artifactId>
+      <version>3.3.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:H9fs9mN8B986VVwM8lgS+MIQRLNaH9grvGCP8ba/Aa/HsjJn8Kwk0haW71AiW0emH0SWuY3FxyrtTZmbrn/LbA==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
@@ -204,6 +258,15 @@
       <dependency-lock:integrity>sha512:cduKSFpkNsswUnbqnXSPV44aj/oTRshXD3A4aEzlPTIFhBdGNK7/obUWKa8BcaLWVyhU6wcjaoMjatHZlJmI6Q==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven.wagon</groupId>
+      <artifactId>wagon-provider-api</artifactId>
+      <version>3.5.3</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:5pCqv84OchfZgQ/6j8aIvMoeefufRAiA9ExuXiBIJOaYXf5BcWgqOtYNiVZtLZW87f4M1i9ZhY7widvYGTtifA==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <version>3.8.5</version>
@@ -220,6 +283,15 @@
       <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:6kyV6bTukHi0ZMqQAoV6FJ0v0LvF+nnjmEzpgcN94LGLO+A1dLkJuk/DMKcDh/7yzL2sTboCnBHdXNUzdfm+eg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-compat</artifactId>
+      <version>3.9.9</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:m3LesgLGez97/qLhFzHiBGoLnOgpqGQiyj1I+5pH0Pg4DQBRLn25G4ExRNCZiddiN5P3Y3wATrx5ErlW/gniOw==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -295,6 +367,15 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-archiver</artifactId>
+      <version>4.10.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:VePH2E8Y9/BEQQ+HMe/AE2IoC8b9ag9zetlE0VBCY6kOd4HYSn+xvq6kTXzH+lwlzTrYXSOQ2yOhI6r8tX5BDA==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-cipher</artifactId>
       <version>2.0</version>
       <type>jar</type>
@@ -331,6 +412,15 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-io</artifactId>
+      <version>3.5.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:O+ObmWGveyQj/wJ1g/WzXGHDf1ag123Yw6bq3Le/OJjsWxuUyAgU5sdISoJJnh7yMEeBkC/UIXGyLUGIdU2tDg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
       <artifactId>plexus-sec-dispatcher</artifactId>
       <version>2.0</version>
       <type>jar</type>
@@ -346,6 +436,15 @@
       <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:4tTnvJGd6wItD8xCjaBm1iw0oC0kixhP/D7c6gj/vcNUzQGCQLIaBJXq/NAXI6aS5YOAPMsQ2Z+/qX9YpJ+Wfw==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-xml</artifactId>
+      <version>3.0.0</version>
+      <type>jar</type>
+      <scope>provided</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:MbaKAlqyZY/lnV+7eaJCVWA5Lj2ydGsKuAWEaliBbEI13W1Q7T7S1JGfdJTgWAdTcbspaU9KquNwyeDKouVSRQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.codehaus.woodstox</groupId>
@@ -368,11 +467,11 @@
     <dependency>
       <groupId>org.eclipse.sisu</groupId>
       <artifactId>org.eclipse.sisu.plexus</artifactId>
-      <version>0.3.5</version>
+      <version>0.9.0.M3</version>
       <type>jar</type>
       <scope>provided</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:ONfb4CP5dRy14wvxVOMWllkDF9x7f3aIEf4PWUBRP86kZlZwzUfQty3thUU7EPfRKbC3QosVWkHJA8e1bJhujQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:aMXfAa1SKRfZVLYss7ETdrNEaSDo1cs1c33lCOas2Ro2s0FEkz9Ce74dKdypCXup3SQxxxP+GAafJxqAtRnwUQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.freemarker</groupId>
@@ -385,12 +484,39 @@
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>2.2</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:5sPwLiUHAXf4EB+comUEb4yVafglYAUdv7HmooyZN7GnRT9o6aN7/ODrabrPRadD0W54rdkx6YGV0mC4pRZVfg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest</artifactId>
       <version>2.2</version>
       <type>jar</type>
       <scope>test</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:axFBMpuDIk9p8HTLkT2/9pIda4aT7ejSWZrLYmSBJV2uY95C6xI8vV9ZomGsMvquASvmTo6QQGrpIVVD+8pVRg==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.14.2</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:MwiYH1sZElVq0x1Nom3UFh7NoZkVLZo4xNgZDDpyimodOzdPGLrTbKiGMsTyDi21PrRiJ01aVQEGBjoUmp3ymA==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>3.3</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:H6mQ0VvRefB/+8Rg1YCm/QVi5F3ui9SpQFkXU2t49FwNb2RLZ/hdeBx1iqVu/5Cu8j7tzJvX9f+Ieme3Fgg+YQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -400,6 +526,15 @@
       <scope>compile</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.tukaani</groupId>
+      <artifactId>xz</artifactId>
+      <version>1.9</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
     </dependency>
   </dependencies>
 
