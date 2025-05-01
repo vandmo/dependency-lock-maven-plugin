@@ -8,29 +8,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.ExtensionRealmCache;
-import org.apache.maven.plugin.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.MavenPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.PluginContainerException;
-import org.apache.maven.plugin.PluginDescriptorParsingException;
 import org.apache.maven.plugin.PluginManagerException;
-import org.apache.maven.plugin.PluginResolutionException;
-import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
-import se.vandmo.dependencylock.maven.Artifact;
-import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Extensions;
@@ -90,49 +80,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   }
 
   Plugins projectPlugins() throws MojoExecutionException {
-    final List<Plugin> buildPlugins = project.getBuildPlugins();
-    final Map<String, Artifact> artifactCache = new HashMap<>();
-    final List<se.vandmo.dependencylock.maven.Plugin> result = new ArrayList<>(buildPlugins.size());
-    for (Plugin plugin : buildPlugins) {
-      result.add(loadPlugin(plugin, artifactCache));
-    }
-    return Plugins.from(result);
-  }
-
-  private se.vandmo.dependencylock.maven.Plugin loadPlugin(
-      Plugin plugin, Map<String, Artifact> artifactCache) throws MojoExecutionException {
-    try {
-      final PluginDescriptor descriptor =
-          mavenPluginManager.getPluginDescriptor(
-              plugin, project.getRemotePluginRepositories(), mavenSession.getRepositorySession());
-      mavenPluginManager.setupPluginRealm(descriptor, mavenSession, null, null, null);
-      final org.apache.maven.artifact.Artifact pluginArtifact = descriptor.getPluginArtifact();
-      return se.vandmo.dependencylock.maven.Plugin.forArtifact(Artifact.from(pluginArtifact))
-          .artifacts(
-              Artifacts.fromArtifacts(
-                  descriptor.getArtifacts().stream()
-                      .filter(a -> !a.equals(pluginArtifact))
-                      .map(
-                          mavenArtifact -> {
-                            final String artifactId = mavenArtifact.getId();
-                            Artifact cachedValue = artifactCache.get(artifactId);
-                            if (null == cachedValue) {
-                              cachedValue = Artifact.from(mavenArtifact);
-                              artifactCache.put(artifactId, cachedValue);
-                            }
-                            return cachedValue;
-                          })
-                      .collect(Collectors.toList())))
-          .build();
-    } catch (PluginResolutionException e) {
-      throw new MojoExecutionException("Failed resolving plugin " + plugin, e);
-    } catch (PluginDescriptorParsingException e) {
-      throw new MojoExecutionException("Failed parsing plugin descriptor of plugin " + plugin, e);
-    } catch (InvalidPluginDescriptorException e) {
-      throw new MojoExecutionException("Invalid plugin descriptor found for plugin " + plugin, e);
-    } catch (PluginContainerException e) {
-      throw new MojoExecutionException("Failed loading container for plugin " + plugin, e);
-    }
+    return new LockProjectHelper(getLog(), mavenPluginManager, mavenSession).loadPlugins(project);
   }
 
   PomMinimums pomMinimums() {
