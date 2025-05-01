@@ -143,20 +143,20 @@
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>1.15.4</version>
+      <version>1.12.19</version>
       <type>jar</type>
       <scope>test</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:IAbZ8ALIeTVqcssjUscZOFRsuoHRgE7W8o4ZmkD/9ebXa3OFW59vnGoGihogZs/tuGF/F+55GNAzNMyWBB0YZQ==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:KPhuP9Sb/5obCxrS6uCZsQ5KttajFQtyWA77iXUMRRASPSOfuHStfFTlB8CGVkWGa3Qa3U95ZvmpqlWxJ+4aJQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy</artifactId>
-      <version>1.15.4</version>
+      <version>1.12.19</version>
       <type>jar</type>
       <scope>test</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:tzxsdNfz2Gz1IL2TEG4lCzXqASLAoejHzlTgg9eNKy41ch2PABywIPny3IfXQz0YTUofXDzQjYAExEmyFnjIww==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:J9mT7/58V01w2fMfcWpTOi4jYcmg9K5vBYsxvtSwHI2XohWEjMTCrS0cduWtHsVyRINFukjOhrrQQYf7TbCdJg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -503,11 +503,11 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>5.14.2</version>
+      <version>4.11.0</version>
       <type>jar</type>
       <scope>test</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:MwiYH1sZElVq0x1Nom3UFh7NoZkVLZo4xNgZDDpyimodOzdPGLrTbKiGMsTyDi21PrRiJ01aVQEGBjoUmp3ymA==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:TG8Sy89IouP2/pjWF1nO+Pkn0He6+WqJ3XJ0s0Ml15PZ2ihdNaPMh0aFmJ3P3ur8OPHWSxaYccskarkXJVnE2Q==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.objenesis</groupId>
