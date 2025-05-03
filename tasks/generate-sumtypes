@@ -6,4 +6,8 @@ docker run --rm\
  --user $(id -u):$(id -g)\
  vandmo/java-sumtype-generator@sha256:999539e85538db63514cee0b5ca440062c2f65c12fc62ccdc55570921d1763c6
 
-tasks/format
+docker run --rm\
+ -v "${PWD}":/local\
+ --user $(id -u):$(id -g)\
+ vandmo/google-java-format@sha256:7b81f690b62ba70ae9e2165cba54bf3b6d2d81d8c1f5bc015507acdfc91d31e7\
+ google-java-format -i /local/src/main/java/se/vandmo/dependencylock/maven/Integrity.java
