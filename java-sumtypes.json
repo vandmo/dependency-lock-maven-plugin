@@ -1,0 +1,14 @@
+{
+    "java-sumtypes": [
+      {
+        "package-name": "se.vandmo.dependencylock.maven",
+        "name": "Integrity",
+        "types": {
+          "Calculated": { "checksum": "String" },
+          "Folder": {},
+          "Ignored": {}
+        },
+        "imports": "all"
+      }
+    ]
+  }

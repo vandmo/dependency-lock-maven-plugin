@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+docker run --rm\
+ -v "${PWD}":/work\
+ --user $(id -u):$(id -g)\
+ vandmo/java-sumtype-generator@sha256:999539e85538db63514cee0b5ca440062c2f65c12fc62ccdc55570921d1763c6
+
+tasks/format
