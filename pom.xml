@@ -21,7 +21,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Maven Plugin Versions -->
-    <dependency-lock-maven-plugin.version>0.0.564595d3d136a64558118b24b3c2ec1a55e9013e</dependency-lock-maven-plugin.version>
+    <dependency-lock-maven-plugin.version>0.0.5734cd9bd748d0121eda3d28d4f428a246501ee0</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
@@ -378,6 +378,7 @@
         <version>${dependency-lock-maven-plugin.version}</version>
         <configuration>
           <format>pom</format>
+          <lockBuild>true</lockBuild>
         </configuration>
         <executions>
           <execution>
