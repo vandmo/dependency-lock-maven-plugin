@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Profile;
@@ -102,7 +103,11 @@ final class LockProjectHelper {
     for (Profile profile : profiles) {
       final Map<String, String> potentialProfilePluginVersions =
           new HashMap<>(baseProfilePluginVersions);
-      final PluginManagement profilePluginManagement = profile.getBuild().getPluginManagement();
+      final BuildBase profileBuild = profile.getBuild();
+      if (profileBuild == null) {
+        continue;
+      }
+      final PluginManagement profilePluginManagement = profileBuild.getPluginManagement();
       if (profilePluginManagement != null) {
         profilePluginManagement
             .getPluginsAsMap()
@@ -120,7 +125,7 @@ final class LockProjectHelper {
                   }
                 });
       }
-      for (Plugin plugin : profile.getBuild().getPlugins()) {
+      for (Plugin plugin : profileBuild.getPlugins()) {
         if (null != plugin.getVersion()) {
           final String pluginId = plugin.getId();
           if (!declaredPlugins.containsKey(pluginId)) {
