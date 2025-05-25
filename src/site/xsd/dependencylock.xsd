@@ -1,0 +1,20 @@
+<xs:schema
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    targetNamespace="urn:se.vandmo.dependencylock">
+
+  <xs:element name="integrity" type="xs:string" />
+
+  <xs:attribute name="version">
+    <xs:simpleType>
+      <xs:restriction base="xs:string">
+        <xs:enumeration value="2">
+          <xs:annotation>
+            <xs:documentation>Value being used when lockfile contains also covers build artifacts.</xs:documentation>
+          </xs:annotation>
+        </xs:enumeration>
+      </xs:restriction>
+    </xs:simpleType>
+  </xs:attribute>
+
+</xs:schema>
