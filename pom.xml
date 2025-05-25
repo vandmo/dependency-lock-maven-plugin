@@ -19,6 +19,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- Where XSDs being tested will be published -->
+    <test.xsd.directories>${project.build.directory}/generated-test-sources/xsds</test.xsd.directories>
     <!-- SCM publish configuration -->
     <scm.publish.password>${env.GITHUB_TOKEN}</scm.publish.password>
     <scm.publish.username />
@@ -346,6 +348,13 @@
       <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- Used for logging purposes -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.36</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -478,6 +487,29 @@
         </configuration>
         <executions>
           <execution>
+            <id>prepare-xsd-test-resources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <!--
+             Should be generate-test-resources but for IDE integration
+             it avoids having to compile everything
+            -->
+            <phase>generate-resources</phase>
+            <configuration>
+              <outputDirectory>${test.xsd.directories}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/site/xsd</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <filters>
+                <filter>test-resources.properties</filter>
+              </filters>
+            </configuration>
+          </execution>
+          <execution>
             <id>generate-site-xsds</id>
             <goals>
               <goal>copy-resources</goal>
@@ -489,6 +521,25 @@
                 <resource>
                   <directory>src/site/xsd</directory>
                   <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${test.xsd.directories}</directory>
                 </resource>
               </resources>
             </configuration>
@@ -622,6 +673,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-wrapper-plugin</artifactId>
           <version>${maven-wrapper-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.6.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
