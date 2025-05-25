@@ -14,7 +14,7 @@
   <version>${pom.version}</version>
 
   <dependencies>
-    <#list dependencies as dependency>
+<#list dependencies as dependency>
     <dependency>
       <groupId>${dependency.artifactIdentifier.groupId}</groupId>
       <artifactId>${dependency.artifactIdentifier.artifactId}</artifactId>
@@ -27,22 +27,22 @@
       <optional>${dependency.optional?c}</optional>
       <dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
     </dependency>
-    </#list>
+</#list>
   </dependencies>
 
   <build>
     <extensions>
-      <#list extensions as extension>
+<#list extensions as extension>
       <extension>
         <groupId>${extension.artifactIdentifier.groupId}</groupId>
         <artifactId>${extension.artifactIdentifier.artifactId}</artifactId>
         <version>${extension.version}</version>
         <dependency-lock:integrity>${extension.getIntegrityForLockFile()}</dependency-lock:integrity>
       </extension>
-      </#list>
+</#list>
     </extensions>
     <plugins>
-      <#list plugins as plugin>
+<#list plugins as plugin>
       <plugin>
         <groupId>${plugin.artifactIdentifier.groupId}</groupId>
         <artifactId>${plugin.artifactIdentifier.artifactId}</artifactId>
@@ -63,7 +63,7 @@
         </dependencies>
         <dependency-lock:integrity>${plugin.getIntegrityForLockFile()}</dependency-lock:integrity>
       </plugin>
-      </#list>
+</#list>
     </plugins>
   </build>  
 </project>
