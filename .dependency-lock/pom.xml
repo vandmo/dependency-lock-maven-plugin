@@ -114,6 +114,15 @@
       <dependency-lock:integrity>sha512:mLxmXBYmj/EHT0FfSTumbSFKwjZltulkCGtg1SOzWxsD/S55IR6Eqo6/CSHqAo+ZKCfkZC/QhtcQSkCLRU04zg==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>edu.princeton.cup</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>10k</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:rkAlbp7OfrEKnW7CAo4ZRDGLvzWgopnIbzIPIvBnOxg1f8+tZNo/VXAdcrs8iYcOHaeHP/kAXHE71+9WA5tw1Q==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>io.airlift</groupId>
       <artifactId>aircompressor</artifactId>
       <version>0.27</version>
@@ -474,6 +483,25 @@
       <dependency-lock:integrity>sha512:aMXfAa1SKRfZVLYss7ETdrNEaSDo1cs1c33lCOas2Ro2s0FEkz9Ce74dKdypCXup3SQxxxP+GAafJxqAtRnwUQ==</dependency-lock:integrity>
     </dependency>
     <dependency>
+      <groupId>org.exist-db.thirdparty.org.eclipse.wst.xml</groupId>
+      <artifactId>xpath2</artifactId>
+      <version>1.2.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:yaoKSo/Fa/Kms3kNsHGzYqkpMNav1CWd/nOiLAeMwZ88GhiCmA78IOUo1I5HeWS1izWPesxxTmCmvZOnT5SZOw==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>org.exist-db.thirdparty.xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <classifier>xml-schema-1.1</classifier>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:u8GUf1tM2pTw95IC26tQSFIahCClsAcFIFKtemy9rhFMcQhee226wsYBD8NkNujtHivxnu6tc+scYHKM4iEjWA==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>2.3.33</version>
@@ -545,6 +573,15 @@
       <optional>false</optional>
       <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
     </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:jbAoO2hAzWQHlX0pa4AuPt+QZT4nIvjin4bBwLYJlsS0Pp4GXmhk2ribITjdsBdNm0/dpKk/lO64hHg9uC8yaA==</dependency-lock:integrity>
+    </dependency>
   </dependencies>
 
   <build>
@@ -555,6 +592,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
         <version>3.4.0</version>
+        <dependency-lock:integrity>sha512:GNpE53sNSkTHoZY6rkHNHoiB6eQp/m2TN55WpZ6/2ecTHioSkcSFqxGXenddwcY8Q1TY6CsT9pNOQXjhdxuqPw==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>org.codehaus.plexus</groupId>
@@ -564,12 +602,12 @@
             <dependency-lock:integrity>sha512:7PYJ1JXJ53KEdso11CkMlNhiw5OvxqmAkFcfQEfUGE0cUjH9avS8aP59gy7KJhcfhq9exZDW8vcHQLcgpvY2tQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:GNpE53sNSkTHoZY6rkHNHoiB6eQp/m2TN55WpZ6/2ecTHioSkcSFqxGXenddwcY8Q1TY6CsT9pNOQXjhdxuqPw==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.14.0</version>
+        <dependency-lock:integrity>sha512:dsFef0S8TmWnKyn2eP6yBZH7DuTVMFIJ6WVCc6iH7n20WhSfI0vfXB+7Zqp6T5RyqkkhrLonuEmqnfBr5SiwdA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.thoughtworks.qdox</groupId>
@@ -663,12 +701,12 @@
             <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:dsFef0S8TmWnKyn2eP6yBZH7DuTVMFIJ6WVCc6iH7n20WhSfI0vfXB+7Zqp6T5RyqkkhrLonuEmqnfBr5SiwdA==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <version>3.8.1</version>
+        <dependency-lock:integrity>sha512:G29VlmaOe+EoSzodIzvjchRIzdE44XhwYefnopNjBcbf0VM5IXhN0xb7ewI1rvuuFleCoOy6CjQCLuJx8vKxkQ==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.cliftonlabs</groupId>
@@ -1014,12 +1052,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:G29VlmaOe+EoSzodIzvjchRIzdE44XhwYefnopNjBcbf0VM5IXhN0xb7ewI1rvuuFleCoOy6CjQCLuJx8vKxkQ==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
         <version>3.1.3</version>
+        <dependency-lock:integrity>sha512:WgQ5schiVbLxwu3rSh1onDJSTt6mca/yaAVSd/EYUFH48COhjBJqNrmTlyNHhiDQHwGBYf/0iLzXFzfPkCag/A==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.resolver</groupId>
@@ -1050,12 +1088,12 @@
             <dependency-lock:integrity>sha512:Qi8szdoA3YyQwvW19K1vBBD7byvLNCnRlvfznJakSmcJxwU5ZIIU1bdoanAkCmwWx7mFuUP4AC0xj5CJYjCiWQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:WgQ5schiVbLxwu3rSh1onDJSTt6mca/yaAVSd/EYUFH48COhjBJqNrmTlyNHhiDQHwGBYf/0iLzXFzfPkCag/A==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
         <version>3.5.0</version>
+        <dependency-lock:integrity>sha512:Sd4USKYbVcBzc0zdpdachB3YzAEnYI/FWhZpDII8XFelBd6XNtV0w/0slAqhv1F6okdLCXtz3vD1X4SMo4NqSg==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>commons-codec</groupId>
@@ -1121,12 +1159,12 @@
             <dependency-lock:integrity>sha512:MbaKAlqyZY/lnV+7eaJCVWA5Lj2ydGsKuAWEaliBbEI13W1Q7T7S1JGfdJTgWAdTcbspaU9KquNwyeDKouVSRQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:Sd4USKYbVcBzc0zdpdachB3YzAEnYI/FWhZpDII8XFelBd6XNtV0w/0slAqhv1F6okdLCXtz3vD1X4SMo4NqSg==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>3.2.7</version>
+        <dependency-lock:integrity>sha512:iXG7IktCVjzCv6uf5YvvJbDQGf7L9DWH/KcC0bfbOmtJkK/BYJobrAMvb5Oq2hpD7mmkO66wuApX0CRrtVoW3Q==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.kohlschutter.junixsocket</groupId>
@@ -1199,12 +1237,12 @@
             <dependency-lock:integrity>sha512:Qi8szdoA3YyQwvW19K1vBBD7byvLNCnRlvfznJakSmcJxwU5ZIIU1bdoanAkCmwWx7mFuUP4AC0xj5CJYjCiWQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:iXG7IktCVjzCv6uf5YvvJbDQGf7L9DWH/KcC0bfbOmtJkK/BYJobrAMvb5Oq2hpD7mmkO66wuApX0CRrtVoW3Q==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
         <version>3.1.3</version>
+        <dependency-lock:integrity>sha512:04Bf/Oc3HjJzMXVPKTJmtch/ZrtCmr+nGKnt+DQummDxnyC1tK40sRwFTmMpb5g5+eISons5P52FTsOqZxuWnA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>org.apache.maven.resolver</groupId>
@@ -1235,12 +1273,12 @@
             <dependency-lock:integrity>sha512:Qi8szdoA3YyQwvW19K1vBBD7byvLNCnRlvfznJakSmcJxwU5ZIIU1bdoanAkCmwWx7mFuUP4AC0xj5CJYjCiWQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:04Bf/Oc3HjJzMXVPKTJmtch/ZrtCmr+nGKnt+DQummDxnyC1tK40sRwFTmMpb5g5+eISons5P52FTsOqZxuWnA==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
         <version>3.8.1</version>
+        <dependency-lock:integrity>sha512:IDZciBVaxGpAZ42yjSYROdmgHnwUFgdLGzJcHAZ4yDf0BP1CFkv/VOE3dstINZv5s8u74yOVODgaXV4Cc9K8Tg==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.cliftonlabs</groupId>
@@ -1586,12 +1624,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:IDZciBVaxGpAZ42yjSYROdmgHnwUFgdLGzJcHAZ4yDf0BP1CFkv/VOE3dstINZv5s8u74yOVODgaXV4Cc9K8Tg==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
+        <dependency-lock:integrity>sha512:xcWH52oaHiYbntyc7plzieqmSorUuHT4PH6+R4rdzAETWvPjfURWU0+cE6coLgsE9s9KIamA9BCt+axduw+A7w==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.luben</groupId>
@@ -1699,12 +1737,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:xcWH52oaHiYbntyc7plzieqmSorUuHT4PH6+R4rdzAETWvPjfURWU0+cE6coLgsE9s9KIamA9BCt+axduw+A7w==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.11.2</version>
+        <dependency-lock:integrity>sha512:+XVlrTwdsDwFKDor2nSCf57Eq8IRMYB1dNOl8o063Rzi7cx4dHxccMNX3YGjU3DJu4A8+50W9N9dUaHCbgtCVA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.cliftonlabs</groupId>
@@ -2050,12 +2088,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:+XVlrTwdsDwFKDor2nSCf57Eq8IRMYB1dNOl8o063Rzi7cx4dHxccMNX3YGjU3DJu4A8+50W9N9dUaHCbgtCVA==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.15.1</version>
+        <dependency-lock:integrity>sha512:JGPcX5GanbrXpj68WJdL/FRbVZdmcxgesHA8KYCVBPAXC4mHflPEGgpZrr4nO1cNwTAdS6K/PvLN9FctphZKAQ==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>aopalliance</groupId>
@@ -2520,12 +2558,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:JGPcX5GanbrXpj68WJdL/FRbVZdmcxgesHA8KYCVBPAXC4mHflPEGgpZrr4nO1cNwTAdS6K/PvLN9FctphZKAQ==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.3.1</version>
+        <dependency-lock:integrity>sha512:lOhlpPUGH9z+qqdr6d9db9+8vSJ6KXWp0wN2YoCMqTpV6bwR9KzF5uHLZQJlOrPaPjo57DbDQgpq2FK0qpUf6Q==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>commons-io</groupId>
@@ -2584,12 +2622,12 @@
             <dependency-lock:integrity>sha512:4HPTZ85e2vbfy/bR7J9UQILUU2rsioSwYNJGJcDY/x+s+QUphD+b9Dg+9DqlzT0OFD9HPf+m2n/ZEPHS44cuxw==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:lOhlpPUGH9z+qqdr6d9db9+8vSJ6KXWp0wN2YoCMqTpV6bwR9KzF5uHLZQJlOrPaPjo57DbDQgpq2FK0qpUf6Q==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-scm-publish-plugin</artifactId>
         <version>3.3.0</version>
+        <dependency-lock:integrity>sha512:DWOWDQgfaye/tpgDXbqsqZo5PVOxe0VIYiLAPOW5vRVufFPauScNXiJGnoxlTY1ZTaA2LxOKA3I2roORPrE4bQ==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.googlecode.javaewah</groupId>
@@ -2844,12 +2882,12 @@
             <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:DWOWDQgfaye/tpgDXbqsqZo5PVOxe0VIYiLAPOW5vRVufFPauScNXiJGnoxlTY1ZTaA2LxOKA3I2roORPrE4bQ==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.21.0</version>
+        <dependency-lock:integrity>sha512:v7iy28s6cbBwPXw3X7w+3PPqjz8iqlN9HEn3BLWKbEgxW7UoxxBSFPJJayd3X2+zvsSFtic3guYQFMEbFL3cqg==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.cliftonlabs</groupId>
@@ -3412,12 +3450,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:v7iy28s6cbBwPXw3X7w+3PPqjz8iqlN9HEn3BLWKbEgxW7UoxxBSFPJJayd3X2+zvsSFtic3guYQFMEbFL3cqg==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>3.3.1</version>
+        <dependency-lock:integrity>sha512:/b1JsGfo3EAz7GWr+rNGcxoV4RydURIoFc6RqQuBVxxUHxqoqFVaPAp/9CGOhlJcqnzyvlihwdB+EvlCappy4Q==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.github.luben</groupId>
@@ -3518,12 +3556,12 @@
             <dependency-lock:integrity>sha512:pDYtsjTU6DaD6Q9br5DIIQdFDMRASsq5bj+rFLij1FiKGXIhcdMvJ9GEY2gqaZTK2a8LEGXJVOOnfqe9z1hrrA==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:/b1JsGfo3EAz7GWr+rNGcxoV4RydURIoFc6RqQuBVxxUHxqoqFVaPAp/9CGOhlJcqnzyvlihwdB+EvlCappy4Q==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.2.5</version>
+        <dependency-lock:integrity>sha512:S6jb9yYTd3YXcqHG11OYLWrPEPYE979T4gS2qJrTruTx8JhI3RveUNTLuhfD7UpFl3Co8OhSQ8MNIRKDTLd/Lw==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.thoughtworks.qdox</groupId>
@@ -3624,12 +3662,12 @@
             <dependency-lock:integrity>sha512:AaXqb1tDvwlMUqUOGDJaYK97sC500k+bwscn1D5RRXj9losw/yL50nIMrsBxRY+f+C0Roh+7HrxC2CA+c3xLUg==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:S6jb9yYTd3YXcqHG11OYLWrPEPYE979T4gS2qJrTruTx8JhI3RveUNTLuhfD7UpFl3Co8OhSQ8MNIRKDTLd/Lw==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <version>3.6.0</version>
+        <dependency-lock:integrity>sha512:8+JjBM5ERCLSzGGzliigFB9VTA23erwh9yyKW8BdMZ8dw0jTVrE1wqu5kI17E9Ut3sRl5Il+AuMknkPhZ846lA==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>commons-io</groupId>
@@ -3667,12 +3705,12 @@
             <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:8+JjBM5ERCLSzGGzliigFB9VTA23erwh9yyKW8BdMZ8dw0jTVrE1wqu5kI17E9Ut3sRl5Il+AuMknkPhZ846lA==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
         <version>1.6.13</version>
+        <dependency-lock:integrity>sha512:lYTozSUFFTGOXxI9Lwi3OCZFXYXL7xETJpZB2F3lB365ppk1PyyVXu4xiJx9uZrY3Pai9tYEqqrAfSmftvwEnw==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>aopalliance</groupId>
@@ -4222,12 +4260,12 @@
             <dependency-lock:integrity>sha512:VNEJBiNJfoEnCyr2MyaGVuiFXh7c4iF4hkMQOVFqORup+NjbPCGgteUcf3y2ctY+vne+dXCLdgsG85lIaWDyYQ==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:lYTozSUFFTGOXxI9Lwi3OCZFXYXL7xETJpZB2F3lB365ppk1PyyVXu4xiJx9uZrY3Pai9tYEqqrAfSmftvwEnw==</dependency-lock:integrity>
       </plugin>
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
         <version>0.0.5734cd9bd748d0121eda3d28d4f428a246501ee0</version>
+        <dependency-lock:integrity>sha512:PWuW32WUol6KZpkqhADJSbPvXsisuL5wsnRYk8pFvPGP6+d6A5O17ZKUTkh3p0gMLKAynzkckBYcEPAzTYWU/Q==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -4307,7 +4345,6 @@
             <dependency-lock:integrity>sha512:+bAz/AGaRPmLFgSNp+K1nt1KalJ7pg41j2WriOCvrgOpNA8bPopUPUn6VCKQ9JnFWUJZr/of8+bnvztCjUxhCw==</dependency-lock:integrity>
           </dependency>
         </dependencies>
-        <dependency-lock:integrity>sha512:PWuW32WUol6KZpkqhADJSbPvXsisuL5wsnRYk8pFvPGP6+d6A5O17ZKUTkh3p0gMLKAynzkckBYcEPAzTYWU/Q==</dependency-lock:integrity>
       </plugin>
     </plugins>
   </build>  

@@ -2,22 +2,17 @@ package se.vandmo.dependencylock.maven.pom;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import javax.xml.stream.XMLStreamException;
-
-import com.ctc.wstx.stax.WstxInputFactory;
-import com.ctc.wstx.stax.WstxOutputFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 import org.apache.maven.monitor.logging.DefaultLog;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
-import org.codehaus.stax2.XMLStreamReader2;
-import org.codehaus.stax2.XMLStreamWriter2;
-import org.codehaus.stax2.validation.XMLValidationSchema;
-import org.codehaus.stax2.validation.XMLValidationSchemaFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -52,7 +47,21 @@ public class LockFilePomTest {
   }
 
   @Test
-  public void write_generates_a_xsd_compliant_resource() throws IOException, SAXException, XMLStreamException {
+  public void write_generates_a_xsd_compliant_resource_according_to_xerces()
+      throws IOException, SAXException, XMLStreamException {
+    final LockFileAccessor lockfileAccessor = generateLockFile();
+    final Validator schema = loadXsdValidator();
+    Throwable thrownError = null;
+    try {
+      schema.validate(new StreamSource(lockfileAccessor.file));
+    } catch (Exception e) {
+      thrownError = e;
+      e.printStackTrace();
+    }
+    Assert.assertNull("No validation error should have been thrown", thrownError);
+  }
+
+  private LockFileAccessor generateLockFile() {
     final MavenProject mavenProject = new MavenProject();
     final Log log = new DefaultLog(new ConsoleLogger());
     final LockFileAccessor lockfileAccessor =
@@ -118,31 +127,14 @@ public class LockFilePomTest {
     final Plugins plugins = Plugins.from(Collections.singletonList(compilerPlugin));
     final Build build = Build.from(plugins, extensions);
     lockFilePom.write(LockedProject.from(dependencies, build, log));
-    final XMLValidationSchema schema = loadXsdSchema();
-    Throwable thrownError = null;
-    try {
-      WstxInputFactory wstxInputFactory = new WstxInputFactory();
-      XMLStreamReader2 reader = wstxInputFactory.createXMLStreamReader(lockfileAccessor.file);
-      reader.validateAgainst(schema);
-
-      WstxOutputFactory wstxOutputFactory = new WstxOutputFactory();
-      XMLStreamWriter2 nullWriter = wstxOutputFactory.createXMLStreamWriter(new StringWriter(), StandardCharsets.UTF_8.name());
-      nullWriter.copyEventFromReader(reader, false);
-
-      while (reader.hasNext()) {
-        reader.next();
-        nullWriter.copyEventFromReader(reader, false);
-      }
-    } catch (XMLStreamException e) {
-      thrownError = e;
-    }
-    Assert.assertNull("No validation error should have been thrown", thrownError);
+    return lockfileAccessor;
   }
 
-  private XMLValidationSchema loadXsdSchema() throws XMLStreamException {
-    XMLValidationSchemaFactory xmlValidationSchemaFactory = XMLValidationSchemaFactory.newInstance(XMLValidationSchema.SCHEMA_ID_W3C_SCHEMA);
+  private Validator loadXsdValidator() throws SAXException {
     final URL schemaResource = getClass().getResource("/maven-4_0_0_ext.xsd");
+    SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1");
     Assert.assertNotNull(schemaResource);
-    return xmlValidationSchemaFactory.createSchema(schemaResource);
+    Schema schema = schemaFactory.newSchema(schemaResource);
+    return schema.newValidator();
   }
 }

@@ -47,6 +47,7 @@
         <groupId>${plugin.artifactIdentifier.groupId}</groupId>
         <artifactId>${plugin.artifactIdentifier.artifactId}</artifactId>
         <version>${plugin.version}</version>
+        <dependency-lock:integrity>${plugin.getIntegrityForLockFile()}</dependency-lock:integrity>
         <dependencies>
         <#list plugin.dependencies as dependency>
           <dependency>
@@ -61,7 +62,6 @@
           </dependency>
         </#list>
         </dependencies>
-        <dependency-lock:integrity>${plugin.getIntegrityForLockFile()}</dependency-lock:integrity>
       </plugin>
 </#list>
     </plugins>

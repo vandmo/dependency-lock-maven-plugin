@@ -355,6 +355,33 @@
       <version>1.7.36</version>
       <scope>test</scope>
     </dependency>
+    <!-- Only way to have an XML Schema 1.1 Compliant xerces implementation -->
+    <dependency>
+      <groupId>org.exist-db.thirdparty.xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <classifier>xml-schema-1.1</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required at runtime for xerces Impl XML Schema 1.1 support-->
+    <dependency>
+      <groupId>org.exist-db.thirdparty.org.eclipse.wst.xml</groupId>
+      <artifactId>xpath2</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.princeton.cup</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>10k</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
