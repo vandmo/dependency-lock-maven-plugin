@@ -6,7 +6,7 @@
 
   <xs:import schemaLocation="https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
 
-  <xs:redefine schemaLocation="http://maven.apache.org/maven-v4_0_0.xsd">
+  <xs:redefine schemaLocation="https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <xs:complexType name="Model">
       <xs:complexContent>
         <xs:extension base="Model">
