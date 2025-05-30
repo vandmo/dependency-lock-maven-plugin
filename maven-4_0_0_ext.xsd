@@ -1,22 +1,23 @@
 <xs:schema
-  targetNamespace="http://maven.apache.org/POM/4.0.0"
-  elementFormDefault="qualified"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+    targetNamespace="http://maven.apache.org/POM/4.0.0"
+    elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://maven.apache.org/POM/4.0.0"
+    xmlns:dependency-lock="urn:se.vandmo.dependencylock">
 
   <xs:import schemaLocation="https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
 
   <xs:redefine schemaLocation="https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <xs:complexType name="Model">
       <xs:complexContent>
-        <xs:extension base="Model">
+        <xs:extension base="tns:Model">
           <xs:attribute ref="dependency-lock:version" use="optional" />
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="Dependency">
       <xs:complexContent>
-        <xs:extension base="Dependency">
+        <xs:extension base="tns:Dependency">
           <xs:all>
             <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
           </xs:all>
@@ -25,7 +26,7 @@
     </xs:complexType>
     <xs:complexType name="Extension">
       <xs:complexContent>
-        <xs:extension base="Extension">
+        <xs:extension base="tns:Extension">
           <xs:all>
             <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
           </xs:all>
@@ -34,7 +35,7 @@
     </xs:complexType>
     <xs:complexType name="Plugin">
       <xs:complexContent>
-        <xs:extension base="Plugin">
+        <xs:extension base="tns:Plugin">
           <xs:all>
             <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
           </xs:all>
