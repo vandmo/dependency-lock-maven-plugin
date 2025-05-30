@@ -79,7 +79,7 @@ public class LockProjectHelperTest {
                 is("org.apache.maven.plugins:maven-invoker-plugin:maven-plugin:3.9.0"))));
     Mockito.verifyNoInteractions(log);
   }
-  
+
   @Test
   @WithoutMojo
   public void loadPlugins_supportsProfileWithNoBuild() throws Exception {
@@ -87,13 +87,13 @@ public class LockProjectHelperTest {
     final Log log = Mockito.mock(Log.class);
     final MavenPluginManager mavenPluginManager = mockMavenPluginManager();
     final LockProjectHelper projectHelper =
-            new LockProjectHelper(log, mavenPluginManager, mojoRule.newMavenSession(mavenProject));
+        new LockProjectHelper(log, mavenPluginManager, mojoRule.newMavenSession(mavenProject));
     assertThat(
-            projectHelper.loadPlugins(mavenProject),
-            hasItem(
-                    hasProperty(
-                            "artifactKey",
-                            is("org.apache.maven.plugins:maven-invoker-plugin:maven-plugin:3.9.0"))));
+        projectHelper.loadPlugins(mavenProject),
+        hasItem(
+            hasProperty(
+                "artifactKey",
+                is("org.apache.maven.plugins:maven-invoker-plugin:maven-plugin:3.9.0"))));
     Mockito.verifyNoInteractions(log);
   }
 

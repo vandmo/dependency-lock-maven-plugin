@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
 
-mvn clean install --activate-profiles its,analyze
+mvn clean install post-site --activate-profiles its,analyze
 mvn com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:check --define spotbugs.excludeFilterFile=spotbugs-suppressions.xml

@@ -20,6 +20,7 @@ jobs:
           --update-snapshots
           --activate-profiles analyze,its
           verify
+          post-site
           com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:spotbugs
           com.github.spotbugs:spotbugs-maven-plugin:4.8.6.6:check --define spotbugs.excludeFilterFile=spotbugs-suppressions.xml
 
@@ -27,6 +28,9 @@ jobs:
     needs: test
     if: startsWith(github.ref, 'refs/tags/release-')
     runs-on: ubuntu-latest
+    permissions:
+      # Required so that the site deployment's GITHUB_TOKEN is provided with appropriate rights
+      contents: write
     steps:
 
       - uses: actions/checkout@v4
@@ -59,8 +63,9 @@ jobs:
           versions:set
           --define newVersion=${{ steps.find-version.outputs.no-dash }}
 
-      - run: mvn --batch-mode --activate-profiles sign deploy
+      - run: mvn --batch-mode --activate-profiles sign deploy site-deploy
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE_EXP20261116 }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

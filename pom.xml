@@ -19,6 +19,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- Where XSDs being tested will be published -->
+    <test.xsd.directories>${project.build.directory}/generated-test-sources/xsds</test.xsd.directories>
+    <!-- SCM publish configuration -->
+    <scm.publish.password>${env.GITHUB_TOKEN}</scm.publish.password>
+    <scm.publish.username />
+    <scm.publish.branch>gh-pages</scm.publish.branch>
 
     <!-- Maven Plugin Versions -->
     <dependency-lock-maven-plugin.version>0.0.5734cd9bd748d0121eda3d28d4f428a246501ee0</dependency-lock-maven-plugin.version>
@@ -342,9 +348,52 @@
       <version>4.11.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- Used for logging purposes -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.36</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Only way to have an XML Schema 1.1 Compliant xerces implementation -->
+    <dependency>
+      <groupId>org.exist-db.thirdparty.xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <classifier>xml-schema-1.1</classifier>
+      <scope>test</scope>
+    </dependency>
+    <!-- Required at runtime for xerces Impl XML Schema 1.1 support-->
+    <dependency>
+      <groupId>org.exist-db.thirdparty.org.eclipse.wst.xml</groupId>
+      <artifactId>xpath2</artifactId>
+      <version>1.2.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>edu.princeton.cup</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>10k</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
+    <filters>
+      <filter>resources.properties</filter>
+    </filters>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -457,18 +506,102 @@
             <version>2.19.0</version>
           </dependency>
         </dependencies>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>@</delimiter>
+          </delimiters>
+        </configuration>
+        <executions>
+          <execution>
+            <id>prepare-xsd-test-resources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <!--
+             Should be generate-test-resources but for IDE integration
+             it avoids having to compile everything
+            -->
+            <phase>generate-resources</phase>
+            <configuration>
+              <outputDirectory>${test.xsd.directories}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/site/xsd</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+              <filters>
+                <filter>test-resources.properties</filter>
+              </filters>
+            </configuration>
+          </execution>
+          <execution>
+            <id>generate-site-xsds</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>pre-site</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/site/xsd</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>add-test-resource</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${test.xsd.directories}</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${maven-site-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.19.0</version>
-          </dependency>
-        </dependencies>
+        <executions>
+          <execution>
+            <goals>
+              <goal>stage</goal>
+            </goals>
+            <phase>post-site</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>publish-scm</goal>
+            </goals>
+            <phase>site-deploy</phase>
+            <configuration>
+              <!-- 
+              An empty css file is being generated by the site generation, let's ignore it for now
+              -->
+              <excludes>css/**</excludes>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -568,6 +701,40 @@
           <artifactId>maven-wrapper-plugin</artifactId>
           <version>${maven-wrapper-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>3.6.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>commons-io</groupId>
+              <artifactId>commons-io</artifactId>
+              <version>2.19.0</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <!-- Not interested yet in having reports generated -->
+            <generateReports>false</generateReports>
+            <generateProjectInfo>false</generateProjectInfo>
+            <!-- We won't be relying on the default deployment mechanism -->
+            <skipDeploy>true</skipDeploy>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-publish-plugin</artifactId>
+          <version>3.3.0</version>
+          <configuration>
+            <username>${scm.publish.username}</username>
+            <password>${scm.publish.password}</password>
+            <scmBranch>${scm.publish.branch}</scmBranch>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -577,6 +744,10 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <site>
+      <id>github</id>
+      <url>scm:git:git@github.com:vandmo/dependency-lock-maven-plugin.git</url>
+    </site>
   </distributionManagement>
 
   <scm>
