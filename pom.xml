@@ -733,6 +733,7 @@
             <username>${scm.publish.username}</username>
             <password>${scm.publish.password}</password>
             <scmBranch>${scm.publish.branch}</scmBranch>
+            <pubScmUrl>scm:git:https://github.com/vandmo/dependency-lock-maven-plugin.git</pubScmUrl>
           </configuration>
         </plugin>
       </plugins>

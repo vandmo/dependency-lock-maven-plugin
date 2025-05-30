@@ -40,7 +40,10 @@ jobs:
           java-version: '8'
           cache: 'maven'
 
-      - run: mvn --batch-mode site-deploy
+        run: |
+          git config --global credential.helper store
+          echo "https://${{ secrets.GITHUB_TOKEN }}:@github.com" > ~/.git-credentials
+          mvn --batch-mode site-deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
