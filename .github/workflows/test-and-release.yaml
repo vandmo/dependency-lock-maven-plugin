@@ -41,6 +41,8 @@ jobs:
           cache: 'maven'
 
       - run: |
+          git config --global user.email "mikael@vandmo.se"
+          git config --global user.name "GitHub Action"
           git config --global credential.helper store
           echo "https://${{ secrets.GITHUB_TOKEN }}:@github.com" > ~/.git-credentials
           mvn --batch-mode site-deploy
