@@ -19,7 +19,7 @@ final class DiffHelper {
     this.log = log;
   }
 
-  <T extends LockableEntity> List<String> diffIntegrity(
+  <T extends LockableEntity<T>> List<String> diffIntegrity(
       T lockedEntity, T actualEntity, Filters filters) {
     if (lockedEntity.getIntegrity().equals(actualEntity.getIntegrity())) {
       return emptyList();
@@ -38,7 +38,7 @@ final class DiffHelper {
     }
   }
 
-  <T extends LockableEntity> List<String> findExtraneous(
+  <T extends LockableEntity<T>> List<String> findExtraneous(
       LockableEntities<T> entities, LockableEntities<T> lockedEntities, Filters filters) {
     List<String> extraneous = new ArrayList<>();
     for (T entity : entities) {
@@ -53,7 +53,7 @@ final class DiffHelper {
     return extraneous;
   }
 
-  <EntityType extends LockableEntity> List<String> diffVersion(
+  <EntityType extends LockableEntity<EntityType>> List<String> diffVersion(
       AtomicReference<EntityType> lockedEntityRef,
       EntityType actualEntity,
       BiFunction<EntityType, String, EntityType> versionUpdater,
