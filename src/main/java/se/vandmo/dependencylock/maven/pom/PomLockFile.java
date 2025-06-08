@@ -28,6 +28,7 @@ import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
+import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Plugin;
 
 public final class PomLockFile {
@@ -47,16 +48,22 @@ public final class PomLockFile {
   public static final class Contents {
     public final List<Dependency> dependencies;
     public final Optional<Build> build;
+    public final Optional<Parent> parent;
 
     public Contents(List<Dependency> dependencies) {
       this.dependencies = unmodifiableList(new ArrayList<>(dependencies));
       this.build = Optional.empty();
+      this.parent = Optional.empty();
     }
 
     public Contents(
-        List<Dependency> dependencies, List<Plugin> plugins, List<Extension> extensions) {
+        List<Dependency> dependencies,
+        Parent parent,
+        List<Plugin> plugins,
+        List<Extension> extensions) {
       this.dependencies = unmodifiableList(new ArrayList<>(dependencies));
       this.build = Optional.of(new Build(plugins, extensions));
+      this.parent = Optional.ofNullable(parent);
     }
   }
 
@@ -65,6 +72,7 @@ public final class PomLockFile {
   private static final QName LOCKFILE_VERSION = new QName(DEPENDENCY_LOCK_NS, "version");
   private static final QName PROJECT = new QName(POM_NS, "project");
   private static final QName DEPENDENCIES = new QName(POM_NS, "dependencies");
+  private static final QName PARENT = new QName(POM_NS, "parent");
   private static final QName DEPENDENCY = new QName(POM_NS, "dependency");
   private static final QName EXTENSIONS = new QName(POM_NS, "extensions");
   private static final QName BUILD = new QName(POM_NS, "build");
@@ -155,6 +163,7 @@ public final class PomLockFile {
     List<Dependency> dependencies = null;
     List<Plugin> plugins = null;
     List<Extension> extensions = null;
+    Parent parent = null;
     boolean inBuild = false;
     boolean buildFound = false;
     while (reader.hasNextEvent()) {
@@ -166,6 +175,11 @@ public final class PomLockFile {
             throw new InvalidPomLockFile("Duplicate 'dependencies' element");
           }
           dependencies = fromDependencies(reader);
+        } else if (name.equals(PARENT)) {
+          if (null != parent) {
+            throw new InvalidPomLockFile("Duplicate 'parent' element");
+          }
+          parent = fromParent(reader);
         } else if (name.equals(BUILD)) {
           if (buildFound) {
             throw new InvalidPomLockFile("Duplicate 'build' element");
@@ -201,9 +215,68 @@ public final class PomLockFile {
       if (plugins == null) {
         throw new InvalidPomLockFile("Missing 'plugins' element");
       }
-      return new Contents(dependencies, plugins, extensions);
+      return new Contents(dependencies, parent, plugins, extensions);
     }
     return new Contents(dependencies);
+  }
+
+  private static Parent fromParent(XMLEventReader2 rdr) throws XMLStreamException {
+    String groupId = null;
+    String artifactId = null;
+    String version = null;
+    String integrity = null;
+    Parent parent = null;
+    while (rdr.hasNextEvent()) {
+      XMLEvent event = rdr.nextEvent();
+      if (event.isStartElement()) {
+        Location startElementLocation = event.getLocation();
+        QName name = event.asStartElement().getName();
+        if (name.equals(GROUP_ID)) {
+          groupId = readSingleTextElement(rdr);
+        } else if (name.equals(ARTIFACT_ID)) {
+          artifactId = readSingleTextElement(rdr);
+        } else if (name.equals(VERSION)) {
+          version = readSingleTextElement(rdr);
+        } else if (name.equals(INTEGRITY)) {
+          integrity = readSingleTextElement(rdr);
+        } else if (name.equals(PARENT)) {
+          if (null != parent) {
+            throw new InvalidPomLockFile("Duplicate 'parent' element");
+          }
+          parent = fromParent(rdr);
+        } else {
+          skipElement(rdr);
+        }
+      } else if (event.isEndElement()) {
+        if (!event.asEndElement().getName().equals(PARENT)) {
+          throw new InvalidPomLockFile("Expected '</parent>'", event.getLocation());
+        }
+        if (groupId == null) {
+          throw new InvalidPomLockFile("Missing groupId", event.getLocation());
+        }
+        if (artifactId == null) {
+          throw new InvalidPomLockFile("Missing artifactId", event.getLocation());
+        }
+        if (version == null) {
+          throw new InvalidPomLockFile("Missing version", event.getLocation());
+        }
+        if (integrity == null) {
+          throw new InvalidPomLockFile("Missing integrity", event.getLocation());
+        }
+        return Parent.builder()
+            .artifactIdentifier(
+                ArtifactIdentifier.builder()
+                    .groupId(groupId)
+                    .artifactId(artifactId)
+                    .type("pom")
+                    .build())
+            .version(version)
+            .parent(parent)
+            .integrity(integrity)
+            .build();
+      }
+    }
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static List<Dependency> fromDependencies(XMLEventReader2 rdr) throws XMLStreamException {
