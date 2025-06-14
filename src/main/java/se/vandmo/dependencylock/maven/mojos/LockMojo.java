@@ -18,6 +18,7 @@ import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockableEntity;
 import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.LockedProject;
+import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.Project;
@@ -78,6 +79,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     if (isLockBuild()) {
       return Project.from(
           filteredProjectDependencies(),
+          Parent.from(mavenProject()),
           Build.from(filteredProjectPlugins(), filteredProjectExtensions()));
     }
     return Project.from(filteredProjectDependencies());

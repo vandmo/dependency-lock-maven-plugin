@@ -56,13 +56,17 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   }
 
   Dependencies projectDependencies() {
-    return Dependencies.fromMavenArtifacts(project.getArtifacts());
+    return Dependencies.fromMavenArtifacts(mavenProject().getArtifacts());
+  }
+
+  final MavenProject mavenProject() {
+    return this.project;
   }
 
   Extensions projectExtensions() throws MojoExecutionException {
     Collection<ExtensionRealmCache.CacheRecord> extensionRealms =
-        new ArrayList<>(project.getBuildExtensions().size());
-    for (Extension extension : project.getBuildExtensions()) {
+        new ArrayList<>(mavenProject().getBuildExtensions().size());
+    for (Extension extension : mavenProject().getBuildExtensions()) {
       final Plugin extensionAsAPlugin = new Plugin();
       extensionAsAPlugin.setGroupId(extension.getGroupId());
       extensionAsAPlugin.setArtifactId(extension.getArtifactId());
@@ -70,7 +74,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
       try {
         extensionRealms.add(
             mavenPluginManager.setupExtensionsRealm(
-                project, extensionAsAPlugin, mavenSession.getRepositorySession()));
+                mavenProject(), extensionAsAPlugin, mavenSession.getRepositorySession()));
       } catch (PluginManagerException e) {
         throw new MojoExecutionException(
             "Failed loading extension realm for plugin " + extensionAsAPlugin, e);
@@ -80,15 +84,16 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   }
 
   Plugins projectPlugins() throws MojoExecutionException {
-    return new LockProjectHelper(getLog(), mavenPluginManager, mavenSession).loadPlugins(project);
+    return new LockProjectHelper(getLog(), mavenPluginManager, mavenSession)
+        .loadPlugins(mavenProject());
   }
 
   PomMinimums pomMinimums() {
-    return PomMinimums.from(project);
+    return PomMinimums.from(mavenProject());
   }
 
   String projectVersion() {
-    return project.getVersion();
+    return mavenProject().getVersion();
   }
 
   LockFileFormat format() {
