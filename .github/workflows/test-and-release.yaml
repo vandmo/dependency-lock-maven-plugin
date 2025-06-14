@@ -86,7 +86,7 @@ jobs:
           versions:set
           --define newVersion=${{ steps.find-version.outputs.no-dash }}
 
-      - run: mvn --batch-mode --activate-profiles sign deploy site-deploy
+      - run: mvn --batch-mode --activate-profiles sign deploy
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
