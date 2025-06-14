@@ -26,6 +26,7 @@ jobs:
 
   deploy-site:
     needs: test
+    if: startsWith(github.ref, 'refs/tags/release-')
     runs-on: ubuntu-latest
     permissions:
       # Required so that the site deployment's GITHUB_TOKEN is provided with appropriate rights
