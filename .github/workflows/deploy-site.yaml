@@ -1,0 +1,30 @@
+name: Deploy Site
+
+on:
+  workflow_dispatch:
+
+jobs:
+  
+  deploy-site:
+    runs-on: ubuntu-latest
+    permissions:
+      # Required so that the site deployment's GITHUB_TOKEN is provided with appropriate rights
+      contents: write
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
+
+      - run: |
+          git config --global user.email "mikael@vandmo.se"
+          git config --global user.name "GitHub Action"
+          git config --global credential.helper store
+          echo "https://${{ secrets.GITHUB_TOKEN }}:@github.com" > ~/.git-credentials
+          mvn --batch-mode site-deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
