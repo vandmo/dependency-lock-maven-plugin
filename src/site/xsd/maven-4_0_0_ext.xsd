@@ -1,9 +1,9 @@
 <xs:schema
-    targetNamespace="http://maven.apache.org/POM/4.0.0"
-    elementFormDefault="qualified"
-    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-    xmlns:tns="http://maven.apache.org/POM/4.0.0"
-    xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+  targetNamespace="http://maven.apache.org/POM/4.0.0"
+  elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:tns="http://maven.apache.org/POM/4.0.0"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock">
 
   <xs:import schemaLocation="@xsd_dest@/dependencylock.xsd" namespace="urn:se.vandmo.dependencylock" />
 
