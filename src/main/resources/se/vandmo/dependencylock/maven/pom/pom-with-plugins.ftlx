@@ -9,6 +9,18 @@
   dependency-lock:version="2">
   <modelVersion>4.0.0</modelVersion>
 
+<#macro parent_macro p indent><#local local_indent>${""?left_pad(indent * 2)}</#local>
+${local_indent}<parent>
+${local_indent}  <groupId>${p.artifactIdentifier.groupId}</groupId>
+${local_indent}  <artifactId>${p.artifactIdentifier.artifactId}</artifactId>
+${local_indent}  <version>${p.version}</version>
+${local_indent}  <relativePath />
+${local_indent}  <dependency-lock:integrity>${p.getIntegrityForLockFile()}</dependency-lock:integrity>
+<#if p.parent??><@parent_macro p=p.parent indent=(indent + 1) />
+</#if>${local_indent}</parent>
+</#macro><#if parent??><@parent_macro p=parent indent=(1) />
+
+</#if>
   <groupId>${pom.groupId}</groupId>
   <artifactId>${pom.artifactId}-dependency-lock</artifactId>
   <version>${pom.version}</version>

@@ -22,6 +22,7 @@ import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedProject;
 import se.vandmo.dependencylock.maven.Lockfile;
+import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
@@ -63,6 +64,10 @@ public final class LockFilePom implements Lockfile {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", lockedProject.dependencies);
+    final Optional<Parent> parent = lockedProject.parent;
+    if (parent.isPresent()) {
+      dataModel.put("parent", parent.get());
+    }
     final Optional<Build> build = lockedProject.build;
     if (build.isPresent()) {
       dataModel.put("extensions", build.get().extensions);
@@ -103,7 +108,7 @@ public final class LockFilePom implements Lockfile {
           Build.from(
               Plugins.from(contents.build.get().plugins),
               Extensions.from(contents.build.get().extensions));
-      return LockedProject.from(artifacts, build, log);
+      return LockedProject.from(artifacts, build, contents.parent.orElse(null), log);
     }
     return LockedProject.from(artifacts, log);
   }

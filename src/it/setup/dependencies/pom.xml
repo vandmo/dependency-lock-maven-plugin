@@ -22,6 +22,28 @@
         <version>3.0.1</version>
         <executions>
           <execution>
+            <id>install-a-parent</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>a-parent-1.0.pom</file>
+              <pomFile>a-parent-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>install-another-parent</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>another-parent-1.0.pom</file>
+              <pomFile>another-parent-1.0.pom</pomFile>
+            </configuration>
+          </execution>
+          <execution>
             <id>install-leaf</id>
             <phase>validate</phase>
             <goals>

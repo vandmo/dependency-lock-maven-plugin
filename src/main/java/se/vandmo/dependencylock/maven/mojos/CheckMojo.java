@@ -9,6 +9,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedProject;
+import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Project;
 
 @Mojo(
@@ -38,7 +39,10 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     Project actualProject;
     if (lockedProject.build.isPresent()) {
       actualProject =
-          Project.from(projectDependencies(), Build.from(projectPlugins(), projectExtensions()));
+          Project.from(
+              projectDependencies(),
+              Parent.from(mavenProject()),
+              Build.from(projectPlugins(), projectExtensions()));
     } else {
       actualProject = Project.from(projectDependencies());
     }
