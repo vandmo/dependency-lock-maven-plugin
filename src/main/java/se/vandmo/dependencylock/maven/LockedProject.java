@@ -7,30 +7,47 @@ import java.util.stream.Stream;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedProject {
-  public final Optional<Parent> parent;
-  public final Optional<Build> build;
   public final Dependencies dependencies;
+  public final Optional<Parents> parents;
+  public final Optional<Plugins> plugins;
+  public final Optional<Extensions> extensions;
   private final Log log;
 
   private LockedProject(
-      Optional<Parent> parent, Optional<Build> build, Dependencies dependencies, Log log) {
-    this.parent = parent;
+      Dependencies dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions,
+      Log log) {
+    this.parents = parents;
     this.dependencies = dependencies;
-    this.build = build;
+    this.plugins = plugins;
+    this.extensions = extensions;
     this.log = log;
   }
 
   public static LockedProject from(Project project, Log log) {
-    return new LockedProject(project.parent, project.build, project.dependencies, log);
+    return new LockedProject(
+        project.dependencies, project.parents, project.plugins, project.extensions, log);
   }
 
-  public static LockedProject from(Dependencies dependencies, Build build, Parent parent, Log log) {
+  public static LockedProject from(
+      Dependencies dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions,
+      Log log) {
     return new LockedProject(
-        Optional.ofNullable(parent), Optional.of(build), requireNonNull(dependencies), log);
+        requireNonNull(dependencies),
+        requireNonNull(parents),
+        requireNonNull(plugins),
+        requireNonNull(extensions),
+        log);
   }
 
   public static LockedProject from(Dependencies dependencies, Log log) {
-    return new LockedProject(Optional.empty(), Optional.empty(), requireNonNull(dependencies), log);
+    return new LockedProject(
+        requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty(), log);
   }
 
   public Diff compareWith(Project project, Filters filters) {
@@ -38,60 +55,65 @@ public final class LockedProject {
         LockedDependencies.from(dependencies, log)
             .compareWith(project.dependencies, filters)
             .getReport();
-    if (build.isPresent()) {
-      return new Diff(
-          dependenciesDiff,
-          LockedParents.from(Parents.fromParent(project.parent.orElse(null)), log)
-              .compareWith(Parents.fromParent(parent.orElse(null)), filters),
-          LockedBuild.from(build.get(), log)
-              .compareWith(project.build.orElse(Build.empty()), filters));
-    }
-    return new Diff(dependenciesDiff);
+    return new Diff(
+        dependenciesDiff,
+        project.parents.map(
+            parents ->
+                LockedParents.from(parents, log)
+                    .compareWith(this.parents.get(), filters)), // TODO avoid .get? how?
+        project.plugins.map(
+            plugins -> LockedPlugins.from(plugins, log).compareWith(this.plugins.get(), filters)),
+        project.extensions.map(
+            extensions ->
+                LockedExtensions.from(extensions, log)
+                    .compareWith(this.extensions.get(), filters)));
   }
 
   public static final class Diff {
-    private final Optional<LockedBuild.Diff> buildDiff;
     private final DiffReport dependenciesDiff;
-    private final Optional<DiffReport> parentDiff;
-
-    Diff(DiffReport dependenciesDiff, DiffReport parentDiff, LockedBuild.Diff buildDiff) {
-      this(Optional.of(buildDiff), Optional.of(parentDiff), dependenciesDiff);
-    }
+    private final Optional<DiffReport> parentsDiff;
+    private final Optional<DiffReport> pluginsDiff;
+    private final Optional<DiffReport> extensionsDiff;
 
     Diff(DiffReport dependenciesDiff) {
-      this(Optional.empty(), Optional.empty(), dependenciesDiff);
+      this(dependenciesDiff, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    private Diff(
-        Optional<LockedBuild.Diff> buildDiff,
-        Optional<DiffReport> parentDiff,
-        DiffReport dependenciesDiff) {
-      this.buildDiff = buildDiff;
-      this.parentDiff = parentDiff;
-      this.dependenciesDiff = dependenciesDiff;
+    public Diff(
+        DiffReport dependenciesDiff,
+        Optional<DiffReport> parentsDiff,
+        Optional<DiffReport> pluginsDiff,
+        Optional<DiffReport> extensionsDiff) {
+      this.dependenciesDiff = requireNonNull(dependenciesDiff);
+      this.parentsDiff = requireNonNull(parentsDiff);
+      this.pluginsDiff = requireNonNull(pluginsDiff);
+      this.extensionsDiff = requireNonNull(extensionsDiff);
     }
 
     public boolean equals() {
       if (!dependenciesDiff.equals()) {
         return false;
       }
-      if (buildDiff.isPresent() && !buildDiff.get().equals()) {
+      if (parentsDiff.isPresent() && !parentsDiff.get().equals()) {
         return false;
       }
-      if (parentDiff.isPresent() && !parentDiff.get().equals()) {
+      if (pluginsDiff.isPresent() && !pluginsDiff.get().equals()) {
+        return false;
+      }
+      if (extensionsDiff.isPresent() && !extensionsDiff.get().equals()) {
         return false;
       }
       return true;
     }
 
     public Stream<String> report() {
-      Stream<String> result = dependenciesDiff.report("dependencies");
-      result =
-          Stream.concat(
-              result, parentDiff.map(report -> report.report("parents")).orElse(Stream.empty()));
-      result =
-          Stream.concat(result, buildDiff.map(LockedBuild.Diff::report).orElse(Stream.empty()));
-      return result;
+      return Stream.of(
+              Optional.of(dependenciesDiff.report("dependencies")),
+              parentsDiff.map(report -> report.report("parents")),
+              pluginsDiff.map(report -> report.report("plugins")),
+              extensionsDiff.map(report -> report.report("extensions")))
+          .filter(Optional::isPresent)
+          .flatMap(Optional::get);
     }
 
     public void logTo(Log log) {

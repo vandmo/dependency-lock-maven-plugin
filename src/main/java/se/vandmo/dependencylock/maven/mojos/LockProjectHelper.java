@@ -16,7 +16,6 @@ import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.InvalidPluginDescriptorException;
 import org.apache.maven.plugin.MavenPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginContainerException;
 import org.apache.maven.plugin.PluginDescriptorParsingException;
 import org.apache.maven.plugin.PluginResolutionException;
@@ -25,6 +24,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.MojoExecutionRuntimeException;
 import se.vandmo.dependencylock.maven.Plugins;
 
 final class LockProjectHelper {
@@ -40,8 +40,7 @@ final class LockProjectHelper {
   }
 
   private se.vandmo.dependencylock.maven.Plugin loadPlugin(
-      MavenProject project, Plugin plugin, Map<String, Artifact> artifactCache)
-      throws MojoExecutionException {
+      MavenProject project, Plugin plugin, Map<String, Artifact> artifactCache) {
     try {
       final PluginDescriptor descriptor =
           mavenPluginManager.getPluginDescriptor(
@@ -66,17 +65,19 @@ final class LockProjectHelper {
                       .collect(Collectors.toList())))
           .build();
     } catch (PluginResolutionException e) {
-      throw new MojoExecutionException("Failed resolving plugin " + plugin, e);
+      throw new MojoExecutionRuntimeException("Failed resolving plugin " + plugin, e);
     } catch (PluginDescriptorParsingException e) {
-      throw new MojoExecutionException("Failed parsing plugin descriptor of plugin " + plugin, e);
+      throw new MojoExecutionRuntimeException(
+          "Failed parsing plugin descriptor of plugin " + plugin, e);
     } catch (InvalidPluginDescriptorException e) {
-      throw new MojoExecutionException("Invalid plugin descriptor found for plugin " + plugin, e);
+      throw new MojoExecutionRuntimeException(
+          "Invalid plugin descriptor found for plugin " + plugin, e);
     } catch (PluginContainerException e) {
-      throw new MojoExecutionException("Failed loading container for plugin " + plugin, e);
+      throw new MojoExecutionRuntimeException("Failed loading container for plugin " + plugin, e);
     }
   }
 
-  Plugins loadPlugins(MavenProject project) throws MojoExecutionException {
+  Plugins loadPlugins(MavenProject project) {
     final List<Plugin> buildPlugins = project.getBuildPlugins();
     final Map<String, Artifact> artifactCache = new HashMap<>();
     final List<se.vandmo.dependencylock.maven.Plugin> result = new ArrayList<>(buildPlugins.size());

@@ -26,6 +26,10 @@ public final class LockFileAccessor {
   }
 
   public Reader reader() {
+    return readerFor(file);
+  }
+
+  private static Reader readerFor(File file) {
     try {
       return new InputStreamReader(new FileInputStream(file), UTF_8);
     } catch (FileNotFoundException e) {
@@ -33,13 +37,33 @@ public final class LockFileAccessor {
     }
   }
 
-  public Writer writer() {
+  public File sibling(String firstChild, String... rest) {
+    File childFile = new File(file.getParentFile(), firstChild);
+    for (String child : rest) {
+      childFile = new File(childFile, child);
+    }
+    return childFile;
+  }
+
+  private static Writer writerFor(File file) {
     file.getParentFile().mkdirs();
     try {
       return new OutputStreamWriter(new FileOutputStream(file), UTF_8);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public Writer writer() {
+    return writerFor(file);
+  }
+
+  public Writer writer(String firstChild, String... rest) {
+    File childFile = new File(file.getParentFile(), firstChild);
+    for (String child : rest) {
+      childFile = new File(childFile, child);
+    }
+    return writerFor(childFile);
   }
 
   public boolean exists() {

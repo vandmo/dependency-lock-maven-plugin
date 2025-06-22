@@ -42,16 +42,6 @@
         </xs:extension>
       </xs:complexContent>
     </xs:complexType>
-    <xs:complexType name="Parent">
-      <xs:complexContent>
-        <xs:extension base="tns:Parent">
-          <xs:all>
-            <xs:element ref="dependency-lock:integrity" minOccurs="0" maxOccurs="1" />
-            <xs:element name="parent" type="tns:Parent" minOccurs="0" maxOccurs="1" />
-          </xs:all>
-        </xs:extension>
-      </xs:complexContent>
-    </xs:complexType>
   </xs:redefine>
 
 </xs:schema>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 @xsd_dest@/maven-4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock @xsd_dest@/dependencylock.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>${pom.groupId}</groupId>
+  <artifactId>${pom.artifactId}-dependency-lock-parents</artifactId>
+  <version>${pom.version}</version>
+
+  <dependencies>
+<#list parents as parent>
+    <dependency>
+      <groupId>${parent.artifactIdentifier.groupId}</groupId>
+      <artifactId>${parent.artifactIdentifier.artifactId}</artifactId>
+      <version>${parent.version}</version>
+      <type>pom</type>
+      <#if parent.artifactIdentifier.classifier.isPresent()>
+      <classifier>${parent.artifactIdentifier.classifier.get()}</classifier>
+      </#if>
+      <dependency-lock:integrity>${parent.getIntegrityForLockFile()}</dependency-lock:integrity>
+    </dependency>
+</#list>
+  </dependencies>
+
+</project>
