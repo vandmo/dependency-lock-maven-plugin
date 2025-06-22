@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 @xsd_dest@/maven-v4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock @xsd_dest@/dependencylock.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>${pom.groupId}</groupId>
+  <artifactId>${pom.artifactId}-dependency-lock-plugins</artifactId>
+  <version>${pom.version}</version>
+
+  <build>
+    <plugins>
+<#list plugins as plugin>
+      <plugin>
+        <groupId>${plugin.artifactIdentifier.groupId}</groupId>
+        <artifactId>${plugin.artifactIdentifier.artifactId}</artifactId>
+        <version>${plugin.version}</version>
+        <dependency-lock:integrity>${plugin.getIntegrityForLockFile()}</dependency-lock:integrity>
+        <dependencies>
+        <#list plugin.dependencies as dependency>
+          <dependency>
+            <groupId>${dependency.artifactIdentifier.groupId}</groupId>
+            <artifactId>${dependency.artifactIdentifier.artifactId}</artifactId>
+            <version>${dependency.version}</version>
+            <type>${dependency.artifactIdentifier.type}</type>
+            <#if dependency.artifactIdentifier.classifier.isPresent()>
+            <classifier>${dependency.artifactIdentifier.classifier.get()}</classifier>
+            </#if>
+            <dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
+          </dependency>
+        </#list>
+        </dependencies>
+      </plugin>
+</#list>
+    </plugins>
+  </build>  
+</project>

@@ -1,6 +1,8 @@
 package se.vandmo.dependencylock.maven.pom;
 
 import static freemarker.template.TemplateExceptionHandler.RETHROW_HANDLER;
+import static java.util.Locale.ROOT;
+import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 import freemarker.template.Configuration;
@@ -12,6 +14,8 @@ import freemarker.template.Version;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -46,14 +50,25 @@ public final class LockFilePom implements Lockfile {
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
   }
 
+  private void writeFromTemplate(Configuration cfg, Map<String, Object> dataModel, String name) throws IOException, TemplateException {
+    Template template = cfg.getTemplate(format(ROOT, "%s-pom.ftlx", name));
+    try (Writer writer = dependenciesLockFile.writer(name, "pom.xml")) {
+      template.process(dataModel, writer);
+    }
+  }
+
   @Override
   public void write(LockedProject projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
-      Template template = cfg.getTemplate("pom-with-plugins.ftlx");
+      Map<String, Object> dataModel = makeDataModel(pomMinimums, projectDependencies);
+      Template template = cfg.getTemplate("pom.ftlx");
       try (Writer writer = dependenciesLockFile.writer()) {
-        template.process(makeDataModel(pomMinimums, projectDependencies), writer);
+        template.process(dataModel, writer);
       }
+      writeFromTemplate(cfg, dataModel, "extensions");
+      writeFromTemplate(cfg, dataModel, "parents");
+      writeFromTemplate(cfg, dataModel, "plugins");
     } catch (IOException | TemplateException e) {
       throw new RuntimeException(e);
     }
@@ -64,10 +79,13 @@ public final class LockFilePom implements Lockfile {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", lockedProject.dependencies);
-    final Optional<Parent> parent = lockedProject.parent;
-    if (parent.isPresent()) {
-      dataModel.put("parent", parent.get());
+    ArrayList<Parent> parents = new ArrayList<>();
+    Parent parent = lockedProject.parent.orElse(null);
+    while (parent != null) {
+      parents.add(parent);
+      parent = parent.parent;
     }
+    dataModel.put("parents", parents);
     final Optional<Build> build = lockedProject.build;
     if (build.isPresent()) {
       dataModel.put("extensions", build.get().extensions);

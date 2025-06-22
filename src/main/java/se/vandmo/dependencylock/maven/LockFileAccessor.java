@@ -33,13 +33,25 @@ public final class LockFileAccessor {
     }
   }
 
-  public Writer writer() {
+  private static Writer writerFor(File file) {
     file.getParentFile().mkdirs();
     try {
       return new OutputStreamWriter(new FileOutputStream(file), UTF_8);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public Writer writer() {
+    return writerFor(file);
+  }
+
+  public Writer writer(String firstChild, String... rest) {
+    File childFile = new File(file.getParentFile(), firstChild);
+    for (String child : rest) {
+      childFile = new File(childFile, child);
+    }
+    return writerFor(childFile);
   }
 
   public boolean exists() {
