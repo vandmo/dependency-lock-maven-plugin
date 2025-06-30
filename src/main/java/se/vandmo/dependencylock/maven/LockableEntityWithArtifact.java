@@ -63,8 +63,22 @@ public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArt
     return artifact.getIntegrityForLockFile();
   }
 
+  protected StringBuilder toStringBuilder_withoutIntegrity() {
+    return artifact.toStringBuilder_withoutIntegrity();
+  }
+
   @Override
   public String toString() {
-    return artifact.toString_withoutIntegrity();
+    return toStringBuilder_withoutIntegrity()
+        .append('@')
+        .append(
+            artifact
+                .integrity
+                .<String>matching()
+                .Calculated((calculated) -> calculated.checksum)
+                .Folder((folder) -> "<Folder>")
+                .Ignored((ignored) -> "<Ignored>")
+                .get())
+        .toString();
   }
 }
