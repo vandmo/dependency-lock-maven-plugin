@@ -32,7 +32,8 @@ jobs:
           languages: ${{ matrix.language }}
           build-mode: "manual"
 
-      - run: ./tasks/full-build
+      - run: |
+          mvn clean verify post-site --activate-profiles its,analyze
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
