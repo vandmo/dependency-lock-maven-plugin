@@ -33,7 +33,7 @@ jobs:
           build-mode: "manual"
 
       - run: |
-          mvn clean verify post-site --activate-profiles its,analyze
+          mvn clean package -DskipTests=true -Dmaven.javadoc.skip=true
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
