@@ -130,28 +130,12 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
     return toString().compareTo(other.toString());
   }
 
-  @Override
-  public String toString() {
-    return toStringBuilder_withoutIntegrity()
-        .append('@')
-        .append(
-            artifact
-                .integrity
-                .<String>matching()
-                .Calculated((calculcated) -> calculcated.checksum)
-                .Folder((folder) -> "<Folder>")
-                .Ignored((ignored) -> "<Ignored>")
-                .get())
-        .toString();
-  }
-
   public String toString_withoutIntegrity() {
     return toStringBuilder_withoutIntegrity().toString();
   }
 
-  private StringBuilder toStringBuilder_withoutIntegrity() {
-    return artifact
-        .toStringBuilder_withoutIntegrity()
+  protected StringBuilder toStringBuilder_withoutIntegrity() {
+    return super.toStringBuilder_withoutIntegrity()
         .append(':')
         .append(scope)
         .append(":optional=")
