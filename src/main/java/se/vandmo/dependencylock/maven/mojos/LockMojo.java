@@ -79,7 +79,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     if (isLockBuild()) {
       return Project.from(
           filteredProjectDependencies(),
-          Parent.from(mavenProject()),
+          Parents.from(mavenProject()),
           Build.from(filteredProjectPlugins(), filteredProjectExtensions()));
     }
     return Project.from(filteredProjectDependencies());

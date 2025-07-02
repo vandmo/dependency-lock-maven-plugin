@@ -2,9 +2,11 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.maven.plugin.logging.Log;
@@ -41,7 +43,7 @@ public final class LockedDependencies extends LockedEntities<Dependency> {
     if (lockedDependency.optional == actualDependency.optional) {
       return emptyList();
     } else {
-      return asList("optional");
+      return singletonList("optional");
     }
   }
 
@@ -49,7 +51,7 @@ public final class LockedDependencies extends LockedEntities<Dependency> {
     if (lockedDependency.scope.equals(actualDependency.scope)) {
       return emptyList();
     } else {
-      return asList("scope");
+      return singletonList("scope");
     }
   }
 
