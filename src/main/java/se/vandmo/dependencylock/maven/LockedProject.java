@@ -7,26 +7,27 @@ import java.util.stream.Stream;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedProject {
-  public final Optional<Parent> parent;
-  public final Optional<Build> build;
+  public final Optional<Parents> parents;
+  public final Optional<Plugins> plugins;
+  public final Optional<Extensions> extensions;
   public final Dependencies dependencies;
   private final Log log;
 
   private LockedProject(
-      Optional<Parent> parent, Optional<Build> build, Dependencies dependencies, Log log) {
-    this.parent = parent;
+      Optional<Parents> parents, Optional<Plugins> plugins, Optional<Extensions> extensions, Dependencies dependencies, Log log) {
+    this.parents = parents;
     this.dependencies = dependencies;
     this.build = build;
     this.log = log;
   }
 
   public static LockedProject from(Project project, Log log) {
-    return new LockedProject(project.parent, project.build, project.dependencies, log);
+    return new LockedProject(project.parents, project.build, project.dependencies, log);
   }
 
-  public static LockedProject from(Dependencies dependencies, Build build, Parent parent, Log log) {
+  public static LockedProject from(Dependencies dependencies, Optional<Parents> parents, Optional<Plugins> plugins, Optional<Extensions> extensions, Log log) {
     return new LockedProject(
-        Optional.ofNullable(parent), Optional.of(build), requireNonNull(dependencies), log);
+        parent, Optional.of(build), requireNonNull(dependencies), log);
   }
 
   public static LockedProject from(Dependencies dependencies, Log log) {
@@ -50,12 +51,12 @@ public final class LockedProject {
   }
 
   public static final class Diff {
-    private final Optional<LockedBuild.Diff> buildDiff;
     private final DiffReport dependenciesDiff;
+    private final Optional<LockedBuild.Diff> buildDiff;
     private final Optional<DiffReport> parentDiff;
 
-    Diff(DiffReport dependenciesDiff, DiffReport parentDiff, LockedBuild.Diff buildDiff) {
-      this(Optional.of(buildDiff), Optional.of(parentDiff), dependenciesDiff);
+    Diff(DiffReport dependenciesDiff, DiffReport parentsDiff, LockedBuild.Diff buildDiff) {
+      this(Optional.of(buildDiff), Optional.of(parentsDiff), dependenciesDiff);
     }
 
     Diff(DiffReport dependenciesDiff) {

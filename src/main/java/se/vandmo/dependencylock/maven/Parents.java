@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 
-public final class Parents implements Iterable<Artifact> {
+public final class Parents extends LockableEntitiesWithArtifact<Plugin> implements Iterable<Artifact> {
 
   private final List<Artifact> hierarchy;
 

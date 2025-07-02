@@ -4,11 +4,8 @@ import java.util.Objects;
 import org.apache.maven.project.MavenProject;
 
 public final class Parent extends LockableEntityWithArtifact<Parent> implements Comparable<Parent> {
-  public final Parent parent;
-
-  private Parent(Artifact artifact, Parent parent) {
+  private Parent(Artifact artifact) {
     super(artifact);
-    this.parent = parent;
   }
 
   public static ArtifactIdentifierBuilderStage builder() {

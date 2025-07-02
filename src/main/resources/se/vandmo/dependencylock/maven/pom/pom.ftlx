@@ -5,7 +5,8 @@
   xsi:schemaLocation="
     http://maven.apache.org/POM/4.0.0 @xsd_dest@/maven-v4_0_0_ext.xsd
     urn:se.vandmo.dependencylock @xsd_dest@/dependencylock.xsd"
-  xmlns:dependency-lock="urn:se.vandmo.dependencylock">
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>${pom.groupId}</groupId>
