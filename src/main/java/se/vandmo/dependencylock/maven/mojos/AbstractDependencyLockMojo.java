@@ -15,7 +15,6 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.ExtensionRealmCache;
 import org.apache.maven.plugin.MavenPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -27,6 +26,7 @@ import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockFileFormat;
+import se.vandmo.dependencylock.maven.MojoExecutionRuntimeException;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
@@ -63,7 +63,7 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return this.project;
   }
 
-  Extensions projectExtensions() throws MojoExecutionException {
+  Extensions projectExtensions() {
     Collection<ExtensionRealmCache.CacheRecord> extensionRealms =
         new ArrayList<>(mavenProject().getBuildExtensions().size());
     for (Extension extension : mavenProject().getBuildExtensions()) {
@@ -76,14 +76,14 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
             mavenPluginManager.setupExtensionsRealm(
                 mavenProject(), extensionAsAPlugin, mavenSession.getRepositorySession()));
       } catch (PluginManagerException e) {
-        throw new MojoExecutionException(
+        throw new MojoExecutionRuntimeException(
             "Failed loading extension realm for plugin " + extensionAsAPlugin, e);
       }
     }
     return Extensions.fromMavenExtensionRealms(extensionRealms);
   }
 
-  Plugins projectPlugins() throws MojoExecutionException {
+  Plugins projectPlugins() {
     return new LockProjectHelper(getLog(), mavenPluginManager, mavenSession)
         .loadPlugins(mavenProject());
   }

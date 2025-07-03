@@ -1,25 +1,23 @@
 package se.vandmo.dependencylock.maven;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 
-import static java.util.Collections.emptyList;
+public final class Parents extends LockableEntitiesWithArtifact<Parent>
+    implements Iterable<Parent> {
 
-public final class Parents extends LockableEntitiesWithArtifacts<Artifact> implements Iterable<Artifact> {
-
-  private final List<Artifact> hierarchy;
-
-  private Parents(List<Artifact> artifacts) {
-    super();
-    this.hierarchy = Collections.unmodifiableList(new ArrayList<>(artifacts));
+  public Parents(List<Parent> parents) {
+    super(unmodifiableList(new ArrayList<>(requireNonNull(parents))));
   }
 
   public static Parents fromMavenProject(MavenProject mavenProject) {
     MavenProject currentProject = mavenProject;
-    List<Artifact> parentHierarchy = new ArrayList<>();
+    List<Parent> parentHierarchy = new ArrayList<>();
     while (currentProject != null) {
       final org.apache.maven.model.Parent parentModel = currentProject.getModel().getParent();
       if (parentModel == null) {
@@ -34,7 +32,7 @@ public final class Parents extends LockableEntitiesWithArtifacts<Artifact> imple
 
       final org.apache.maven.artifact.Artifact parentArtifact = currentProject.getParentArtifact();
       parentHierarchy.add(
-          Artifact.builder()
+          Parent.builder()
               .artifactIdentifier(ArtifactIdentifier.from(parentArtifact))
               .version(parentArtifact.getVersion())
               .integrity(integrity)
@@ -45,12 +43,13 @@ public final class Parents extends LockableEntitiesWithArtifacts<Artifact> imple
   }
 
   public static Parents from(MavenProject project) {
-    List<Artifact> parents = new ArrayList<>();
+    List<Parent> parents = new ArrayList<>();
     project = project.getParent();
     while (project != null) {
       final org.apache.maven.artifact.Artifact parentArtifact = project.getParentArtifact();
       String integrity = Checksum.calculateFor(parentArtifact.getFile());
-      parents.add(Artifact.builder()
+      parents.add(
+          Parent.builder()
               .artifactIdentifier(ArtifactIdentifier.from(parentArtifact))
               .version(parentArtifact.getVersion())
               .integrity(integrity)
@@ -58,10 +57,5 @@ public final class Parents extends LockableEntitiesWithArtifacts<Artifact> imple
       project = project.getParent();
     }
     return new Parents(parents);
-  }
-
-  @Override
-  public Iterator<Artifact> iterator() {
-    return this.hierarchy.iterator();
   }
 }

@@ -1,9 +1,12 @@
 package se.vandmo.dependencylock.maven.pom;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Optional;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -23,7 +26,6 @@ import org.xml.sax.SAXException;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
@@ -31,6 +33,7 @@ import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedProject;
 import se.vandmo.dependencylock.maven.Parent;
+import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
@@ -126,46 +129,47 @@ public class LockFilePomTest {
                             .build())))
             .build();
     final Plugins plugins = Plugins.from(Collections.singletonList(compilerPlugin));
-    final Build build = Build.from(plugins, extensions);
+    final Parents parents =
+        new Parents(
+            asList(
+                Parent.builder()
+                    .artifactIdentifier(
+                        ArtifactIdentifier.builder()
+                            .groupId("org.apache.maven.plugins")
+                            .artifactId("maven-plugins")
+                            .type("pom")
+                            .build())
+                    .version("43")
+                    .integrity(
+                        "sha512:0d6a975da79ab1fe489edc6df27057185d598b246ec4bce41694eb81cb571a53f4839c3bf96ead68580f314398b19d902ea07be129756d207cc0043803bf22d5")
+                    .build(),
+                Parent.builder()
+                    .artifactIdentifier(
+                        ArtifactIdentifier.builder()
+                            .groupId("org.apache.maven")
+                            .artifactId("maven-parent")
+                            .build())
+                    .version("44")
+                    .integrity(
+                        "sha512:806b8a36939ed7b6f81770ef48648a7bde6c4f87bd0cd73b8ffce0fec317ab3adf40617d91b840c40c58c2a2fd448f696032a60da845256661d28986e4fa055e")
+                    .build(),
+                Parent.builder()
+                    .artifactIdentifier(
+                        ArtifactIdentifier.builder()
+                            .groupId("org.apache")
+                            .artifactId("apache")
+                            .type("pom")
+                            .build())
+                    .version("34")
+                    .integrity(
+                        "sha512:29b34e91977d3490bca8ab046d67f71e336599b2ef3af87d757784e05d6fd2091704d3b8879e11a53fdaccd3d949dfa4d66af2db5fec0d7158e958102a79461a")
+                    .build()));
     lockFilePom.write(
         LockedProject.from(
             dependencies,
-            build,
-            Parent.builder()
-                .artifactIdentifier(
-                    ArtifactIdentifier.builder()
-                        .groupId("org.apache.maven.plugins")
-                        .artifactId("maven-plugins")
-                        .type("pom")
-                        .build())
-                .version("43")
-                .parent(
-                    Parent.builder()
-                        .artifactIdentifier(
-                            ArtifactIdentifier.builder()
-                                .groupId("org.apache.maven")
-                                .artifactId("maven-parent")
-                                .build())
-                        .version("44")
-                        .parent(
-                            Parent.builder()
-                                .artifactIdentifier(
-                                    ArtifactIdentifier.builder()
-                                        .groupId("org.apache")
-                                        .artifactId("apache")
-                                        .type("pom")
-                                        .build())
-                                .version("34")
-                                .parent(null)
-                                .integrity(
-                                    "sha512:29b34e91977d3490bca8ab046d67f71e336599b2ef3af87d757784e05d6fd2091704d3b8879e11a53fdaccd3d949dfa4d66af2db5fec0d7158e958102a79461a")
-                                .build())
-                        .integrity(
-                            "sha512:806b8a36939ed7b6f81770ef48648a7bde6c4f87bd0cd73b8ffce0fec317ab3adf40617d91b840c40c58c2a2fd448f696032a60da845256661d28986e4fa055e")
-                        .build())
-                .integrity(
-                    "sha512:0d6a975da79ab1fe489edc6df27057185d598b246ec4bce41694eb81cb571a53f4839c3bf96ead68580f314398b19d902ea07be129756d207cc0043803bf22d5")
-                .build(),
+            Optional.of(parents),
+            Optional.of(plugins),
+            Optional.of(extensions),
             log));
     return lockfileAccessor;
   }

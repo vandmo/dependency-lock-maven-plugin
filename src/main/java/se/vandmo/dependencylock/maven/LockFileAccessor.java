@@ -26,11 +26,23 @@ public final class LockFileAccessor {
   }
 
   public Reader reader() {
+    return readerFor(file);
+  }
+
+  private static Reader readerFor(File file) {
     try {
       return new InputStreamReader(new FileInputStream(file), UTF_8);
     } catch (FileNotFoundException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  public File sibling(String firstChild, String... rest) {
+    File childFile = new File(file.getParentFile(), firstChild);
+    for (String child : rest) {
+      childFile = new File(childFile, child);
+    }
+    return childFile;
   }
 
   private static Writer writerFor(File file) {

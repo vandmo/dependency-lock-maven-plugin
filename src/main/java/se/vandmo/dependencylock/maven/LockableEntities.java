@@ -49,4 +49,8 @@ public class LockableEntities<Type extends LockableEntity<Type>> implements Iter
   public final Stream<Type> stream() {
     return entities.stream();
   }
+
+  public final int size() {
+    return entities.size();
+  }
 }

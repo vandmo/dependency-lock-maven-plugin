@@ -23,7 +23,10 @@ public final class ArtifactTests {
 
   @Test(expected = NullPointerException.class)
   public void builder_integrity_null() {
-    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity(null);
+    Artifact.builder()
+        .artifactIdentifier(anArtifactIdentifier())
+        .version("1")
+        .integrity((String) null);
   }
 
   @Test

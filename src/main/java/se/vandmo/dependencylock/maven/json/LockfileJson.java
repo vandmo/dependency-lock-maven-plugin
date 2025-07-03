@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -28,7 +29,6 @@ import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.Build;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
@@ -37,9 +37,9 @@ import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.LockedProject;
 import se.vandmo.dependencylock.maven.Lockfile;
 import se.vandmo.dependencylock.maven.Parent;
+import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
-import se.vandmo.dependencylock.maven.pom.InvalidPomLockFile;
 
 public final class LockfileJson implements Lockfile {
 
@@ -73,16 +73,19 @@ public final class LockfileJson implements Lockfile {
       if (artifacts == null) {
         throw new IllegalStateException("Missing artifacts field");
       }
-      final JsonNode buildNode = json.get("build");
-      if (buildNode == null) {
-        throw new IllegalStateException("Missing build field");
-      }
       final Map<String, Artifact> artifactMap = loadArtifactsFromJson(artifacts);
-      final Build build = loadBuildFromJson(buildNode, artifactMap);
+      final Optional<Plugins> plugins =
+          Optional.ofNullable(json.get("plugins"))
+              .map(pluginsNode -> loadPluginsFromJson(pluginsNode, artifactMap));
+      Optional<Extensions> extensions =
+          Optional.ofNullable(json.get("extensions"))
+              .map(extensionsNode -> loadExtensionsFromJson(extensionsNode, artifactMap));
       final Dependencies projectDependencies =
           loadDependenciesFromJson(getDependencies(json), artifactMap);
-      return LockedProject.from(
-          projectDependencies, build, loadParentFromJson(json.get("parent")), log);
+      Optional<Parents> parents =
+          Optional.ofNullable(json.get("parents"))
+              .map(parentsNode -> loadParentsFromJson(parentsNode));
+      return LockedProject.from(projectDependencies, parents, plugins, extensions, log);
     } else {
       throw new MojoExecutionException(
           format(
@@ -128,18 +131,25 @@ public final class LockfileJson implements Lockfile {
         .build();
   }
 
-  private static Parent parseParent(JsonNode json, Parent parent) {
-    return Parent.builder()
-        .artifactIdentifier(
-            ArtifactIdentifier.builder()
-                .groupId(getNonBlankStringValue(json, "groupId"))
-                .artifactId(getNonBlankStringValue(json, "artifactId"))
-                .type("pom")
-                .build())
-        .version(getNonBlankStringValue(json, "version"))
-        .parent(parent)
-        .integrity(getNonBlankStringValue(json, "integrity"))
-        .build();
+  private static Parents loadParentsFromJson(JsonNode json) {
+    ArrayList<Parent> parents = new ArrayList<>();
+    if (!json.isArray()) {
+      throw new IllegalStateException("Expected parents field to be an array");
+    }
+    for (JsonNode node : json) {
+      parents.add(
+          Parent.builder()
+              .artifactIdentifier(
+                  ArtifactIdentifier.builder()
+                      .groupId(getNonBlankStringValue(json, "groupId"))
+                      .artifactId(getNonBlankStringValue(json, "artifactId"))
+                      .type("pom")
+                      .build())
+              .version(getNonBlankStringValue(json, "version"))
+              .integrity(getNonBlankStringValue(json, "integrity"))
+              .build());
+    }
+    return new Parents(parents);
   }
 
   private static Dependencies loadDependenciesFromJson(JsonNode json) {
@@ -154,13 +164,6 @@ public final class LockfileJson implements Lockfile {
       dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
     }
     return Dependencies.fromDependencies(dependencies);
-  }
-
-  private static Parent loadParentFromJson(JsonNode json) {
-    if (null == json) {
-      return null;
-    }
-    return parseParent(json, loadParentFromJson(json.get("parent")));
   }
 
   private static Dependencies loadDependenciesFromJson(
@@ -180,20 +183,6 @@ public final class LockfileJson implements Lockfile {
       dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
     }
     return Dependencies.fromDependencies(dependencies);
-  }
-
-  private static Build loadBuildFromJson(JsonNode json, Map<String, Artifact> artifacts)
-      throws InvalidPomLockFile {
-    final JsonNode plugins = json.get("plugins");
-    if (plugins == null) {
-      throw new IllegalStateException("Missing plugins field");
-    }
-    final JsonNode extensions = json.get("extensions");
-    if (extensions == null) {
-      throw new IllegalStateException("Missing extensions field");
-    }
-    return Build.from(
-        loadPluginsFromJson(plugins, artifacts), loadExtensionsFromJson(extensions, artifacts));
   }
 
   private static Plugins loadPluginsFromJson(JsonNode json, Map<String, Artifact> artifacts) {
@@ -279,16 +268,11 @@ public final class LockfileJson implements Lockfile {
         .forEach((key, value) -> output.set(key, writeJson(value, jsonNodeFactory)));
     json.put("version", V2);
     json.set("artifacts", output);
-    contents.parent.ifPresent(parent -> json.set("parent", toJson(parent, jsonNodeFactory)));
-    contents.build.ifPresent(build -> json.set("build", toJson(build, jsonNodeFactory)));
+    contents.parents.ifPresent(parents -> json.set("parents", toJson(parents, jsonNodeFactory)));
+    contents.plugins.ifPresent(plugins -> json.set("plugins", toJson(plugins, jsonNodeFactory)));
+    contents.extensions.ifPresent(
+        extensions -> json.set("extensions", toJson(extensions, jsonNodeFactory)));
     json.set("dependencies", toJson(contents.dependencies, jsonNodeFactory));
-    return json;
-  }
-
-  private JsonNode toJson(Build contents, JsonNodeFactory jsonNodeFactory) {
-    ObjectNode json = jsonNodeFactory.objectNode();
-    json.set("plugins", toJson(contents.plugins, jsonNodeFactory));
-    json.set("extensions", toJson(contents.extensions, jsonNodeFactory));
     return json;
   }
 
@@ -308,8 +292,10 @@ public final class LockfileJson implements Lockfile {
   private Map<String, Artifact> collectArtifacts(LockedProject contents) {
     Map<String, Artifact> artifacts = new HashMap<>();
     Stream.concat(
-            contents.dependencies.artifacts(),
-            contents.build.map(Build::artifacts).orElse(Stream.empty()))
+            Stream.concat(
+                contents.dependencies.artifacts(),
+                contents.plugins.map(Plugins::artifacts).orElse(Stream.empty())),
+            contents.extensions.map(Extensions::artifacts).orElse(Stream.empty()))
         .forEach(artifact -> artifacts.putIfAbsent(artifact.getArtifactKey(), artifact));
     return new TreeMap<>(artifacts);
   }
@@ -363,17 +349,18 @@ public final class LockfileJson implements Lockfile {
     return json;
   }
 
-  private JsonNode toJson(Parent lockedParent, JsonNodeFactory jsonNodeFactory) {
-    ObjectNode json = jsonNodeFactory.objectNode();
-    final ArtifactIdentifier artifactIdentifier = lockedParent.getArtifactIdentifier();
-    json.put("groupId", artifactIdentifier.groupId);
-    json.put("artifactId", artifactIdentifier.artifactId);
-    json.put("version", lockedParent.getVersion());
-    json.put("type", artifactIdentifier.type);
-    json.put("integrity", lockedParent.getIntegrityForLockFile());
-    if (lockedParent.parent != null) {
-      json.set("parent", toJson(lockedParent.parent, jsonNodeFactory));
+  private JsonNode toJson(Parents lockedParents, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode jsonParentsArray = jsonNodeFactory.arrayNode(lockedParents.size());
+    for (Parent lockedParent : lockedParents) {
+      ObjectNode json = jsonNodeFactory.objectNode();
+      final ArtifactIdentifier artifactIdentifier = lockedParent.getArtifactIdentifier();
+      json.put("groupId", artifactIdentifier.groupId);
+      json.put("artifactId", artifactIdentifier.artifactId);
+      json.put("version", lockedParent.getVersion());
+      json.put("type", artifactIdentifier.type);
+      json.put("integrity", lockedParent.getIntegrityForLockFile());
+      jsonParentsArray.add(json);
     }
-    return json;
+    return jsonParentsArray;
   }
 }

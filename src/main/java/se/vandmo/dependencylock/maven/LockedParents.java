@@ -24,8 +24,10 @@ public final class LockedParents extends AbstractLockedEntries<Artifact> {
     List<String> missing = new ArrayList<>();
     List<String> different = new ArrayList<>();
     List<String> extraneous = new ArrayList<>();
-    Iterator<Artifact> lockedEntitiesIterator = this.parents.iterator();
-    Iterator<Artifact> actualEntitiesIterator = actualEntities.iterator();
+    Iterator<Artifact> lockedEntitiesIterator =
+        this.parents.stream().map(parent -> parent.artifact).iterator();
+    Iterator<Artifact> actualEntitiesIterator =
+        actualEntities.stream().map(parent -> parent.artifact).iterator();
     if (!lockedEntitiesIterator.hasNext()) {
       actualEntitiesIterator.forEachRemaining(
           artifact -> extraneous.add(artifact.toString_withoutIntegrity()));

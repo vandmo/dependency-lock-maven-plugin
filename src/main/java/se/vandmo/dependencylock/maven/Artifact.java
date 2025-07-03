@@ -51,6 +51,10 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
       return new FinalBuilderStage(
           artifactIdentifier, version, Integrity.Calculated(checkIntegrityArgument(integrity)));
     }
+
+    public FinalBuilderStage integrity(Integrity integrity) {
+      return new FinalBuilderStage(artifactIdentifier, version, requireNonNull(integrity));
+    }
   }
 
   private static String checkIntegrityArgument(String integrity) {

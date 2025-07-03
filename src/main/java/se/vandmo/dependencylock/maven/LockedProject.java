@@ -13,7 +13,12 @@ public final class LockedProject {
   public final Optional<Extensions> extensions;
   private final Log log;
 
-  private LockedProject(Dependencies dependencies, Optional<Parents> parents, Optional<Plugins> plugins, Optional<Extensions> extensions, Log log) {
+  private LockedProject(
+      Dependencies dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions,
+      Log log) {
     this.parents = parents;
     this.dependencies = dependencies;
     this.plugins = plugins;
@@ -22,15 +27,27 @@ public final class LockedProject {
   }
 
   public static LockedProject from(Project project, Log log) {
-    return new LockedProject(project.dependencies, project.parents, project.plugins, project.extensions, log);
+    return new LockedProject(
+        project.dependencies, project.parents, project.plugins, project.extensions, log);
   }
 
-  public static LockedProject from(Dependencies dependencies, Optional<Parents> parents, Optional<Plugins> plugins, Optional<Extensions> extensions, Log log) {
-    return new LockedProject(requireNonNull(dependencies), requireNonNull(parents), requireNonNull(plugins), requireNonNull(extensions), log);
+  public static LockedProject from(
+      Dependencies dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions,
+      Log log) {
+    return new LockedProject(
+        requireNonNull(dependencies),
+        requireNonNull(parents),
+        requireNonNull(plugins),
+        requireNonNull(extensions),
+        log);
   }
 
   public static LockedProject from(Dependencies dependencies, Log log) {
-    return new LockedProject(requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty(), log);
+    return new LockedProject(
+        requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty(), log);
   }
 
   public Diff compareWith(Project project, Filters filters) {
@@ -39,10 +56,17 @@ public final class LockedProject {
             .compareWith(project.dependencies, filters)
             .getReport();
     return new Diff(
-     dependenciesDiff,
-     project.parents.map(parents -> LockedParents.from(parents, log).compareWith(this.parents.get(), filters)), // TODO avoid .get? how?
-     project.plugins.map(plugins -> LockedPlugins.from(plugins, log).compareWith(this.plugins.get(), filters)),
-     project.extensions.map(extensions -> LockedExtensions.from(extensions, log).compareWith(this.extensions.get(), filters)));
+        dependenciesDiff,
+        project.parents.map(
+            parents ->
+                LockedParents.from(parents, log)
+                    .compareWith(this.parents.get(), filters)), // TODO avoid .get? how?
+        project.plugins.map(
+            plugins -> LockedPlugins.from(plugins, log).compareWith(this.plugins.get(), filters)),
+        project.extensions.map(
+            extensions ->
+                LockedExtensions.from(extensions, log)
+                    .compareWith(this.extensions.get(), filters)));
   }
 
   public static final class Diff {
@@ -55,7 +79,7 @@ public final class LockedProject {
       this(dependenciesDiff, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    Diff(
+    public Diff(
         DiffReport dependenciesDiff,
         Optional<DiffReport> parentsDiff,
         Optional<DiffReport> pluginsDiff,
@@ -87,7 +111,9 @@ public final class LockedProject {
               Optional.of(dependenciesDiff.report("dependencies")),
               parentsDiff.map(report -> report.report("parents")),
               pluginsDiff.map(report -> report.report("plugins")),
-              extensionsDiff.map(report -> report.report("extensions"))).filter(Optional::isPresent).flatMap(Optional::get);
+              extensionsDiff.map(report -> report.report("extensions")))
+          .filter(Optional::isPresent)
+          .flatMap(Optional::get);
     }
 
     public void logTo(Log log) {

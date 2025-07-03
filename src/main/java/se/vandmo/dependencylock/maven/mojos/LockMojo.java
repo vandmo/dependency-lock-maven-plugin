@@ -7,21 +7,7 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import se.vandmo.dependencylock.maven.Artifacts;
-import se.vandmo.dependencylock.maven.Build;
-import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.DependencySetConfiguration;
-import se.vandmo.dependencylock.maven.Extensions;
-import se.vandmo.dependencylock.maven.Filters;
-import se.vandmo.dependencylock.maven.Integrity;
-import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockableEntity;
-import se.vandmo.dependencylock.maven.LockedDependencies;
-import se.vandmo.dependencylock.maven.LockedProject;
-import se.vandmo.dependencylock.maven.Parent;
-import se.vandmo.dependencylock.maven.Plugin;
-import se.vandmo.dependencylock.maven.Plugins;
-import se.vandmo.dependencylock.maven.Project;
+import se.vandmo.dependencylock.maven.*;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.json.LockfileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
@@ -80,7 +66,8 @@ public final class LockMojo extends AbstractDependencyLockMojo {
       return Project.from(
           filteredProjectDependencies(),
           Parents.from(mavenProject()),
-          Build.from(filteredProjectPlugins(), filteredProjectExtensions()));
+          filteredProjectPlugins(),
+          filteredProjectExtensions());
     }
     return Project.from(filteredProjectDependencies());
   }
