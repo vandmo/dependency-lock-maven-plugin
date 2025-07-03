@@ -6,11 +6,9 @@ import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import se.vandmo.dependencylock.maven.Build;
-import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedProject;
-import se.vandmo.dependencylock.maven.Parent;
-import se.vandmo.dependencylock.maven.Project;
+import se.vandmo.dependencylock.maven.*;
+
+import java.util.Optional;
 
 @Mojo(
     name = "check",
@@ -24,6 +22,14 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
 
   @Override
   public void execute() throws MojoExecutionException {
+    try {
+      doExecute();
+    } catch (MojoExecutionRuntimeException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
+    }
+  }
+
+  public void doExecute() throws MojoExecutionException {
     if (skip) {
       getLog().info("Skipping check");
       return;
@@ -32,38 +38,24 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     LockFileAccessor lockFile = lockFile();
     if (!lockFile.exists()) {
       throw new MojoExecutionException(
-          "No lock file found, create one by running 'mvn"
-              + " se.vandmo:dependency-lock-maven-plugin:lock'");
+              "No lock file found, create one by running 'mvn"
+                      + " se.vandmo:dependency-lock-maven-plugin:lock'");
     }
     LockedProject lockedProject = format().lockFile_from(lockFile, pomMinimums(), getLog()).read();
-    Project actualProject;
-    if (lockedProject.build.isPresent()) {
-      actualProject =
-          Project.from(
-              projectDependencies(),
-              Parent.from(mavenProject()),
-              Build.from(projectPlugins(), projectExtensions()));
+    Filters filters = filters();
+    final DiffReport dependenciesDiff =
+            LockedDependencies.from(lockedProject.dependencies, getLog())
+                    .compareWith(projectDependencies(), filters)
+                    .getReport();
+    Optional<DiffReport> parentsDiff = lockedProject.parents.map(lockedParents -> LockedParents.from(Parents.from(mavenProject()), getLog()).compareWith(lockedParents, filters));
+    Optional<DiffReport> pluginsDiff = lockedProject.plugins.map(lockedPlugins -> LockedPlugins.from(projectPlugins(), getLog()).compareWith(lockedPlugins, filters));
+    Optional<DiffReport> extensionsDiff = lockedProject.extensions.map(lockedExtensions -> LockedExtensions.from(projectExtensions(), getLog()).compareWith(lockedExtensions, filters));
+    LockedProject.Diff diff = new LockedProject.Diff(dependenciesDiff, parentsDiff, pluginsDiff, extensionsDiff);
+    if (diff.equals()) {
+      getLog().info("Actual project matches locked project");
     } else {
-      actualProject = Project.from(projectDependencies());
-    }
-    LockedProject.Diff diff = lockedProject.compareWith(actualProject, filters());
-    if (actualProject.build.isPresent()) {
-      if (diff.equals()) {
-        getLog()
-            .info(
-                "Actual dependencies, plugins and extensions matches locked dependencies, plugins"
-                    + " and extensions");
-      } else {
-        diff.logTo(getLog());
-        throw new MojoExecutionException("Dependencies / Build differ");
-      }
-    } else {
-      if (diff.equals()) {
-        getLog().info("Actual dependencies matches locked dependencies");
-      } else {
-        diff.logTo(getLog());
-        throw new MojoExecutionException("Dependencies differ");
-      }
+      diff.logTo(getLog());
+      throw new MojoExecutionException("Actual project differ from locked project");
     }
   }
 }

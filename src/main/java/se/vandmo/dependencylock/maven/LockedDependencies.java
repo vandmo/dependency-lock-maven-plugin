@@ -1,12 +1,10 @@
 package se.vandmo.dependencylock.maven;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.maven.plugin.logging.Log;
@@ -62,7 +60,7 @@ public final class LockedDependencies extends LockedEntities<Dependency> {
 
     private final DiffReport diffReport;
 
-    DiffReport getReport() {
+    public DiffReport getReport() {
       return diffReport;
     }
 

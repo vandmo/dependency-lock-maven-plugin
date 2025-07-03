@@ -55,7 +55,7 @@ public final class LockedProject {
       this(dependenciesDiff, Optional.empty(), Optional.empty(), Optional.empty());
     }
 
-    Diff(
+    public Diff(
         DiffReport dependenciesDiff,
         Optional<DiffReport> parentsDiff,
         Optional<DiffReport> pluginsDiff,

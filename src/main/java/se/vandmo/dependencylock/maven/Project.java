@@ -21,6 +21,10 @@ public final class Project {
     return new Project(dependencies, parents, plugins, extensions);
   }
 
+  public static Project from(Dependencies dependencies, Parents parents, Plugins plugins, Extensions extensions) {
+    return new Project(dependencies, Optional.of(parents), Optional.of(plugins), Optional.of(extensions));
+  }
+
   public static Project from(Dependencies dependencies) {
     return new Project(dependencies, Optional.empty(), Optional.empty(), Optional.empty());
   }
