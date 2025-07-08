@@ -9,7 +9,7 @@ import org.apache.maven.plugin.ExtensionRealmCache;
 public final class Extensions extends LockableEntitiesWithArtifact<Extension> {
 
   private Extensions(Collection<Extension> extensions) {
-    super(extensions);
+    super(extensions, true);
   }
 
   public static Extensions from(Collection<Extension> extensions) {

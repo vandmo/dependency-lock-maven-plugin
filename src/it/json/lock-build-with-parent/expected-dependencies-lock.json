@@ -1300,18 +1300,18 @@
     }
   },
   "parents" : [ {
-      "groupId": "se.vandmo.testing",
-      "artifactId": "another-parent",
-      "version": "1.0",
-      "type": "pom",
-      "integrity": "sha512:kqD1YUN8EXHoQOV0WAqo7QQcKwdVQCLSRIGyC5ypG8ramXLQIF31cHAHvJzs/hLDvbysJg4tT7TX/FEcPKdw8w=="
-    }, {
-      "groupId" : "se.vandmo.testing",
-      "artifactId" : "a-parent",
-      "version" : "1.0",
-      "type" : "pom",
-      "integrity" : "sha512:TitWSF4+YyDXpCFDXanZKUHpLnUgZF5bVqBwsoVRB/vppY4Ue4s5u+JFR+skbXq3e2BRKU8pERNqQFq8XgcSWg=="
-    } ],
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "another-parent",
+    "version" : "1.0",
+    "type" : "pom",
+    "integrity" : "sha512:kqD1YUN8EXHoQOV0WAqo7QQcKwdVQCLSRIGyC5ypG8ramXLQIF31cHAHvJzs/hLDvbysJg4tT7TX/FEcPKdw8w=="
+  }, {
+    "groupId" : "se.vandmo.testing",
+    "artifactId" : "a-parent",
+    "version" : "1.0",
+    "type" : "pom",
+    "integrity" : "sha512:TitWSF4+YyDXpCFDXanZKUHpLnUgZF5bVqBwsoVRB/vppY4Ue4s5u+JFR+skbXq3e2BRKU8pERNqQFq8XgcSWg=="
+  } ],
   "plugins" : [ {
     "artifact" : "org.apache.maven.plugins:maven-clean-plugin:maven-plugin:3.2.0",
     "dependencies" : [ "commons-io:commons-io:jar:2.6", "org.apache.maven.shared:maven-shared-utils:jar:3.3.4" ]

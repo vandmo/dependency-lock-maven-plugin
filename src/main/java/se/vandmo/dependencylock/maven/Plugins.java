@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 public final class Plugins extends LockableEntitiesWithArtifact<Plugin> {
 
   private Plugins(Collection<Plugin> plugins) {
-    super(plugins);
+    super(plugins, true);
   }
 
   public static Plugins empty() {

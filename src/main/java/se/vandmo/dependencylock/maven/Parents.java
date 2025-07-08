@@ -11,13 +11,12 @@ public final class Parents extends LockableEntitiesWithArtifact<Parent>
     implements Iterable<Parent> {
 
   public Parents(List<Parent> parents) {
-    super(unmodifiableList(new ArrayList<>(requireNonNull(parents))));
+    super(unmodifiableList(new ArrayList<>(requireNonNull(parents))), false);
   }
 
   public static Parents from(MavenProject project) {
     List<Parent> parents = new ArrayList<>();
-    project = project.getParent();
-    while (project != null) {
+    while (project.getParentArtifact() != null) {
       final org.apache.maven.artifact.Artifact parentArtifact = project.getParentArtifact();
       String integrity = Checksum.calculateFor(parentArtifact.getFile());
       parents.add(

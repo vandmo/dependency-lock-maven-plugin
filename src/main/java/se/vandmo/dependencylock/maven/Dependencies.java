@@ -7,7 +7,7 @@ import java.util.Collection;
 public final class Dependencies extends LockableEntitiesWithArtifact<Dependency> {
 
   private Dependencies(Collection<Dependency> dependencies) {
-    super(dependencies);
+    super(dependencies, true);
   }
 
   public static Dependencies fromMavenArtifacts(

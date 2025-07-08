@@ -141,12 +141,12 @@ public final class LockfileJson implements Lockfile {
           Parent.builder()
               .artifactIdentifier(
                   ArtifactIdentifier.builder()
-                      .groupId(getNonBlankStringValue(json, "groupId"))
-                      .artifactId(getNonBlankStringValue(json, "artifactId"))
+                      .groupId(getNonBlankStringValue(node, "groupId"))
+                      .artifactId(getNonBlankStringValue(node, "artifactId"))
                       .type("pom")
                       .build())
-              .version(getNonBlankStringValue(json, "version"))
-              .integrity(getNonBlankStringValue(json, "integrity"))
+              .version(getNonBlankStringValue(node, "version"))
+              .integrity(getNonBlankStringValue(node, "integrity"))
               .build());
     }
     return new Parents(parents);

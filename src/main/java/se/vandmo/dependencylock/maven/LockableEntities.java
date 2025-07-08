@@ -20,15 +20,17 @@ public class LockableEntities<Type extends LockableEntity<Type>> implements Iter
 
   private final List<Type> entities;
 
-  LockableEntities(Collection<Type> contents) {
+  LockableEntities(Collection<Type> contents, boolean sort) {
     ArrayList<Type> copy = new ArrayList<>(contents);
-    copy.sort(
-        new Comparator<Type>() {
-          @Override
-          public int compare(Type o1, Type o2) {
-            return o1.getArtifactIdentifier().compareTo(o2.getArtifactIdentifier());
-          }
-        });
+    if (sort) {
+      copy.sort(
+          new Comparator<Type>() {
+            @Override
+            public int compare(Type o1, Type o2) {
+              return o1.getArtifactIdentifier().compareTo(o2.getArtifactIdentifier());
+            }
+          });
+    }
     this.entities = unmodifiableList(copy);
   }
 
