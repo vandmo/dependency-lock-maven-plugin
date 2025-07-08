@@ -62,4 +62,9 @@ public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArt
   public final String getIntegrityForLockFile() {
     return artifact.getIntegrityForLockFile();
   }
+
+  @Override
+  public String toString() {
+    return artifact.toString_withoutIntegrity();
+  }
 }

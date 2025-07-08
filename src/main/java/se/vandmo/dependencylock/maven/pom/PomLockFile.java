@@ -35,19 +35,19 @@ public final class PomLockFile {
   private static final String V2 = "2";
 
   public static final class Contents {
-    public final List<Dependency> dependencies;
+    public final Optional<List<Dependency>> dependencies;
     public final Optional<List<Plugin>> plugins;
     public final Optional<List<Extension>> extensions;
 
     public Contents(List<Dependency> dependencies) {
-      this(dependencies, Optional.empty(), Optional.empty());
+      this(Optional.of(dependencies), Optional.empty(), Optional.empty());
     }
 
     public Contents(
-        List<Dependency> dependencies,
+        Optional<List<Dependency>> dependencies,
         Optional<List<Plugin>> plugins,
         Optional<List<Extension>> extensions) {
-      this.dependencies = unmodifiableList(new ArrayList<>(dependencies));
+      this.dependencies = dependencies.map(d -> unmodifiableList(new ArrayList<>(d)));
       this.plugins = plugins;
       this.extensions = extensions;
     }
@@ -184,12 +184,11 @@ public final class PomLockFile {
         }
       }
     }
-    if (null == dependencies) {
-      throw new InvalidPomLockFile("Missing 'dependencies' element");
-    }
     if (buildFound) {
       return new Contents(
-          dependencies, Optional.ofNullable(plugins), Optional.ofNullable(extensions));
+          Optional.ofNullable(dependencies),
+          Optional.ofNullable(plugins),
+          Optional.ofNullable(extensions));
     }
     return new Contents(dependencies);
   }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 https://vandmo.github.io/dependency-lock-maven-plugin/maven-v4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd"
+    xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+    dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.vandmo.tests</groupId>
+  <artifactId>pom-check-build-with-parent-dependency-lock-parents</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>another-parent</artifactId>
+      <version>1.0</version>
+      <type>pom</type>
+      <dependency-lock:integrity>sha512:kqD1YUN8EXHoQOV0WAqo7QQcKwdVQCLSRIGyC5ypG8ramXLQIF31cHAHvJzs/hLDvbysJg4tT7TX/FEcPKdw8w==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>a-parent</artifactId>
+      <version>1.0</version>
+      <type>pom</type>
+      <dependency-lock:integrity>sha512:TitWSF4+YyDXpCFDXanZKUHpLnUgZF5bVqBwsoVRB/vppY4Ue4s5u+JFR+skbXq3e2BRKU8pERNqQFq8XgcSWg==</dependency-lock:integrity>
+    </dependency>
+  </dependencies>
+</project>

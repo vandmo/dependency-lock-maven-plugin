@@ -107,13 +107,22 @@ public final class LockFilePom implements Lockfile {
   @Override
   public LockedProject read() throws MojoExecutionException {
     final PomLockFile.Contents contents = readContents(dependenciesLockFile.file);
-    Dependencies artifacts = Dependencies.fromDependencies(contents.dependencies);
+    Dependencies artifacts =
+        Dependencies.fromDependencies(
+            contents.dependencies.orElseThrow(
+                () -> new InvalidPomLockFile("Missing 'dependencies' element")));
     Optional<Parents> parents =
         maybeReadContents(dependenciesLockFile.sibling("parents", "pom.xml"))
             .map(
                 parentsContent ->
                     new Parents(
-                        parentsContent.dependencies.stream()
+                        parentsContent
+                            .dependencies
+                            .orElseThrow(
+                                () ->
+                                    new InvalidPomLockFile(
+                                        "Missing 'dependencies' element in parents lock file"))
+                            .stream()
                             .map(
                                 parent -> {
                                   if (parent.optional) {

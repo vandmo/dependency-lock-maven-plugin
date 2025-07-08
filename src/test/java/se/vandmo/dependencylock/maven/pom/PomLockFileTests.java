@@ -122,6 +122,7 @@ public final class PomLockFileTests {
             new File(
                 format(
                     ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)))
-        .dependencies;
+        .dependencies
+        .get();
   }
 }

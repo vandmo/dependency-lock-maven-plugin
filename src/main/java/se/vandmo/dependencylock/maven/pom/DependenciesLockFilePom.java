@@ -83,7 +83,10 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   @Override
   public LockedDependencies read() {
     Dependencies artifacts =
-        Dependencies.fromDependencies(PomLockFile.read(dependenciesLockFile.file).dependencies);
+        Dependencies.fromDependencies(
+            PomLockFile.read(dependenciesLockFile.file)
+                .dependencies
+                .orElseThrow(() -> new InvalidPomLockFile("Missing 'dependencies' element")));
     return LockedDependencies.from(artifacts, log);
   }
 }

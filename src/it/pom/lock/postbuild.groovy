@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue
 import org.apache.commons.io.FileUtils
 
 lockFile = new File(basedir, ".dependency-lock/pom.xml")
-expectedLockFile = new File(basedir, "expected-pom.xml")
+expectedLockFile = new File(basedir, "expected/pom.xml")
 
 assertTrue(lockFile.isFile())
 assertTrue(FileUtils.contentEquals(expectedLockFile, lockFile))
