@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
 
-docker run --rm\
+if [ "${CONTAINER_ENGINE:-}" == "podman" ]; then
+  cmd=podman
+else
+  cmd=docker
+fi
+
+$cmd run --rm\
  -v "${PWD}":/local\
- --user $(id -u):$(id -g)\
- vandmo/google-java-format@sha256:7b81f690b62ba70ae9e2165cba54bf3b6d2d81d8c1f5bc015507acdfc91d31e7\
+ --user "$(id -u)":"$(id -g)"\
+ docker.io/vandmo/google-java-format@sha256:7b81f690b62ba70ae9e2165cba54bf3b6d2d81d8c1f5bc015507acdfc91d31e7\
  find /local/ -name '*.java' -exec google-java-format -i {} \;

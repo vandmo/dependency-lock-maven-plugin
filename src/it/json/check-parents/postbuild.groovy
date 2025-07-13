@@ -5,4 +5,10 @@ import static org.hamcrest.Matchers.containsInRelativeOrder
 import org.apache.commons.io.FileUtils
 
 buildLog = FileUtils.readLines(new File(basedir, "build.log"), UTF_8)
-assertThat(buildLog, containsInRelativeOrder("[INFO] Actual dependencies, plugins and extensions matches locked dependencies, plugins and extensions"))
+assertThat(buildLog, containsInRelativeOrder(
+        "[INFO] Checking dependencies",
+        "[INFO] Checking parents",
+        "[INFO] Checking plugins",
+        "[INFO] Checking extensions",
+        "[INFO] Actual project matches locked project",
+))

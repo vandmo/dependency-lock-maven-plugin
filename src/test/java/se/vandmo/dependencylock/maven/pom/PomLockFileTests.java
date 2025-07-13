@@ -121,7 +121,8 @@ public final class PomLockFileTests {
     return PomLockFile.read(
             new File(
                 format(
-                    ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)))
+                    ROOT, "src/test/resources/se/vandmo/dependencylock/maven/poms/%s.xml", name)),
+            true)
         .dependencies
         .get();
   }

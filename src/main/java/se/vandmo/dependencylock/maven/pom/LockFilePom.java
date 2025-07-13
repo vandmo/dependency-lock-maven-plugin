@@ -106,13 +106,13 @@ public final class LockFilePom implements Lockfile {
 
   @Override
   public LockedProject read() throws MojoExecutionException {
-    final PomLockFile.Contents contents = readContents(dependenciesLockFile.file);
+    final PomLockFile.Contents contents = readContents(dependenciesLockFile.file, true);
     Dependencies artifacts =
         Dependencies.fromDependencies(
             contents.dependencies.orElseThrow(
                 () -> new InvalidPomLockFile("Missing 'dependencies' element")));
     Optional<Parents> parents =
-        maybeReadContents(dependenciesLockFile.sibling("parents", "pom.xml"))
+        maybeReadContents(dependenciesLockFile.sibling("parents", "pom.xml"), false)
             .map(
                 parentsContent ->
                     new Parents(
@@ -139,7 +139,7 @@ public final class LockFilePom implements Lockfile {
                                 })
                             .collect(toList())));
     Optional<Plugins> plugins =
-        maybeReadContents(dependenciesLockFile.sibling("plugins", "pom.xml"))
+        maybeReadContents(dependenciesLockFile.sibling("plugins", "pom.xml"), true)
             .map(
                 pluginsContent ->
                     pluginsContent
@@ -150,7 +150,7 @@ public final class LockFilePom implements Lockfile {
                                 new InvalidPomLockFile(
                                     "Missing plugins section in plugins lock file")));
     Optional<Extensions> extensions =
-        maybeReadContents(dependenciesLockFile.sibling("extensions", "pom.xml"))
+        maybeReadContents(dependenciesLockFile.sibling("extensions", "pom.xml"), true)
             .map(
                 extensionsContent ->
                     extensionsContent
@@ -163,17 +163,18 @@ public final class LockFilePom implements Lockfile {
     return LockedProject.from(artifacts, parents, plugins, extensions, log);
   }
 
-  private Optional<PomLockFile.Contents> maybeReadContents(File file)
+  private Optional<PomLockFile.Contents> maybeReadContents(File file, boolean requireScope)
       throws MojoExecutionException {
     if (file.isFile()) {
-      return Optional.of(readContents(file));
+      return Optional.of(readContents(file, requireScope));
     }
     return Optional.empty();
   }
 
-  private PomLockFile.Contents readContents(File file) throws MojoExecutionException {
+  private PomLockFile.Contents readContents(File file, boolean requireScope)
+      throws MojoExecutionException {
     try {
-      return PomLockFile.read(file);
+      return PomLockFile.read(file, requireScope);
     } catch (InvalidPomLockFile e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }

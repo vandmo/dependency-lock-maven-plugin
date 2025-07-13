@@ -73,9 +73,9 @@ public final class PomLockFile {
   private static final QName OPTIONAL = new QName(POM_NS, "optional");
   private static final QName INTEGRITY = new QName(DEPENDENCY_LOCK_NS, "integrity");
 
-  public static Contents read(File file) throws InvalidPomLockFile {
+  public static Contents read(File file, boolean requireScope) throws InvalidPomLockFile {
     try {
-      return doRead(file);
+      return doRead(file, requireScope);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     } catch (XMLStreamException e) {
@@ -83,7 +83,8 @@ public final class PomLockFile {
     }
   }
 
-  private static Contents doRead(File file) throws IOException, XMLStreamException {
+  private static Contents doRead(File file, boolean requireScope)
+      throws IOException, XMLStreamException {
     WstxInputFactory inputFactory = createInputFactory();
     XMLEventReader2 reader = inputFactory.createXMLEventReader(file);
     while (reader.hasNextEvent()) {
@@ -96,11 +97,11 @@ public final class PomLockFile {
         }
         final Attribute attribute = element.getAttributeByName(LOCKFILE_VERSION);
         if (attribute == null) {
-          return fromProject(reader);
+          return fromProject(reader, requireScope);
         }
         final String version = attribute.getValue();
         if (version.equals(V2)) {
-          return fromProjectV2(reader);
+          return fromProjectV2(reader, requireScope);
         }
         throw new InvalidPomLockFile(
             format(
@@ -122,7 +123,8 @@ public final class PomLockFile {
     return inputFactory;
   }
 
-  private static Contents fromProject(XMLEventReader2 reader) throws XMLStreamException {
+  private static Contents fromProject(XMLEventReader2 reader, boolean requireScope)
+      throws XMLStreamException {
     List<Dependency> dependencies = null;
     while (reader.hasNextEvent()) {
       XMLEvent event = reader.nextEvent();
@@ -132,7 +134,7 @@ public final class PomLockFile {
           if (null != dependencies) {
             throw new InvalidPomLockFile("Duplicate 'dependencies' element");
           }
-          dependencies = fromDependencies(reader);
+          dependencies = fromDependencies(reader, requireScope);
         } else {
           skipElement(reader);
         }
@@ -144,7 +146,8 @@ public final class PomLockFile {
     return new Contents(dependencies);
   }
 
-  private static Contents fromProjectV2(XMLEventReader2 reader) throws XMLStreamException {
+  private static Contents fromProjectV2(XMLEventReader2 reader, boolean requireScope)
+      throws XMLStreamException {
     List<Dependency> dependencies = null;
     List<Plugin> plugins = null;
     List<Extension> extensions = null;
@@ -158,7 +161,7 @@ public final class PomLockFile {
           if (null != dependencies) {
             throw new InvalidPomLockFile("Duplicate 'dependencies' element");
           }
-          dependencies = fromDependencies(reader);
+          dependencies = fromDependencies(reader, requireScope);
         } else if (name.equals(BUILD)) {
           if (buildFound) {
             throw new InvalidPomLockFile("Duplicate 'build' element");
@@ -193,7 +196,8 @@ public final class PomLockFile {
     return new Contents(dependencies);
   }
 
-  private static List<Dependency> fromDependencies(XMLEventReader2 rdr) throws XMLStreamException {
+  private static List<Dependency> fromDependencies(XMLEventReader2 rdr, boolean requireScope)
+      throws XMLStreamException {
     List<Dependency> result = new ArrayList<>();
     while (rdr.hasNextEvent()) {
       XMLEvent evt = rdr.nextEvent();
@@ -202,7 +206,7 @@ public final class PomLockFile {
         if (!name.equals(DEPENDENCY)) {
           skipElement(rdr);
         } else {
-          result.add(fromDependency(rdr));
+          result.add(fromDependency(rdr, requireScope));
         }
       } else if (evt.isEndElement()) {
         QName name = evt.asEndElement().getName();
@@ -278,7 +282,8 @@ public final class PomLockFile {
     throw new InvalidPomLockFile("Ended prematurely");
   }
 
-  private static Dependency fromDependency(XMLEventReader2 rdr) throws XMLStreamException {
+  private static Dependency fromDependency(XMLEventReader2 rdr, boolean requireScope)
+      throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
     String version = null;
@@ -332,10 +337,18 @@ public final class PomLockFile {
           throw new InvalidPomLockFile("Missing type", event.getLocation());
         }
         if (scope == null) {
-          throw new InvalidPomLockFile("Missing scope", event.getLocation());
+          if (requireScope) {
+            throw new InvalidPomLockFile("Missing scope", event.getLocation());
+          } else {
+            scope = "";
+          }
         }
         if (optional == null) {
-          throw new InvalidPomLockFile("Missing optional", event.getLocation());
+          if (requireScope) {
+            throw new InvalidPomLockFile("Missing optional", event.getLocation());
+          } else {
+            optional = false;
+          }
         }
         if (integrity == null) {
           throw new InvalidPomLockFile("Missing integrity", event.getLocation());
