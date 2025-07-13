@@ -27,7 +27,7 @@
     <scm.publish.branch>gh-pages</scm.publish.branch>
 
     <!-- Maven Plugin Versions -->
-    <central-publishing-maven-plugin>0.8.0</central-publishing-maven-plugin>
+    <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
     <dependency-lock-maven-plugin.version>0.0.5734cd9bd748d0121eda3d28d4f428a246501ee0</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
@@ -46,7 +46,6 @@
     <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     <maven-wrapper-plugin.version>3.2.0</maven-wrapper-plugin.version>
     <mrm-maven-plugin.version>1.6.0</mrm-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 
     <!-- Libraries -->
     <commons-io.version>2.17.0</commons-io.version>
