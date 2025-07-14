@@ -144,11 +144,11 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.17.0</version>
+      <version>3.18.0</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>
-      <dependency-lock:integrity>sha512:39X/f+f4UrnKq8geWgDiBhb5hAUIXwWbZNwhIf61+myzJ+EaPS+VTAeYEcMfb9SE6Q+TLUUHh5b7+n2/Hx61qg==</dependency-lock:integrity>
+      <dependency-lock:integrity>sha512:wsnUl/wb5BEFD0ARskB3ZLeKoJjrQpJa+KGX6r28JbUH8J+4mIBem+1IFfNSNqUI7lsJbjbzY99NQHIy1Q/IMg==</dependency-lock:integrity>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
