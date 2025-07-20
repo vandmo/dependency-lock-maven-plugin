@@ -144,6 +144,9 @@ Also available as user property `dependencyLock.markIgnoredAsIgnored`.
 #### skip
 Skips the check. Also available as user property `dependencyLock.skipLock`.
 
+#### lockBuild
+Locks the build artifacts. Parents, plugins and extensions. Also available as user property `dependencyLock.lockBuild`.
+
 Notes
 -----
 ### Dependabot Updates won't work
@@ -151,6 +154,9 @@ Dependabot Updates currently creates a single PR for each change.
 If you use pom format and merge all PRs from Dependabot then that combined build might work, but each single PR will fail.
 There are feature requests for combined PRs for Dependabot which, if implemented, could make a combined PR work.
 Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
+
+### Changes in version 1.3
+* `<lockBuild>` configuration added for `<lock>` goal, also available as user property `dependencyLock.lockBuild`
 
 ### Changes in version 1.2
 * `<skip>` configuration added for `<lock>` goal, also available as user property `dependencyLock.skipLock`
