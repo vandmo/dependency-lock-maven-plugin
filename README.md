@@ -156,7 +156,7 @@ There are feature requests for combined PRs for Dependabot which, if implemented
 Another approach to automate the creation of PRs would be to have a GitHub workflow that creates a combined PR based on the Dependabot PRs.
 
 ### Changes in version 1.3
-* `<lockBuild>` configuration added for `<lock>` goal, also available as user property `dependencyLock.lockBuild`
+* `<lockBuild>` configuration added for `<lock>` goal, also available as user property `dependencyLock.lockBuild`. Thanks to [Antoine Malliarakis](https://github.com/smaarn)
 
 ### Changes in version 1.2
 * `<skip>` configuration added for `<lock>` goal, also available as user property `dependencyLock.skipLock`
