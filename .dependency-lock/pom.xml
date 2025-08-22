@@ -244,7 +244,7 @@
       <artifactId>maven-resolver-util</artifactId>
       <version>1.9.22</version>
       <type>jar</type>
-      <scope>compile</scope>
+      <scope>provided</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:JcJvKxkpJ3/fyNP9ho3qe2DI0Gf5Har9ZZGPzHfbLkxa/MIQ3/92B3+gwQYMb+u6Tzp5B1rBlu0AeR3Rl7QdlQ==</dependency-lock:integrity>
     </dependency>
