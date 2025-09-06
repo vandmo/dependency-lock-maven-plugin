@@ -55,14 +55,14 @@
     <hamcrest.version>2.2</hamcrest.version>
     <jsr305.version>3.0.2</jsr305.version>
     <junit.version>4.13.2</junit.version>
-    <maven-artifact.version>3.8.5</maven-artifact.version>
+    <maven-artifact.version>3.9.11</maven-artifact.version>
     <maven-common-artifact-filters.version>3.4.0</maven-common-artifact-filters.version>
-    <maven-compat.version>3.9.9</maven-compat.version>
-    <maven-core.version>3.9.9</maven-core.version>
-    <maven-model.version>3.8.5</maven-model.version>
-    <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
-    <maven-plugin-api.version>3.8.5</maven-plugin-api.version>
-    <plexus-utils.version>3.5.1</plexus-utils.version>
+    <maven-compat.version>3.9.11</maven-compat.version>
+    <maven-core.version>3.9.11</maven-core.version>
+    <maven-model.version>3.9.11</maven-model.version>
+    <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
+    <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
+    <plexus-utils.version>3.6.0</plexus-utils.version>
     <stax2-api.version>4.2.1</stax2-api.version>
     <woodstox-core.version>6.4.0</woodstox-core.version>
 

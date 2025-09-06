@@ -115,7 +115,7 @@ public class ParentsTest {
                       .build())
               .version("0-SNAPSHOT")
               .integrity(
-                  "sha512:B/RGlTb03YLK0wl6k3WKuY7nPWoNJAUQKT632q4WCpS6JHkKsiTdJM5q//KhUoWVt0/mYDCVDNDwJKN8S5+juA==")
+                  "sha512:9dTP56O/Vs/iI+VKthi1I30Ql3XyIKH1eBXuDEomyMesXx2OwmnEZYm57jDaRv7WoV8i5VfbnqXxzJ6xWQNv0w==")
               .build()
         },
         parents.stream().toArray());
@@ -145,7 +145,7 @@ public class ParentsTest {
                       .build())
               .version("1-SNAPSHOT")
               .integrity(
-                  "sha512:F10c+XI2f2EliNG4g4L1RmTFUYKx5Z2kSMRLJhGKHTWRo8fyxEAU7hUUQKfE31WVfJT6G3Wkk0QV7U9EUbGgQw==")
+                  "sha512:G53D7Fu2TIY+0MLUstvUK7dFt4MxT2FgDgDYKW+srkcvsxPiCfA6sQ3A9YOxhLHj6IsISKbNFeziUxdxihVTGQ==")
               .build()
         },
         parents.stream().toArray());
@@ -175,7 +175,7 @@ public class ParentsTest {
                       .build())
               .version("2-SNAPSHOT")
               .integrity(
-                  "sha512:PablsG6vcNsEV4PQGGzJfZU0+Sr4ZyVoNqiKuSmW52voq1/kRPrArrZ3CRcoKkI4vTtIv+HurfYAgkRunmtIlA==")
+                  "sha512:B6d3hm+nZgU5S1M32bd3OqjrVyWASBckmjW5dJ/g+U7Dz+U8kVcKa5Sy8SL/ZTxjBQVgFBKtmq+H7fbGHnUXyQ==")
               .build()
         },
         parents.stream().toArray());
