@@ -1398,9 +1398,9 @@
           <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.6.4</version>
+            <version>3.15.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:/RuKNpDtKDfVzOgccSzo87Wia8HK/7EeIwSsdxNY88BA2Cx1hSFJzMNTJS+K0IHB3SAMTx70UQzuEddEyTEQHQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:wCufwdOJKoO65qoS2Smy3Um0AfOzl4Tgps5Lnu8U5aizv3qREqhYmGPHgGYsGLjanv3QGGKhLRxeAqeyXppyQg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.resolver</groupId>

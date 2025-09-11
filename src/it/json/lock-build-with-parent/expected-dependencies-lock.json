@@ -617,12 +617,12 @@
       "type" : "jar",
       "integrity" : "sha512:SE1u+gZKXDMqtLlPSrRFdz+3VzpOW4RXaf0y4EZzND/ua4eo2KRt2r9JXW4Bam4Do8qSY4w+oMCoQUtSX+Gn9g=="
     },
-    "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.6.4" : {
+    "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.15.1" : {
       "groupId" : "org.apache.maven.plugin-tools",
       "artifactId" : "maven-plugin-annotations",
-      "version" : "3.6.4",
+      "version" : "3.15.1",
       "type" : "jar",
-      "integrity" : "sha512:/RuKNpDtKDfVzOgccSzo87Wia8HK/7EeIwSsdxNY88BA2Cx1hSFJzMNTJS+K0IHB3SAMTx70UQzuEddEyTEQHQ=="
+      "integrity" : "sha512:wCufwdOJKoO65qoS2Smy3Um0AfOzl4Tgps5Lnu8U5aizv3qREqhYmGPHgGYsGLjanv3QGGKhLRxeAqeyXppyQg=="
     },
     "org.apache.maven.plugins:maven-clean-plugin:maven-plugin:3.2.0" : {
       "groupId" : "org.apache.maven.plugins",
@@ -1338,7 +1338,7 @@
     "dependencies" : [ "com.thoughtworks.qdox:qdox:jar:2.0.3", "commons-io:commons-io:jar:2.15.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.1.1", "org.apache.maven.surefire:maven-surefire-common:jar:3.2.5", "org.apache.maven.surefire:surefire-api:jar:3.2.5", "org.apache.maven.surefire:surefire-booter:jar:3.2.5", "org.apache.maven.surefire:surefire-extensions-api:jar:3.2.5", "org.apache.maven.surefire:surefire-extensions-spi:jar:3.2.5", "org.apache.maven.surefire:surefire-logger-api:jar:3.2.5", "org.apache.maven.surefire:surefire-shared-utils:jar:3.2.5", "org.codehaus.plexus:plexus-java:jar:1.2.0", "org.eclipse.aether:aether-api:jar:1.0.0.v20140518", "org.eclipse.aether:aether-util:jar:1.0.0.v20140518", "org.ow2.asm:asm:jar:9.6" ]
   }, {
     "artifact" : "se.vandmo:dependency-lock-maven-plugin:maven-plugin:ignored",
-    "dependencies" : [ "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.3", "com.fasterxml.jackson.core:jackson-core:jar:2.18.3", "com.fasterxml.jackson.core:jackson-databind:jar:2.18.3", "com.fasterxml.woodstox:woodstox-core:jar:6.4.0", "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.6.4", "org.apache.maven.resolver:maven-resolver-api:jar:1.6.3", "org.apache.maven.resolver:maven-resolver-util:jar:1.4.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.4.0", "org.codehaus.woodstox:stax2-api:jar:4.2.1", "org.freemarker:freemarker:jar:2.3.33", "org.slf4j:slf4j-api:jar:1.7.36" ]
+    "dependencies" : [ "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.3", "com.fasterxml.jackson.core:jackson-core:jar:2.18.3", "com.fasterxml.jackson.core:jackson-databind:jar:2.18.3", "com.fasterxml.woodstox:woodstox-core:jar:6.4.0", "org.apache.maven.plugin-tools:maven-plugin-annotations:jar:3.15.1", "org.apache.maven.resolver:maven-resolver-api:jar:1.6.3", "org.apache.maven.resolver:maven-resolver-util:jar:1.4.1", "org.apache.maven.shared:maven-common-artifact-filters:jar:3.4.0", "org.codehaus.woodstox:stax2-api:jar:4.2.1", "org.freemarker:freemarker:jar:2.3.33", "org.slf4j:slf4j-api:jar:1.7.36" ]
   } ],
   "extensions" : [ ],
   "dependencies" : [ {

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+cp target/its/json/lock-build-with-extension/dependencies-lock.json src/it/json/lock-build-with-extension/expected-dependencies-lock.json
+cp target/its/json/lock-build/dependencies-lock.json src/it/json/lock-build/expected-dependencies-lock.json
+cp target/its/json/lock-build-with-local-parent/dependencies-lock.json src/it/json/lock-build-with-local-parent/expected-dependencies-lock.json
+cp target/its/json/lock-build-with-parent/dependencies-lock.json src/it/json/lock-build-with-parent/expected-dependencies-lock.json
+
+cp target/its/pom/lock-build/.dependency-lock/plugins/pom.xml src/it/pom/lock-build/expected/plugins/pom.xml
+cp target/its/pom/lock-build-with-extension/.dependency-lock/plugins/pom.xml src/it/pom/lock-build-with-extension/expected/plugins/pom.xml
+cp target/its/pom/lock-build-with-local-parent/.dependency-lock/plugins/pom.xml src/it/pom/lock-build-with-local-parent/expected/plugins/pom.xml
+cp target/its/pom/lock-build-with-parent/.dependency-lock/plugins/pom.xml src/it/pom/lock-build-with-parent/expected/plugins/pom.xml
