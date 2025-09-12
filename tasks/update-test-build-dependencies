@@ -1,8 +1,22 @@
 #!/usr/bin/env bash
 set -eu -o pipefail
 
-cp target/its/json/lock-build-with-extension/dependencies-lock.json src/it/json/lock-build-with-extension/expected-dependencies-lock.json
+mvn verify\
+ --activate-profiles its\
+ -Dinvoker.postBuildHookScript=false\
+ -Dinvoker.test=json/check-extensions,json/check-parents,json/check-plugins,pom/check-plugins
+
+cp target/its/json/check-extensions/dependencies-lock.json src/it/json/check-extensions/
+cp target/its/json/check-parents/dependencies-lock.json src/it/json/check-parents/
+cp target/its/json/check-plugins/dependencies-lock.json src/it/json/check-plugins/
+cp target/its/pom/check-plugins/.dependency-lock/plugins/pom.xml src/it/pom/check-plugins/.dependency-lock/plugins/
+
+mvn verify\
+ --activate-profiles its\
+ -Dinvoker.test=json/lock-build,json/lock-build-with-extension,json/lock-build-with-local-parent,json/lock-build-with-parent,pom/lock-build,pom/lock-build-with-extension,pom/lock-build-with-local-parent,pom/lock-build-with-parent
+
 cp target/its/json/lock-build/dependencies-lock.json src/it/json/lock-build/expected-dependencies-lock.json
+cp target/its/json/lock-build-with-extension/dependencies-lock.json src/it/json/lock-build-with-extension/expected-dependencies-lock.json
 cp target/its/json/lock-build-with-local-parent/dependencies-lock.json src/it/json/lock-build-with-local-parent/expected-dependencies-lock.json
 cp target/its/json/lock-build-with-parent/dependencies-lock.json src/it/json/lock-build-with-parent/expected-dependencies-lock.json
 
