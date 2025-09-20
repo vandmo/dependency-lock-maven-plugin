@@ -21,7 +21,7 @@ jobs:
         with:
           cache: maven
           distribution: zulu
-          java-version: 8
+          java-version: 21
       - name: Load Maven 3.6.3
         run: mvn --batch-mode --show-version org.apache.maven.plugins:maven-wrapper-plugin:3.3.2:wrapper -Dmaven="3.6.3" --no-transfer-progress
       - name: Test with Maven
