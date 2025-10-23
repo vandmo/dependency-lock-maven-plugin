@@ -241,6 +241,13 @@
         <artifactId>maven-compat</artifactId>
         <version>${maven-compat.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>9.8</version>
+        <!-- Getting runtime with Maven 4 so can just as well include it now -->
+        <scope>runtime</scope>
+    </dependency>
     </dependencies>
   </dependencyManagement>
 

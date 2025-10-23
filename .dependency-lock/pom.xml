@@ -552,7 +552,7 @@
       <artifactId>asm</artifactId>
       <version>9.8</version>
       <type>jar</type>
-      <scope>provided</scope>
+      <scope>runtime</scope>
       <optional>false</optional>
       <dependency-lock:integrity>sha512:y9JQucaYpIqDXmVfX1JilSzG3RpDTsC8NCmp3kHyzgj808T1adqn1QMhymrR0y4THkGZqk/lS86elpGzfkUGDg==</dependency-lock:integrity>
     </dependency>
