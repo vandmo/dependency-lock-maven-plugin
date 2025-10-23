@@ -1,0 +1,28 @@
+name: Tests Maven 3.6.3
+
+on: [push, pull_request]
+
+permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: Tests Maven 3.6.3
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Setup Javas
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5
+        with:
+          cache: maven
+          distribution: zulu
+          java-version: 21
+      - name: Load Maven 3.6.3
+        run: mvn --batch-mode --show-version org.apache.maven.plugins:maven-wrapper-plugin:3.3.2:wrapper -Dmaven="3.6.3" --no-transfer-progress
+      - name: Test with Maven
+        run: ./mvnw --batch-mode --show-version verify --activate-profiles analyze,its -D"maven.min-version=3.6.3" --no-transfer-progress
