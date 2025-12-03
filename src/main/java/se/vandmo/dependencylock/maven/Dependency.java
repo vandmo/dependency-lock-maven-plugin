@@ -96,8 +96,13 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
   }
 
   public static Dependency from(org.apache.maven.artifact.Artifact artifact) {
+    return from(artifact, false);
+  }
+
+  public static Dependency from(
+      org.apache.maven.artifact.Artifact artifact, boolean ignoreIntegrityIfUnresolved) {
     return new Dependency(
-        Artifact.from(artifact),
+        Artifact.from(artifact, ignoreIntegrityIfUnresolved),
         artifact.getScope(),
         artifact.isOptional());
   }

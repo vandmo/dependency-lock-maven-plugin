@@ -2,28 +2,50 @@ package se.vandmo.dependencylock.maven.mojos;
 
 import static java.util.Locale.ROOT;
 import static java.util.stream.Collectors.toList;
-import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.DependencyResolutionException;
+import org.apache.maven.project.DependencyResolutionResult;
+import org.apache.maven.project.ProjectDependenciesResolver;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.graph.DependencyNode;
 import se.vandmo.dependencylock.maven.*;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.json.LockfileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 import se.vandmo.dependencylock.maven.pom.LockFilePom;
 
-@Mojo(name = "lock", requiresDependencyResolution = TEST, threadSafe = true)
+import javax.inject.Inject;
+
+@Mojo(name = "lock", threadSafe = true)
 public final class LockMojo extends AbstractDependencyLockMojo {
 
   @Parameter(property = "dependencyLock.markIgnoredAsIgnored")
   private boolean markIgnoredAsIgnored = false;
+
+  private final ProjectDependenciesResolver projectDependenciesResolver;
 
   @Parameter(property = "dependencyLock.skipLock")
   private Boolean skip = false;
 
   @Parameter(property = "dependencyLock.lockBuild")
   private boolean lockBuild;
+
+  @Inject
+  public LockMojo(ProjectDependenciesResolver projectDependenciesResolver) {
+    this.projectDependenciesResolver = projectDependenciesResolver;
+  }
 
   @Override
   public void execute() throws MojoExecutionException {
@@ -85,7 +107,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     }
   }
 
-  private Dependencies filteredProjectDependencies() {
+  private Dependencies filteredProjectDependencies() throws MojoExecutionException {
     Dependencies projectDependencies = projectDependencies();
     if (!markIgnoredAsIgnored) {
       return projectDependencies;
@@ -93,12 +115,54 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
     return Dependencies.fromDependencies(
-        projectDependencies().stream()
-            .map(artifact -> modify(artifact, filters))
-            .collect(toList()));
+        projectDependencies.stream().map(artifact -> modify(artifact, filters)).collect(toList()));
   }
 
-  private Plugins filteredProjectPlugins() throws MojoExecutionException {
+  Dependencies projectDependencies() throws MojoExecutionException {
+    Filters filters = filters();
+    DefaultDependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
+    request.setMavenProject(mavenProject());
+    request.setRepositorySession(mavenSession().getRepositorySession());
+    Collection<Dependency> ignoredDependencies = new ArrayList<>();
+    request.setResolutionFilter(
+        new DependencyFilter() {
+          @Override
+          public boolean accept(DependencyNode dependencyNode, List<DependencyNode> list) {
+            final Dependency dependency = dependencyNode.getDependency();
+            if (null == dependency) { // if it's the root node, go for it
+              return true;
+            }
+            final Artifact artifact = RepositoryUtils.toArtifact(dependency.getArtifact());
+            if (DependencySetConfiguration.Integrity.ignore.equals(
+                filters.integrityConfiguration(artifact))) {
+              ignoredDependencies.add(dependency);
+              return false;
+            }
+            return true;
+          }
+        });
+    final DependencyResolutionResult resolutionResult;
+    try {
+      resolutionResult = projectDependenciesResolver.resolve(request);
+    } catch (DependencyResolutionException e) {
+      throw new MojoExecutionException(
+          "Failed resolving dependencies due to an unexpected internal error: " + e, e);
+    }
+
+    return Dependencies.fromMavenArtifacts(
+        Stream.concat(ignoredDependencies.stream(), resolutionResult.getDependencies().stream())
+            .map(
+                d -> {
+                  final Artifact resultingArtifact = RepositoryUtils.toArtifact(d.getArtifact());
+                  resultingArtifact.setScope(d.getScope());
+                  resultingArtifact.setOptional(d.isOptional());
+                  return resultingArtifact;
+                })
+            .collect(Collectors.toSet()),
+        true);
+  }
+
+  private Plugins filteredProjectPlugins() {
     Plugins projectPlugins = projectPlugins();
     if (!markIgnoredAsIgnored) {
       return projectPlugins;
@@ -109,7 +173,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
         projectPlugins.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
   }
 
-  private Extensions filteredProjectExtensions() throws MojoExecutionException {
+  private Extensions filteredProjectExtensions() {
     Extensions projectExtensions = projectExtensions();
     if (!markIgnoredAsIgnored) {
       return projectExtensions;

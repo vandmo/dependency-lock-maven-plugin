@@ -29,6 +29,10 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     }
   }
 
+  Dependencies projectDependencies() {
+    return Dependencies.fromMavenArtifacts(mavenProject().getArtifacts());
+  }
+
   public void doExecute() throws MojoExecutionException {
     if (skip) {
       getLog().info("Skipping check");
