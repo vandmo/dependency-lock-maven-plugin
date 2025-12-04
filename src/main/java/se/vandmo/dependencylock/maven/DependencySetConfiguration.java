@@ -27,7 +27,10 @@ public final class DependencySetConfiguration {
   }
 
   public boolean matches(LockableEntity<?> entity) {
-    Artifact mavenArtifact = entity.getMavenArtifact();
+    return matches(entity.getMavenArtifact());
+  }
+
+  public boolean matches(Artifact mavenArtifact) {
     return includes.include(mavenArtifact) && !excludes.include(mavenArtifact);
   }
 
