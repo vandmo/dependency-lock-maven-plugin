@@ -32,7 +32,7 @@
 
     <!-- Maven Plugin Versions -->
     <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
-    <dependency-lock-maven-plugin.version>0.0.2ea83aea976dd358aab53965fd961c8d614f835f</dependency-lock-maven-plugin.version>
+    <dependency-lock-maven-plugin.version>1.3.2</dependency-lock-maven-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>

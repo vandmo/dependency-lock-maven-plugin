@@ -3277,8 +3277,8 @@
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
-        <version>0.0.2ea83aea976dd358aab53965fd961c8d614f835f</version>
-        <dependency-lock:integrity>sha512:F3SnxUp8xLqmZphDWOCYSZdXY7Um1LLctNIDORIMjvlTymKxUYfFz3Pi/2uvH+q9UmlqRGakOU43u3VZamTs9A==</dependency-lock:integrity>
+        <version>1.3.2</version>
+        <dependency-lock:integrity>sha512:Ih/9vlA63ec9BYnq/yZJCLM3gGa0fjMWGwvEY6ESMpuaW0mkzYebyXUgJjeZ3FZQx0R4yOf2R7rYNxivwJfCuw==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -3311,9 +3311,9 @@
           <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>3.6.4</version>
+            <version>3.15.1</version>
             <type>jar</type>
-            <dependency-lock:integrity>sha512:/RuKNpDtKDfVzOgccSzo87Wia8HK/7EeIwSsdxNY88BA2Cx1hSFJzMNTJS+K0IHB3SAMTx70UQzuEddEyTEQHQ==</dependency-lock:integrity>
+            <dependency-lock:integrity>sha512:wCufwdOJKoO65qoS2Smy3Um0AfOzl4Tgps5Lnu8U5aizv3qREqhYmGPHgGYsGLjanv3QGGKhLRxeAqeyXppyQg==</dependency-lock:integrity>
           </dependency>
           <dependency>
             <groupId>org.apache.maven.resolver</groupId>
