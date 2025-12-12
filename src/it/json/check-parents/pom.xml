@@ -54,11 +54,19 @@
   </dependencies>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>se.vandmo</groupId>
+          <artifactId>dependency-lock-maven-plugin</artifactId>
+          <version>@project.version@</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
-        <version>@project.version@</version>
         <configuration>
           <lockBuild>true</lockBuild>
           <dependencySets>
@@ -75,4 +83,27 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>use-non-lts-maven-version</id>
+      <activation>
+        <property>
+          <name>use.non.lts.maven.version</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>se.vandmo</groupId>
+            <artifactId>dependency-lock-maven-plugin</artifactId>
+            <configuration>
+              <basedir>${basedir}/${maven.version}</basedir>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

@@ -9,7 +9,13 @@ import static org.junit.Assert.assertTrue
 import org.apache.commons.io.FileUtils
 
 lockFile = new File(basedir, "dependencies-lock.json")
-expectedLockFile = new File(basedir, "expected-dependencies-lock.json")
+referenceDirectory = basedir
+mavenSpecificReferenceDirectory = new File(referenceDirectory, mavenVersion)
+if (mavenSpecificReferenceDirectory.exists()) {
+    referenceDirectory = mavenSpecificReferenceDirectory
+    System.out.println("Using maven specific reference directory: ${referenceDirectory}")
+}
+expectedLockFile = new File(referenceDirectory, "expected-dependencies-lock.json")
 
 assertTrue("Lock file missing", lockFile.isFile())
 assertTrue("Lock file content not as expected", FileUtils.contentEquals(expectedLockFile, lockFile))
