@@ -126,9 +126,8 @@
             <executions>
               <execution>
                 <id>enforce-correct-java-compile-dependencies</id>
-                <phase>validate</phase>
                 <goals>
-                  <goal>analyze</goal>
+                  <goal>analyze-only</goal>
                 </goals>
                 <configuration>
                   <failOnWarning>true</failOnWarning>
