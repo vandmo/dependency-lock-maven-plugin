@@ -8,9 +8,17 @@ import static org.junit.Assert.assertTrue
 
 import org.apache.commons.io.FileUtils
 
+referenceDirectory = basedir
+mavenSpecificReferenceDirectory = new File(referenceDirectory, mavenVersion)
+if (mavenSpecificReferenceDirectory.exists()) {
+    referenceDirectory = mavenSpecificReferenceDirectory
+    System.out.println("Using maven specific reference directory: ${referenceDirectory}")
+}
+
+
 def assertLockFile(lockFilename, expectedFilename) {
     lockFile = new File(basedir, lockFilename)
-    expectedLockFile = new File(basedir, expectedFilename)
+    expectedLockFile = new File(referenceDirectory, expectedFilename)
     assertTrue(lockFile.isFile())
     assertTrue(expectedLockFile.isFile())
     assertTrue(FileUtils.contentEquals(expectedLockFile, lockFile))
