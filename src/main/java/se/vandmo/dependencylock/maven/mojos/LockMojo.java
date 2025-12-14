@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.inject.Inject;
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -25,8 +26,6 @@ import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.json.LockfileJson;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 import se.vandmo.dependencylock.maven.pom.LockFilePom;
-
-import javax.inject.Inject;
 
 @Mojo(name = "lock", threadSafe = true)
 public final class LockMojo extends AbstractDependencyLockMojo {
