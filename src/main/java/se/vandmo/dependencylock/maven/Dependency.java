@@ -77,6 +77,10 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
     public ScopeBuilderStage integrity(String integrity) {
       return new ScopeBuilderStage(artifactBuilder.integrity(integrity).build());
     }
+
+    public ScopeBuilderStage integrity(Integrity integrity) {
+      return new ScopeBuilderStage(artifactBuilder.integrity(integrity).build());
+    }
   }
 
   public static final class FinalBuilderStage {
@@ -96,15 +100,7 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
   }
 
   public static Dependency from(org.apache.maven.artifact.Artifact artifact) {
-    return from(artifact, false);
-  }
-
-  public static Dependency from(
-      org.apache.maven.artifact.Artifact artifact, boolean ignoreIntegrityIfUnresolved) {
-    return new Dependency(
-        Artifact.from(artifact, ignoreIntegrityIfUnresolved),
-        artifact.getScope(),
-        artifact.isOptional());
+    return new Dependency(Artifact.from(artifact), artifact.getScope(), artifact.isOptional());
   }
 
   @Override

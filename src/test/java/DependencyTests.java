@@ -3,6 +3,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependency;
+import se.vandmo.dependencylock.maven.Integrity;
 
 public final class DependencyTests {
 
@@ -31,8 +32,13 @@ public final class DependencyTests {
   }
 
   @Test(expected = NullPointerException.class)
-  public void builder_integrity_null() {
-    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity(null);
+  public void builder_integrity_string_null() {
+    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity((String)null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void builder_integrity_Integrity_null() {
+    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity((Integrity) null);
   }
 
   @Test

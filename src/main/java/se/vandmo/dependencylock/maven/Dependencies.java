@@ -12,16 +12,7 @@ public final class Dependencies extends LockableEntitiesWithArtifact<Dependency>
 
   public static Dependencies fromMavenArtifacts(
       Collection<org.apache.maven.artifact.Artifact> artifacts) {
-    return fromMavenArtifacts(artifacts, false);
-  }
-
-  public static Dependencies fromMavenArtifacts(
-      Collection<org.apache.maven.artifact.Artifact> artifacts,
-      boolean ignoreIntegrityIfUnresolved) {
-    return new Dependencies(
-        artifacts.stream()
-            .map(artifact -> Dependency.from(artifact, ignoreIntegrityIfUnresolved))
-            .collect(toList()));
+    return new Dependencies(artifacts.stream().map(a -> Dependency.from(a)).collect(toList()));
   }
 
   public static Dependencies fromDependencies(Collection<Dependency> dependencies) {

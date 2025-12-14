@@ -84,19 +84,10 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
   }
 
   public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
-    return from(artifact, false);
-  }
-
-  public static Artifact from(
-      org.apache.maven.artifact.Artifact artifact, boolean ignoreIntegrityIfUnresolved) {
-    Integrity integrity;
-    if (ignoreIntegrityIfUnresolved && !artifact.isResolved()) {
-      integrity = Integrity.Ignored();
-    } else if (artifact.getFile().isDirectory()) {
-      integrity = Integrity.Folder();
-    } else {
-      integrity = Integrity.Calculated(Checksum.calculateFor(artifact.getFile()));
-    }
+    Integrity integrity =
+        artifact.getFile().isDirectory()
+            ? Integrity.Folder()
+            : Integrity.Calculated(Checksum.calculateFor(artifact.getFile()));
     return new Artifact(
         ArtifactIdentifier.builder()
             .groupId(artifact.getGroupId())

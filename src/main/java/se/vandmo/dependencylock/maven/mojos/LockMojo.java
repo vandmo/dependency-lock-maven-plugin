@@ -122,7 +122,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     DefaultDependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
     request.setMavenProject(mavenProject());
     request.setRepositorySession(mavenSession().getRepositorySession());
-    Collection<Dependency> ignoredDependencies = new ArrayList<>();
+    Collection<se.vandmo.dependencylock.maven.Dependency> ignoredDependencies = new ArrayList<>();
     request.setResolutionFilter(
         new DependencyFilter() {
           @Override
@@ -134,7 +134,14 @@ public final class LockMojo extends AbstractDependencyLockMojo {
             final Artifact artifact = RepositoryUtils.toArtifact(dependency.getArtifact());
             if (DependencySetConfiguration.Integrity.ignore.equals(
                 filters.integrityConfiguration(artifact))) {
-              ignoredDependencies.add(dependency);
+              ignoredDependencies.add(
+                  se.vandmo.dependencylock.maven.Dependency.builder()
+                      .artifactIdentifier(ArtifactIdentifier.from(artifact))
+                      .version(artifact.getVersion())
+                      .integrity(Integrity.Ignored())
+                      .scope(dependency.getScope())
+                      .optional(dependency.isOptional())
+                      .build());
               return false;
             }
             return true;
@@ -148,17 +155,20 @@ public final class LockMojo extends AbstractDependencyLockMojo {
           "Failed resolving dependencies due to an unexpected internal error: " + e, e);
     }
 
-    return Dependencies.fromMavenArtifacts(
-        Stream.concat(ignoredDependencies.stream(), resolutionResult.getDependencies().stream())
-            .map(
-                d -> {
-                  final Artifact resultingArtifact = RepositoryUtils.toArtifact(d.getArtifact());
-                  resultingArtifact.setScope(d.getScope());
-                  resultingArtifact.setOptional(d.isOptional());
-                  return resultingArtifact;
-                })
-            .collect(Collectors.toSet()),
-        true);
+    return Dependencies.fromDependencies(
+        Stream.concat(
+                ignoredDependencies.stream(),
+                resolutionResult.getDependencies().stream()
+                    .map(LockMojo::mapDependency)
+                    .map(se.vandmo.dependencylock.maven.Dependency::from))
+            .collect(Collectors.toList()));
+  }
+
+  private static Artifact mapDependency(Dependency dependency) {
+    final Artifact resultingArtifact = RepositoryUtils.toArtifact(dependency.getArtifact());
+    resultingArtifact.setScope(dependency.getScope());
+    resultingArtifact.setOptional(dependency.isOptional());
+    return resultingArtifact;
   }
 
   private Plugins filteredProjectPlugins() {
