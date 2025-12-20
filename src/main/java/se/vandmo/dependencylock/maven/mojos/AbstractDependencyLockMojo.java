@@ -15,6 +15,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.ExtensionRealmCache;
 import org.apache.maven.plugin.MavenPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -55,8 +56,10 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
-  Dependencies projectDependencies() {
-    return Dependencies.fromMavenArtifacts(mavenProject().getArtifacts());
+  abstract Dependencies projectDependencies() throws MojoExecutionException;
+
+  final MavenSession mavenSession() {
+    return mavenSession;
   }
 
   final MavenProject mavenProject() {
@@ -100,10 +103,17 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
     return format;
   }
 
+  private Filters filters;
+
   Filters filters() {
-    List<DependencySetConfiguration> dependencySetConfigurations =
-        unmodifiableList(Arrays.stream(dependencySets).map(this::transform).collect(toList()));
-    return new Filters(dependencySetConfigurations, projectVersion());
+    Filters result = filters;
+    if (result == null) {
+      List<DependencySetConfiguration> dependencySetConfigurations =
+          unmodifiableList(Arrays.stream(dependencySets).map(this::transform).collect(toList()));
+      result = new Filters(dependencySetConfigurations, projectVersion());
+      filters = result;
+    }
+    return result;
   }
 
   private DependencySetConfiguration transform(DependencySet dependencySet) {

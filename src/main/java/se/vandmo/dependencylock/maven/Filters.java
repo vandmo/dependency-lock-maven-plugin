@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import org.apache.maven.artifact.Artifact;
 
 public final class Filters {
 
@@ -22,8 +23,13 @@ public final class Filters {
 
   private <T> T configurationFor(
       LockableEntity<?> entity, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
+    return configurationFor(entity.getMavenArtifact(), extractor, defaultValue);
+  }
+
+  private <T> T configurationFor(
+      Artifact mavenArtifact, Function<DependencySetConfiguration, T> extractor, T defaultValue) {
     return dependencySetConfigurations.stream()
-        .filter(d -> d.matches(entity))
+        .filter(d -> d.matches(mavenArtifact))
         .map(extractor)
         .filter(v -> v != null)
         .findFirst()
@@ -37,7 +43,11 @@ public final class Filters {
   }
 
   public DependencySetConfiguration.Integrity integrityConfiguration(LockableEntity<?> entity) {
-    return configurationFor(entity, d -> d.integrity, DependencySetConfiguration.Integrity.check);
+    return integrityConfiguration(entity.getMavenArtifact());
+  }
+
+  public DependencySetConfiguration.Integrity integrityConfiguration(Artifact artifact) {
+    return configurationFor(artifact, d -> d.integrity, DependencySetConfiguration.Integrity.check);
   }
 
   public boolean allowSuperfluous(LockableEntity<?> entity) {

@@ -77,6 +77,10 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
     public ScopeBuilderStage integrity(String integrity) {
       return new ScopeBuilderStage(artifactBuilder.integrity(integrity).build());
     }
+
+    public ScopeBuilderStage integrity(Integrity integrity) {
+      return new ScopeBuilderStage(artifactBuilder.integrity(integrity).build());
+    }
   }
 
   public static final class FinalBuilderStage {
@@ -96,14 +100,7 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
   }
 
   public static Dependency from(org.apache.maven.artifact.Artifact artifact) {
-    Integrity integrity =
-        artifact.getFile().isDirectory()
-            ? Integrity.Folder()
-            : Integrity.Calculated(Checksum.calculateFor(artifact.getFile()));
-    return new Dependency(
-        Artifact.from(artifact).withIntegrity(integrity),
-        artifact.getScope(),
-        artifact.isOptional());
+    return new Dependency(Artifact.from(artifact), artifact.getScope(), artifact.isOptional());
   }
 
   @Override
