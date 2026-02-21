@@ -68,12 +68,11 @@ public final class LockMojo extends AbstractDependencyLockMojo {
 
   private void dumpPomLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
     if (isLockBuild()) {
-      LockFilePom lockFiles = LockFilePom.from(lockFile, pomMinimums(), getLog());
-      LockedProject lockedProject = LockedProject.from(project(), getLog());
+      LockFilePom lockFiles = LockFilePom.from(lockFile, pomMinimums());
+      LockedProject lockedProject = LockedProject.from(project());
       lockFiles.write(lockedProject);
     } else {
-      DependenciesLockFilePom lockFilePom =
-          DependenciesLockFilePom.from(lockFile, pomMinimums(), getLog());
+      DependenciesLockFilePom lockFilePom = DependenciesLockFilePom.from(lockFile, pomMinimums());
       lockFilePom.write(filteredProjectDependencies());
     }
   }
@@ -95,13 +94,13 @@ public final class LockMojo extends AbstractDependencyLockMojo {
 
   private void dumpJsonLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
     if (isLockBuild()) {
-      LockfileJson lockFileJson = LockfileJson.from(lockFile, getLog());
-      LockedProject lockedProject = LockedProject.from(project(), getLog());
+      LockfileJson lockFileJson = LockfileJson.from(lockFile);
+      LockedProject lockedProject = LockedProject.from(project());
       lockFileJson.write(lockedProject);
     } else {
-      DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile, getLog());
       LockedDependencies lockedDependencies =
           LockedDependencies.from(filteredProjectDependencies(), getLog());
+      DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile);
       lockFileJson.write(lockedDependencies);
     }
   }
