@@ -1,0 +1,60 @@
+{
+  "version" : "3",
+  "artifacts" : {
+    "se.vandmo.testing:leaf:jar:1.0" : {
+      "groupId" : "se.vandmo.testing",
+      "artifactId" : "leaf",
+      "version" : "1.0",
+      "type" : "jar",
+      "integrity" : "sha512:98gbCti9u7jp73/lFrslV7BeOCkxeXUiRQT19E58niRlyEKu69BXPXHB/xM8HQu1os08se3xTkbhWXG5xnGMFw=="
+    },
+    "se.vandmo.testing:with-profiled-dependency:jar:1.0" : {
+      "groupId" : "se.vandmo.testing",
+      "artifactId" : "with-profiled-dependency",
+      "version" : "1.0",
+      "type" : "jar",
+      "integrity" : "sha512:yHcOLqnVzIG7EtziqwuzBqt5iP7zqqYRaux8mqTrmVuUEc1womgj6ID+C6yHzjPJaHyBFNPaO42QvL98iIVOIQ=="
+    },
+    "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0" : {
+      "groupId" : "se.vandmo.testing",
+      "artifactId" : "with-profiled-dependency",
+      "version" : "1.0",
+      "classifier" : "mac",
+      "type" : "jar",
+      "integrity" : "sha512:HwfriILRE8n/R9OIzI1MmF/caHn5rdpCBHV/PQHQDqA+MQGnCRM/U2p3SdcNP1er/De9mG7azldT+f4B0tyQbA=="
+    },
+    "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0" : {
+      "groupId" : "se.vandmo.testing",
+      "artifactId" : "with-profiled-dependency",
+      "version" : "1.0",
+      "classifier" : "windows",
+      "type" : "jar",
+      "integrity" : "sha512:Z4fEPpQFlu8HwzMUCdlu4v2QdN5GDyAA8rvvbJ2Q+pfZD77+hP+jMu2Yp2sZ3UBE1WeiRKR+0CwNc6G1avaFiA=="
+    }
+  },
+  "dependencies" : [ {
+    "artifact" : "se.vandmo.testing:leaf:jar:1.0",
+    "scope" : "compile",
+    "optional" : false
+  }, {
+    "artifact" : "se.vandmo.testing:with-profiled-dependency:jar:1.0",
+    "scope" : "compile",
+    "optional" : false
+  } ],
+  "profiles" : {
+    "windows" : { "dependencies": [ {
+      "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
+      "scope" : "compile",
+      "optional" : false
+    } ]},
+    "mac" : {
+      "dependencies": [
+        {
+          "artifact": "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
+          "scope": "compile",
+          "optional": false
+        }
+      ]
+    }
+  }
+}

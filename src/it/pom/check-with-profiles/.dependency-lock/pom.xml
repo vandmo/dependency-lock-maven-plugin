@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 https://vandmo.github.io/dependency-lock-maven-plugin/maven-4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.vandmo.tests</groupId>
+  <artifactId>pom-lock-with-profiles-dependency-lock</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>leaf</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:98gbCti9u7jp73/lFrslV7BeOCkxeXUiRQT19E58niRlyEKu69BXPXHB/xM8HQu1os08se3xTkbhWXG5xnGMFw==</dependency-lock:integrity>
+    </dependency>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>with-profiled-dependency</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+      <dependency-lock:integrity>sha512:yHcOLqnVzIG7EtziqwuzBqt5iP7zqqYRaux8mqTrmVuUEc1womgj6ID+C6yHzjPJaHyBFNPaO42QvL98iIVOIQ==</dependency-lock:integrity>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <dependencies>
+        <dependency>
+          <groupId>se.vandmo.testing</groupId>
+          <artifactId>with-profiled-dependency</artifactId>
+          <version>1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+          <classifier>windows</classifier>
+          <optional>false</optional>
+          <dependency-lock:integrity>sha512:Z4fEPpQFlu8HwzMUCdlu4v2QdN5GDyAA8rvvbJ2Q+pfZD77+hP+jMu2Yp2sZ3UBE1WeiRKR+0CwNc6G1avaFiA==</dependency-lock:integrity>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>mac</id>
+      <dependencies>
+        <dependency>
+          <groupId>se.vandmo.testing</groupId>
+          <artifactId>with-profiled-dependency</artifactId>
+          <version>1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+          <classifier>mac</classifier>
+          <optional>false</optional>
+          <dependency-lock:integrity>sha512:HwfriILRE8n/R9OIzI1MmF/caHn5rdpCBHV/PQHQDqA+MQGnCRM/U2p3SdcNP1er/De9mG7azldT+f4B0tyQbA==</dependency-lock:integrity>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>

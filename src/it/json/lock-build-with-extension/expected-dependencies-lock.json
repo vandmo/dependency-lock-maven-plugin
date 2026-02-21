@@ -1,5 +1,5 @@
 {
-  "version" : "2",
+  "version" : "3",
   "artifacts" : {
     "aopalliance:aopalliance:jar:1.0" : {
       "groupId" : "aopalliance",
@@ -1358,5 +1358,6 @@
     "artifact" : "se.vandmo.testing:leaf:jar:1.0",
     "scope" : "compile",
     "optional" : false
-  } ]
+  } ],
+  "profiles" : { }
 }

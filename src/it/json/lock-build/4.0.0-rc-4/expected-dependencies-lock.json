@@ -1,5 +1,5 @@
 {
-  "version" : "2",
+  "version" : "3",
   "artifacts" : {
     "com.fasterxml.jackson.core:jackson-annotations:jar:2.18.3" : {
       "groupId" : "com.fasterxml.jackson.core",
@@ -1019,5 +1019,6 @@
     "artifact" : "se.vandmo.testing:leaf:jar:1.0",
     "scope" : "compile",
     "optional" : false
-  } ]
+  } ],
+  "profiles" : { }
 }
