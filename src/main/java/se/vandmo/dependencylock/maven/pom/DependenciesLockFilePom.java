@@ -13,9 +13,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import se.vandmo.dependencylock.maven.Dependencies;
+import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.PomMinimums;
+import se.vandmo.dependencylock.maven.Profiled;
 
 public final class DependenciesLockFilePom {
 
@@ -35,7 +38,7 @@ public final class DependenciesLockFilePom {
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
-  public void write(Dependencies projectDependencies) {
+  public void write(Profiled<Dependency, Dependencies> projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -48,10 +51,22 @@ public final class DependenciesLockFilePom {
   }
 
   private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums, Dependencies artifacts) {
+      PomMinimums pomMinimums, Profiled<Dependency, Dependencies> projectDependencies) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", artifacts);
+    dataModel.put("dependencies", projectDependencies.getDefaultEntities());
+    dataModel.put(
+        "profiles",
+        projectDependencies
+            .profileEntries()
+            .map(
+                entry -> {
+                  Map<String, Object> profile = new HashMap<>();
+                  profile.put("id", entry.getKey());
+                  profile.put("dependencies", entry.getValue());
+                  return profile;
+                })
+            .collect(Collectors.toList()));
     return dataModel;
   }
 

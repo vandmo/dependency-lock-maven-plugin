@@ -66,6 +66,7 @@
     <maven-model.version>3.9.11</maven-model.version>
     <maven-plugin-annotations.version>3.15.1</maven-plugin-annotations.version>
     <maven-plugin-api.version>3.9.11</maven-plugin-api.version>
+    <maven-model-builder.version>3.9.11</maven-model-builder.version>
     <plexus-utils.version>3.6.0</plexus-utils.version>
     <stax2-api.version>4.2.1</stax2-api.version>
     <woodstox-core.version>6.4.0</woodstox-core.version>
@@ -333,6 +334,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model-builder</artifactId>
+      <version>${maven-model-builder.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven.resolver</groupId>
       <artifactId>maven-resolver-api</artifactId>
       <version>1.6.3</version>
@@ -421,6 +428,12 @@
       <artifactId>xml-apis</artifactId>
       <version>1.4.01</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.shared</groupId>
+      <artifactId>maven-shared-utils</artifactId>
+      <version>3.4.2</version>
+      <scope>provided</scope> <!-- Should it really be provided ?? -->
     </dependency>
   </dependencies>
 
@@ -590,6 +603,18 @@
                 </resource>
               </resources>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.sisu</groupId>
+        <artifactId>sisu-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-index</id>
+            <goals>
+              <goal>main-index</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -772,6 +797,11 @@
           <groupId>se.vandmo</groupId>
           <artifactId>dependency-lock-maven-plugin</artifactId>
           <version>${dependency-lock-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.sisu</groupId>
+          <artifactId>sisu-maven-plugin</artifactId>
+          <version>0.3.5</version>
         </plugin>
       </plugins>
     </pluginManagement>

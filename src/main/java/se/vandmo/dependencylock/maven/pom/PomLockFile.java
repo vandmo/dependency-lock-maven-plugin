@@ -14,7 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -33,23 +36,27 @@ import se.vandmo.dependencylock.maven.Plugin;
 public final class PomLockFile {
 
   private static final String V2 = "2";
+  private static final String V3 = "3";
 
   public static final class Contents {
     public final Optional<List<Dependency>> dependencies;
+    public final Optional<Map<String, List<Dependency>>> profiles;
     public final Optional<List<Plugin>> plugins;
     public final Optional<List<Extension>> extensions;
 
-    public Contents(List<Dependency> dependencies) {
-      this(Optional.of(dependencies), Optional.empty(), Optional.empty());
+    public Contents(List<Dependency> dependencies, Map<String, List<Dependency>> profiles) {
+      this(Optional.of(dependencies), Optional.empty(), Optional.empty(), Optional.of(profiles));
     }
 
     public Contents(
         Optional<List<Dependency>> dependencies,
         Optional<List<Plugin>> plugins,
-        Optional<List<Extension>> extensions) {
+        Optional<List<Extension>> extensions,
+        Optional<Map<String, List<Dependency>>> profiles) {
       this.dependencies = dependencies.map(d -> unmodifiableList(new ArrayList<>(d)));
       this.plugins = plugins;
       this.extensions = extensions;
+      this.profiles = profiles;
     }
   }
 
@@ -58,6 +65,9 @@ public final class PomLockFile {
   private static final QName LOCKFILE_VERSION = new QName(DEPENDENCY_LOCK_NS, "version");
   private static final QName PROJECT = new QName(POM_NS, "project");
   private static final QName DEPENDENCIES = new QName(POM_NS, "dependencies");
+  private static final QName PROFILES = new QName(POM_NS, "profiles");
+  private static final QName PROFILE = new QName(POM_NS, "profile");
+  private static final QName ID = new QName(POM_NS, "id");
   private static final QName DEPENDENCY = new QName(POM_NS, "dependency");
   private static final QName EXTENSIONS = new QName(POM_NS, "extensions");
   private static final QName BUILD = new QName(POM_NS, "build");
@@ -143,7 +153,7 @@ public final class PomLockFile {
     if (null == dependencies) {
       throw new InvalidPomLockFile("Missing 'dependencies' element");
     }
-    return new Contents(dependencies);
+    return new Contents(dependencies, Collections.emptyMap());
   }
 
   private static Contents fromProjectV2(XMLEventReader2 reader, boolean requireScope)
@@ -151,39 +161,73 @@ public final class PomLockFile {
     List<Dependency> dependencies = null;
     List<Plugin> plugins = null;
     List<Extension> extensions = null;
+    Map<String, List<Dependency>> profiles = new HashMap<>();
     boolean inBuild = false;
+    boolean inProfiles = false;
+    boolean inProfile = false;
+    String currentProfile = null;
     boolean buildFound = false;
     while (reader.hasNextEvent()) {
       XMLEvent event = reader.nextEvent();
       if (event.isStartElement()) {
         QName name = event.asStartElement().getName();
         if (name.equals(DEPENDENCIES)) {
-          if (null != dependencies) {
-            throw new InvalidPomLockFile("Duplicate 'dependencies' element");
+          if (null != currentProfile) {
+            if (profiles.containsKey(currentProfile)) {
+              throw new InvalidPomLockFile(
+                  "Unexpected 'dependencies' element found", event.getLocation());
+            }
+            profiles.put(currentProfile, fromDependencies(reader, requireScope));
+          } else {
+            if (null != dependencies) {
+              throw new InvalidPomLockFile(
+                  "Unexpected 'dependencies' element found", event.getLocation());
+            }
+            dependencies = fromDependencies(reader, requireScope);
           }
-          dependencies = fromDependencies(reader, requireScope);
         } else if (name.equals(BUILD)) {
-          if (buildFound) {
-            throw new InvalidPomLockFile("Duplicate 'build' element");
+          if (inProfiles || buildFound) {
+            throw new InvalidPomLockFile("Unexpected 'build' element found.");
           }
           buildFound = true;
           inBuild = true;
-        } else if (inBuild && name.equals(EXTENSIONS)) {
-          if (null != extensions) {
-            throw new InvalidPomLockFile("Duplicate 'extensions' element");
+        } else if (name.equals(EXTENSIONS)) {
+          if (!inBuild || null != extensions) {
+            throw new InvalidPomLockFile("Unexpected 'extensions' element", event.getLocation());
           }
           extensions = fromExtensions(reader);
-        } else if (inBuild && name.equals(PLUGINS)) {
-          if (null != plugins) {
-            throw new InvalidPomLockFile("Duplicate 'plugins' element");
+        } else if (name.equals(PLUGINS)) {
+          if (!inBuild || null != plugins) {
+            throw new InvalidPomLockFile("Unexpected 'plugins' element", event.getLocation());
           }
           plugins = fromPlugins(reader);
+        } else if (name.equals(ID)) {
+          if (!inProfile) {
+            throw new InvalidPomLockFile("Unexpected profile id tag found.", event.getLocation());
+          }
+          currentProfile = readSingleTextElement(reader);
+          if (profiles.containsKey(currentProfile)) {
+            throw new XMLStreamException(
+                "Duplicate profile id: " + currentProfile, event.getLocation());
+          }
+        } else if (name.equals(PROFILE)) {
+          if (!inProfiles || inProfile) {
+            throw new XMLStreamException("Unexpected profile tag found.", event.getLocation());
+          }
+          inProfile = true;
+        } else if (name.equals(PROFILES)) {
+          inProfiles = true;
         } else {
           skipElement(reader);
         }
       } else if (event.isEndElement()) {
         if (event.asEndElement().getName().equals(BUILD)) {
           inBuild = false;
+        } else if (event.asEndElement().getName().equals(PROFILES)) {
+          inProfiles = false;
+        } else if (event.asEndElement().getName().equals(PROFILE)) {
+          inProfile = false;
+          currentProfile = null;
         }
       }
     }
@@ -191,9 +235,10 @@ public final class PomLockFile {
       return new Contents(
           Optional.ofNullable(dependencies),
           Optional.ofNullable(plugins),
-          Optional.ofNullable(extensions));
+          Optional.ofNullable(extensions),
+          Optional.ofNullable(profiles));
     }
-    return new Contents(dependencies);
+    return new Contents(dependencies, profiles);
   }
 
   private static List<Dependency> fromDependencies(XMLEventReader2 rdr, boolean requireScope)

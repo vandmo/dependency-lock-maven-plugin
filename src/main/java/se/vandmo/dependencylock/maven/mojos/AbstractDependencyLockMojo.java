@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Extension;
 import org.apache.maven.model.Plugin;
@@ -21,7 +22,6 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
-import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
@@ -30,6 +30,7 @@ import se.vandmo.dependencylock.maven.LockFileFormat;
 import se.vandmo.dependencylock.maven.MojoExecutionRuntimeException;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
+import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
@@ -52,11 +53,25 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
 
   @Component private MavenPluginManager mavenPluginManager;
 
+  @Parameter private Profile[] profiles;
+
   LockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
 
-  abstract Dependencies projectDependencies() throws MojoExecutionException;
+  Collection<Profile> getDependenciesProfiles() throws MojoExecutionException {
+    final Profile[] configuredProfiles = this.profiles;
+    if (null == configuredProfiles) {
+      return null;
+    }
+    final List<Profile> result = unmodifiableList(asList(configuredProfiles));
+    if (result.stream().map(Profile::getId).distinct().count() != result.size()) {
+      throw new MojoExecutionException(
+          "Duplicate profile IDs found: "
+              + result.stream().map(Profile::getId).collect(Collectors.joining(", ")));
+    }
+    return result;
+  }
 
   final MavenSession mavenSession() {
     return mavenSession;

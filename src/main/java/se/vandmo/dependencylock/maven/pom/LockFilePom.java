@@ -15,9 +15,11 @@ import freemarker.template.Version;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.maven.plugin.MojoExecutionException;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Extensions;
@@ -28,6 +30,7 @@ import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
+import se.vandmo.dependencylock.maven.Profiled;
 
 public final class LockFilePom implements Lockfile {
 
@@ -74,10 +77,23 @@ public final class LockFilePom implements Lockfile {
       PomMinimums pomMinimums, LockedProject lockedProject) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", lockedProject.dependencies);
+    dataModel.put("dependencies", lockedProject.dependencies.getDefaultEntities());
     lockedProject.parents.ifPresent(parents -> dataModel.put("parents", parents));
     lockedProject.plugins.ifPresent(plugins -> dataModel.put("plugins", plugins));
     lockedProject.extensions.ifPresent(extensions -> dataModel.put("extensions", extensions));
+    dataModel.put(
+        "profiles",
+        lockedProject
+            .dependencies
+            .profileEntries()
+            .map(
+                entry -> {
+                  Map<String, Object> result = new HashMap<>();
+                  result.put("id", entry.getKey());
+                  result.put("dependencies", entry.getValue());
+                  return result;
+                })
+            .collect(toList()));
     return dataModel;
   }
 
@@ -102,10 +118,21 @@ public final class LockFilePom implements Lockfile {
   @Override
   public LockedProject read() throws MojoExecutionException {
     final PomLockFile.Contents contents = readContents(dependenciesLockFile.file, true);
-    Dependencies artifacts =
+    Dependencies dependencies =
         Dependencies.fromDependencies(
             contents.dependencies.orElseThrow(
                 () -> new InvalidPomLockFile("Missing 'dependencies' element")));
+    Map<String, Dependencies> profiled =
+        contents
+            .profiles
+            .map(
+                deps ->
+                    deps.entrySet().stream()
+                        .collect(
+                            Collectors.toMap(
+                                entry -> entry.getKey(),
+                                entry -> Dependencies.fromDependencies(entry.getValue()))))
+            .orElse(Collections.emptyMap());
     Optional<Parents> parents =
         maybeReadContents(dependenciesLockFile.sibling("parents", "pom.xml"), false)
             .map(
@@ -155,7 +182,7 @@ public final class LockFilePom implements Lockfile {
                             () ->
                                 new InvalidPomLockFile(
                                     "Missing extensions section in extensions lock file")));
-    return LockedProject.from(artifacts, parents, plugins, extensions);
+    return LockedProject.from(new Profiled<>(dependencies, profiled), parents, plugins, extensions);
   }
 
   private Optional<PomLockFile.Contents> maybeReadContents(File file, boolean requireScope)

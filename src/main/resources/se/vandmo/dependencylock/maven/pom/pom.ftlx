@@ -6,28 +6,35 @@
     http://maven.apache.org/POM/4.0.0 @xsd_dest@/maven-4_0_0_ext.xsd
     urn:se.vandmo.dependencylock @xsd_dest@/dependencylock.xsd"
   xmlns:dependency-lock="urn:se.vandmo.dependencylock"
-  dependency-lock:version="2">
+  dependency-lock:version="2"><#macro render_dependencies dependencies baseIndent indent>${baseIndent}<dependencies><#list dependencies as dependency>
+${baseIndent}${indent}<dependency>
+${baseIndent}${indent}${indent}<groupId>${dependency.artifactIdentifier.groupId}</groupId>
+${baseIndent}${indent}${indent}<artifactId>${dependency.artifactIdentifier.artifactId}</artifactId>
+${baseIndent}${indent}${indent}<version>${dependency.version}</version>
+${baseIndent}${indent}${indent}<type>${dependency.artifactIdentifier.type}</type>
+${baseIndent}${indent}${indent}<scope>${dependency.scope}</scope><#if dependency.artifactIdentifier.classifier.isPresent()>
+${baseIndent}${indent}${indent}<classifier>${dependency.artifactIdentifier.classifier.get()}</classifier></#if>
+${baseIndent}${indent}${indent}<optional>${dependency.optional?c}</optional>
+${baseIndent}${indent}${indent}<dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
+${baseIndent}${indent}</dependency></#list>
+${baseIndent}</dependencies></#macro>
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>${pom.groupId}</groupId>
   <artifactId>${pom.artifactId}-dependency-lock</artifactId>
   <version>${pom.version}</version>
 
-  <dependencies>
-    <#list dependencies as dependency>
-    <dependency>
-      <groupId>${dependency.artifactIdentifier.groupId}</groupId>
-      <artifactId>${dependency.artifactIdentifier.artifactId}</artifactId>
-      <version>${dependency.version}</version>
-      <type>${dependency.artifactIdentifier.type}</type>
-      <scope>${dependency.scope}</scope>
-      <#if dependency.artifactIdentifier.classifier.isPresent()>
-      <classifier>${dependency.artifactIdentifier.classifier.get()}</classifier>
-      </#if>
-      <optional>${dependency.optional?c}</optional>
-      <dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
-    </dependency>
-    </#list>
-  </dependencies>
+<@render_dependencies dependencies=dependencies baseIndent="  " indent="  " />
+
+<#if profiles?has_content>
+  <profiles><#list profiles as profile>
+    <profile>
+      <id>${profile.id}</id>
+      <@render_dependencies dependencies=profile.dependencies baseIndent="      "  indent="  " />
+
+    </profile></#list>
+  </profiles>
+</#if>
 
 </project>

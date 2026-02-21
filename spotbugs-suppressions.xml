@@ -32,4 +32,24 @@
     <Class name="~se.vandmo.dependencylock.maven.Integrity.*"/>
     <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
   </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.model.Profile" />
+    <Method name="getActivation" />
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.model.Profile" />
+    <Method name="setActivation" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.model.Activation" />
+    <Method name="getOs" />
+    <Bug pattern="EI_EXPOSE_REP" />
+  </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.mojos.model.Activation" />
+    <Method name="setOs" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
 </FindBugsFilter>

@@ -16,7 +16,8 @@ import java.util.stream.Stream;
  *
  * @param <Type> the type of {@link LockableEntity} this implementation would be handling
  */
-public class LockableEntities<Type extends LockableEntity<Type>> implements Iterable<Type> {
+public abstract class LockableEntities<Type extends LockableEntity<Type>>
+    implements Iterable<Type> {
 
   private final List<Type> entities;
 
@@ -51,6 +52,8 @@ public class LockableEntities<Type extends LockableEntity<Type>> implements Iter
   public final Stream<Type> stream() {
     return entities.stream();
   }
+
+  public abstract Stream<Artifact> artifacts();
 
   public final int size() {
     return entities.size();

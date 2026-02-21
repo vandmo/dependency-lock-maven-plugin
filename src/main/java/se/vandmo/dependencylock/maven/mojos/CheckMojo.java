@@ -3,12 +3,19 @@ package se.vandmo.dependencylock.maven.mojos;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.inject.Inject;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import se.vandmo.dependencylock.maven.*;
+import se.vandmo.dependencylock.maven.mojos.model.Profile;
+import se.vandmo.dependencylock.maven.services.ProfileHandler;
 
 @Mojo(
     name = "check",
@@ -19,6 +26,13 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
 
   @Parameter(property = "dependencyLock.skipCheck")
   private Boolean skip = false;
+
+  private final ProfileHandler profileHandler;
+
+  @Inject
+  public CheckMojo(ProfileHandler profileHandler) {
+    this.profileHandler = profileHandler;
+  }
 
   @Override
   public void execute() throws MojoExecutionException {
@@ -46,11 +60,26 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
               + " se.vandmo:dependency-lock-maven-plugin:lock'");
     }
     LockedProject lockedProject = format().lockFile_from(lockFile, pomMinimums(), getLog()).read();
+    Set<String> activeProfiles =
+        profileHandler
+            .filterActiveProfiles(
+                getDependenciesProfiles(), mavenProject(), mavenSession().getRequest())
+            .map(Profile::getId)
+            .collect(Collectors.toSet());
     Filters filters = filters();
     Log log = getLog();
     log.info("Checking dependencies");
     final DiffReport dependenciesDiff =
-        LockedDependencies.from(lockedProject.dependencies, getLog())
+        LockedDependencies.from(
+                Dependencies.merge(
+                    Stream.concat(
+                        Stream.of(lockedProject.dependencies.getDefaultEntities()),
+                        lockedProject
+                            .dependencies
+                            .profileEntries()
+                            .filter(p -> activeProfiles.contains(p.getKey()))
+                            .map(Map.Entry::getValue))),
+                getLog())
             .compareWith(projectDependencies(), filters)
             .getReport();
     Optional<DiffReport> parentsDiff =
