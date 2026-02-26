@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eux -o pipefail
+
+# Invokes the lock goal enforcing the "non lts maven" profile
+./mvnw -DlockBuild=true se.vandmo:dependency-lock-maven-plugin:lock -Duse.non.lts.maven.version=true
