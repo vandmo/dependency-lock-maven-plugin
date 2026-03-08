@@ -3277,8 +3277,8 @@
       <plugin>
         <groupId>se.vandmo</groupId>
         <artifactId>dependency-lock-maven-plugin</artifactId>
-        <version>1.3.2</version>
-        <dependency-lock:integrity>sha512:Ih/9vlA63ec9BYnq/yZJCLM3gGa0fjMWGwvEY6ESMpuaW0mkzYebyXUgJjeZ3FZQx0R4yOf2R7rYNxivwJfCuw==</dependency-lock:integrity>
+        <version>1.3.4</version>
+        <dependency-lock:integrity>sha512:ZGLXdtwGAGEST4mCvNR+avXDj1Ytz98zIS43wRJo8XxPHEgeXtL8ckOriqWCYYQNli5teZWuX/jCTV8AOhljig==</dependency-lock:integrity>
         <dependencies>
           <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
