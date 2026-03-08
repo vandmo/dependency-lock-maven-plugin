@@ -42,19 +42,19 @@
     "optional" : false
   } ],
   "profiles" : {
-    "windows" : { "dependencies": [ {
-      "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
-      "scope" : "compile",
-      "optional" : false
-    } ]},
+    "windows" : {
+      "dependencies" : [ {
+        "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
+        "scope" : "compile",
+        "optional" : false
+      } ]
+    },
     "mac" : {
-      "dependencies": [
-        {
-          "artifact": "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
-          "scope": "compile",
-          "optional": false
-        }
-      ]
+      "dependencies" : [ {
+        "artifact" : "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
+        "scope" : "compile",
+        "optional" : false
+      } ]
     }
   }
 }
