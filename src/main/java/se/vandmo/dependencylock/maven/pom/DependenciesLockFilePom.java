@@ -13,35 +13,28 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.DependenciesLockFile;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.PomMinimums;
 
-public final class DependenciesLockFilePom implements DependenciesLockFile {
+public final class DependenciesLockFilePom {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
 
   private final LockFileAccessor dependenciesLockFile;
   private final PomMinimums pomMinimums;
-  private final Log log;
 
-  private DependenciesLockFilePom(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+  private DependenciesLockFilePom(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
-    this.log = log;
   }
 
   public static DependenciesLockFilePom from(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
     return new DependenciesLockFilePom(
-        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
+        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
-  @Override
   public void write(Dependencies projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
@@ -78,15 +71,5 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
     builder.setExposeFields(true);
     builder.setIterableSupport(true);
     return builder.build();
-  }
-
-  @Override
-  public LockedDependencies read() {
-    Dependencies artifacts =
-        Dependencies.fromDependencies(
-            PomLockFile.read(dependenciesLockFile.file, true)
-                .dependencies
-                .orElseThrow(() -> new InvalidPomLockFile("Missing 'dependencies' element")));
-    return LockedDependencies.from(artifacts, log);
   }
 }

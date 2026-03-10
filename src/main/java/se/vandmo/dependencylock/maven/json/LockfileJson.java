@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
@@ -45,15 +44,13 @@ public final class LockfileJson implements Lockfile {
 
   private static final String V2 = "2";
   private final LockFileAccessor dependenciesLockFile;
-  private final Log log;
 
-  private LockfileJson(LockFileAccessor dependenciesLockFile, Log log) {
+  private LockfileJson(LockFileAccessor dependenciesLockFile) {
     this.dependenciesLockFile = dependenciesLockFile;
-    this.log = log;
   }
 
-  public static LockfileJson from(LockFileAccessor dependenciesLockFile, Log log) {
-    return new LockfileJson(requireNonNull(dependenciesLockFile), requireNonNull(log));
+  public static LockfileJson from(LockFileAccessor dependenciesLockFile) {
+    return new LockfileJson(requireNonNull(dependenciesLockFile));
   }
 
   public LockedProject read() throws MojoExecutionException {
@@ -61,13 +58,13 @@ public final class LockfileJson implements Lockfile {
     if (!json.isObject()) {
       throw new IllegalStateException("Expected top level type to be an object");
     }
-    return fromJson(json, log);
+    return fromJson(json);
   }
 
-  private static LockedProject fromJson(JsonNode json, Log log) throws MojoExecutionException {
+  private static LockedProject fromJson(JsonNode json) throws MojoExecutionException {
     final JsonNode version = json.get("version");
     if (version == null) {
-      return LockedProject.from(loadDependenciesFromJson(getDependencies(json)), log);
+      return LockedProject.from(loadDependenciesFromJson(getDependencies(json)));
     } else if (V2.equals(version.asText())) {
       final JsonNode artifacts = json.get("artifacts");
       if (artifacts == null) {
@@ -85,7 +82,7 @@ public final class LockfileJson implements Lockfile {
       Optional<Parents> parents =
           Optional.ofNullable(json.get("parents"))
               .map(parentsNode -> loadParentsFromJson(parentsNode));
-      return LockedProject.from(projectDependencies, parents, plugins, extensions, log);
+      return LockedProject.from(projectDependencies, parents, plugins, extensions);
     } else {
       throw new MojoExecutionException(
           format(

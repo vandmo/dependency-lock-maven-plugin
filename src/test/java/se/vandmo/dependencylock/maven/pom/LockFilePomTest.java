@@ -71,7 +71,7 @@ public class LockFilePomTest {
     final LockFileAccessor lockfileAccessor =
         LockFileAccessor.fromBasedir(lockfiles, "whatever.xml");
     final LockFilePom lockFilePom =
-        LockFilePom.from(lockfileAccessor, PomMinimums.from(mavenProject), log);
+        LockFilePom.from(lockfileAccessor, PomMinimums.from(mavenProject));
     final Dependency leafTestArtifact =
         Dependency.builder()
             .artifactIdentifier(
@@ -166,11 +166,7 @@ public class LockFilePomTest {
                     .build()));
     lockFilePom.write(
         LockedProject.from(
-            dependencies,
-            Optional.of(parents),
-            Optional.of(plugins),
-            Optional.of(extensions),
-            log));
+            dependencies, Optional.of(parents), Optional.of(plugins), Optional.of(extensions)));
     return lockfileAccessor;
   }
 

@@ -33,12 +33,18 @@ public final class DependencyTests {
 
   @Test(expected = NullPointerException.class)
   public void builder_integrity_string_null() {
-    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity((String)null);
+    Dependency.builder()
+        .artifactIdentifier(anArtifactIdentifier())
+        .version("1")
+        .integrity((String) null);
   }
 
   @Test(expected = NullPointerException.class)
   public void builder_integrity_Integrity_null() {
-    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version("1").integrity((Integrity) null);
+    Dependency.builder()
+        .artifactIdentifier(anArtifactIdentifier())
+        .version("1")
+        .integrity((Integrity) null);
   }
 
   @Test
