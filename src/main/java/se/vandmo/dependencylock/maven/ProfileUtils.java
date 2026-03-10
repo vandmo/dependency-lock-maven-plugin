@@ -3,9 +3,11 @@ package se.vandmo.dependencylock.maven;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.maven.model.Activation;
+import org.apache.maven.model.ActivationProperty;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.shared.utils.Os;
-import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 
 /** */
 public final class ProfileUtils {
@@ -13,7 +15,7 @@ public final class ProfileUtils {
     super();
   }
 
-  public static Map<String, String> emulateSystemProperties(ActivationOS os)
+  public static Map<String, String> emulateSystemProperties(IActivationOS os)
       throws MojoExecutionException {
     Map<String, String> emulatedValues = new HashMap<>();
     final String arch = os.getArch();
@@ -98,11 +100,25 @@ public final class ProfileUtils {
     return emulatedValues;
   }
 
+  public static Map<String, String> emulateSystemProperties(IActivationProperty property)
+      throws MojoExecutionException {
+    Map<String, String> emulatedValues = new HashMap<>();
+    if (property.getName() == null) {
+      throw new MojoExecutionException("name is required");
+    }
+    if (property.getValue() == null) {
+      emulatedValues.put(property.getName(), "");
+    } else {
+      emulatedValues.put(property.getName(), property.getValue());
+    }
+    return emulatedValues;
+  }
+
   public static Activation toMavenActivation(
-      se.vandmo.dependencylock.maven.mojos.model.Activation src) {
+      se.vandmo.dependencylock.maven.mojos.model.IActivation src) {
     final org.apache.maven.model.Activation emulatedActivation =
         new org.apache.maven.model.Activation();
-    final ActivationOS srcOs = src.getOs();
+    final IActivationOS srcOs = src.getOs();
     if (null != srcOs) {
       final org.apache.maven.model.ActivationOS emulatedActivationOS =
           new org.apache.maven.model.ActivationOS();
@@ -111,6 +127,14 @@ public final class ProfileUtils {
       emulatedActivationOS.setFamily(srcOs.getFamily());
       emulatedActivationOS.setVersion(srcOs.getVersion());
       emulatedActivation.setOs(emulatedActivationOS);
+    }
+    final IActivationProperty srcProperty = src.getProperty();
+    if (null != srcProperty) {
+      final org.apache.maven.model.ActivationProperty emulatedActionProperty =
+          new ActivationProperty();
+      emulatedActionProperty.setName(srcProperty.getName());
+      emulatedActionProperty.setValue(srcProperty.getValue());
+      emulatedActivation.setProperty(emulatedActionProperty);
     }
     return emulatedActivation;
   }

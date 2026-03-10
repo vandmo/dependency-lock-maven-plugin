@@ -3,7 +3,6 @@ package se.vandmo.dependencylock.maven.mojos;
 import static org.apache.maven.plugins.annotations.LifecyclePhase.VALIDATE;
 import static org.apache.maven.plugins.annotations.ResolutionScope.TEST;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,7 +62,13 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     Set<String> activeProfiles =
         profileHandler
             .filterActiveProfiles(
-                getDependenciesProfiles(), mavenProject(), mavenSession().getRequest())
+                lockedProject
+                    .dependencies
+                    .profileEntries()
+                    .map(ProfileEntry::getProfile)
+                    .collect(Collectors.toList()),
+                mavenProject(),
+                mavenSession().getRequest())
             .map(Profile::getId)
             .collect(Collectors.toSet());
     Filters filters = filters();
@@ -77,8 +82,8 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
                         lockedProject
                             .dependencies
                             .profileEntries()
-                            .filter(p -> activeProfiles.contains(p.getKey()))
-                            .map(Map.Entry::getValue))),
+                            .filter(p -> activeProfiles.contains(p.getProfile().getId()))
+                            .map(ProfileEntry::getDependencies))),
                 getLog())
             .compareWith(projectDependencies(), filters)
             .getReport();

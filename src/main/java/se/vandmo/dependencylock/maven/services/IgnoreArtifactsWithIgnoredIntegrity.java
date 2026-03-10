@@ -1,4 +1,4 @@
-package se.vandmo.dependencylock.maven.mojos;
+package se.vandmo.dependencylock.maven.services;
 
 import java.util.ArrayList;
 import java.util.Collection;

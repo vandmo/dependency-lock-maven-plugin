@@ -35,22 +35,12 @@
   </dependencies>
   <profiles>
     <profile>
-      <id>windows</id>
-      <dependencies>
-        <dependency>
-          <groupId>se.vandmo.testing</groupId>
-          <artifactId>with-profiled-dependency</artifactId>
-          <version>1.0</version>
-          <type>jar</type>
-          <scope>compile</scope>
-          <classifier>windows</classifier>
-          <optional>false</optional>
-          <dependency-lock:integrity>sha512:Z4fEPpQFlu8HwzMUCdlu4v2QdN5GDyAA8rvvbJ2Q+pfZD77+hP+jMu2Yp2sZ3UBE1WeiRKR+0CwNc6G1avaFiA==</dependency-lock:integrity>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>mac</id>
+      <activation>
+          <os>
+            <family>mac</family>
+          </os>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>se.vandmo.testing</groupId>
@@ -61,6 +51,26 @@
           <classifier>mac</classifier>
           <optional>false</optional>
           <dependency-lock:integrity>sha512:HwfriILRE8n/R9OIzI1MmF/caHn5rdpCBHV/PQHQDqA+MQGnCRM/U2p3SdcNP1er/De9mG7azldT+f4B0tyQbA==</dependency-lock:integrity>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>windows</id>
+      <activation>
+          <os>
+            <family>windows</family>
+          </os>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>se.vandmo.testing</groupId>
+          <artifactId>with-profiled-dependency</artifactId>
+          <version>1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+          <classifier>windows</classifier>
+          <optional>false</optional>
+          <dependency-lock:integrity>sha512:Z4fEPpQFlu8HwzMUCdlu4v2QdN5GDyAA8rvvbJ2Q+pfZD77+hP+jMu2Yp2sZ3UBE1WeiRKR+0CwNc6G1avaFiA==</dependency-lock:integrity>
         </dependency>
       </dependencies>
     </profile>

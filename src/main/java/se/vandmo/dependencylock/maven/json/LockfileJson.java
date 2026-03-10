@@ -16,6 +16,7 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
+import se.vandmo.dependencylock.maven.ProfileEntry;
 import se.vandmo.dependencylock.maven.Profiled;
 
 public final class LockfileJson implements Lockfile {
@@ -80,10 +82,9 @@ public final class LockfileJson implements Lockfile {
       Optional<Parents> parents = loadParentsIfPresent(json);
       final Dependencies projectDependencies =
           JsonUtils.loadDependenciesFromJson(JsonUtils.getDependencies(json), artifactMap);
-      final Map<String, Dependencies> dependenciesByProfileId =
+      final Collection<ProfileEntry> dependenciesByProfileId =
           JsonUtils.loadProfilesFromJson(json, artifactMap);
-      final Profiled<Dependency, Dependencies> dependencies =
-          new Profiled<>(projectDependencies, dependenciesByProfileId);
+      final Profiled dependencies = new Profiled(projectDependencies, dependenciesByProfileId);
       return LockedProject.from(dependencies, parents, plugins, extensions);
 
     } else {

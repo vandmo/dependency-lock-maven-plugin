@@ -41,20 +41,37 @@
     "scope" : "compile",
     "optional" : false
   } ],
-  "profiles" : {
-    "windows" : {
-      "dependencies" : [ {
-        "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
-        "scope" : "compile",
-        "optional" : false
-      } ]
+  "profiles" : [ {
+    "id" : "mac",
+    "activation" : {
+      "os" : {
+        "family" : "mac",
+        "name" : null,
+        "arch" : null,
+        "version" : null
+      },
+      "property" : null
     },
-    "mac" : {
-      "dependencies" : [ {
-        "artifact" : "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
-        "scope" : "compile",
-        "optional" : false
-      } ]
-    }
-  }
+    "dependencies" : [ {
+      "artifact" : "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
+      "scope" : "compile",
+      "optional" : false
+    } ]
+  }, {
+    "id" : "windows",
+    "activation" : {
+      "os" : {
+        "family" : "windows",
+        "name" : null,
+        "arch" : null,
+        "version" : null
+      },
+      "property" : null
+    },
+    "dependencies" : [ {
+      "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
+      "scope" : "compile",
+      "optional" : false
+    } ]
+  } ]
 }

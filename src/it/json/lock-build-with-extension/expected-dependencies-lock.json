@@ -1359,5 +1359,5 @@
     "scope" : "compile",
     "optional" : false
   } ],
-  "profiles" : { }
+  "profiles" : [ ]
 }

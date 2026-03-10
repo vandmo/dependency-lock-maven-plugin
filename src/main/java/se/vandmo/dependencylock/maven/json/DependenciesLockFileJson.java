@@ -40,7 +40,7 @@ public final class DependenciesLockFileJson {
     }
   }
 
-  public void write(Profiled<Dependency, Dependencies> dependencies) {
+  public void write(Profiled dependencies) {
     JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
     ObjectNode json = jsonNodeFactory.objectNode();
     json.put("version", V3);
@@ -49,7 +49,9 @@ public final class DependenciesLockFileJson {
         JsonUtils.buildArtifactsJson(
             Stream.concat(
                 dependencies.getDefaultEntities().artifacts(),
-                dependencies.profileEntries().flatMap(entry -> entry.getValue().artifacts())),
+                dependencies
+                    .profileEntries()
+                    .flatMap(entry -> entry.getDependencies().artifacts())),
             jsonNodeFactory));
     json.set(
         "dependencies",

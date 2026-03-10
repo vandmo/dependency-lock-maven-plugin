@@ -28,8 +28,9 @@ import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
 import se.vandmo.dependencylock.maven.ProfileUtils;
-import se.vandmo.dependencylock.maven.mojos.model.Activation;
-import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.IActivation;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 @Named
@@ -96,7 +97,7 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
   public Collection<Profile> computeEnabledProfiles(
       MavenSession mavenSession,
       Collection<Profile> profiles,
-      Map<String, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions)
+      Map<Profile, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions)
       throws MojoExecutionException {
     if (profiles == null || profiles.isEmpty()) {
       return Collections.emptyList();
@@ -129,15 +130,17 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
       getLogger().warn("More than one profile is currently enabled.");
     }
     for (Profile disabledProfile : disabledProfiles) {
-      profilingSessions.put(disabledProfile.getId(), buildProfileEmulator(disabledProfile));
+      profilingSessions.put(disabledProfile, buildProfileEmulator(disabledProfile));
     }
     return actuallyEnabledProfiles;
   }
 
   private Function<Map<String, String>, Map<String, String>> buildSystemPropertiesEmulation(
       Profile profile) throws MojoExecutionException {
+    final IActivation activation = profile.getActivation();
     Function<Map<String, String>, Map<String, String>> result = UnaryOperator.identity();
-    result = result.andThen(buildActivationOsTransformer(profile.getActivation().getOs()));
+    result = result.andThen(buildActivationOsTransformer(activation.getOs()));
+    result = result.andThen(buildActivationPropertyTransformer(activation.getProperty()));
     return result;
   }
 
@@ -151,7 +154,7 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
    */
   private org.apache.maven.model.Profile generateProfile(Profile profile)
       throws MojoExecutionException {
-    final Activation activation = profile.getActivation();
+    final IActivation activation = profile.getActivation();
     if (null == activation) {
       getLogger().error("Ignoring unsupported profile with no activation: " + profile.getId());
       throw new MojoExecutionException(
@@ -163,12 +166,30 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
     return emulatedProfile;
   }
 
-  private UnaryOperator<Map<String, String>> buildActivationOsTransformer(ActivationOS os)
+  private UnaryOperator<Map<String, String>> buildActivationOsTransformer(IActivationOS os)
       throws MojoExecutionException {
+    if (os == null) {
+      return UnaryOperator.identity();
+    }
     Map<String, String> emulatedValues = ProfileUtils.emulateSystemProperties(os);
     if (emulatedValues.isEmpty()) {
       return UnaryOperator.identity();
     }
+    return new UnaryOperator<Map<String, String>>() {
+      @Override
+      public Map<String, String> apply(Map<String, String> result) {
+        result.putAll(emulatedValues);
+        return result;
+      }
+    };
+  }
+
+  private UnaryOperator<Map<String, String>> buildActivationPropertyTransformer(
+      IActivationProperty property) throws MojoExecutionException {
+    if (property == null) {
+      return UnaryOperator.identity();
+    }
+    Map<String, String> emulatedValues = ProfileUtils.emulateSystemProperties(property);
     return new UnaryOperator<Map<String, String>>() {
       @Override
       public Map<String, String> apply(Map<String, String> result) {

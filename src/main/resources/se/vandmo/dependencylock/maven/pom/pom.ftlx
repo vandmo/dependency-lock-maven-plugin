@@ -31,6 +31,23 @@ ${baseIndent}</dependencies></#macro>
   <profiles><#list profiles as profile>
     <profile>
       <id>${profile.id}</id>
+      <activation>
+      <#if profile.activation?has_content>
+          <#if profile.activation.os?has_content><os><#if profile.activation.os.family?has_content>
+            <family>${profile.activation.os.family}</family>
+</#if><#if profile.activation.os.name?has_content>
+            <name>${profile.activation.os.name}</name>
+</#if><#if profile.activation.os.arch?has_content>
+            <arch>${profile.activation.os.arch}</arch>
+</#if><#if profile.activation.os.version?has_content>
+            <version>${profile.activation.os.version}</version>
+</#if>
+          </os></#if><#if profile.activation.property?has_content>
+          <property>
+            <name>${profile.activation.property.name}</name><#if profile.activation.property.value?has_content>
+            <value>${profile.activation.property.value}</value></#if>
+          </property></#if></#if>
+      </activation>
       <@render_dependencies dependencies=profile.dependencies baseIndent="      "  indent="  " />
 
     </profile></#list>

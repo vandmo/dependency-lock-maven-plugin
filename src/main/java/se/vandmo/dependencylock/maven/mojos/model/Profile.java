@@ -3,9 +3,22 @@ package se.vandmo.dependencylock.maven.mojos.model;
 /** Information about a maven profile. */
 public final class Profile {
   private String id;
-  private Activation activation;
+  private IActivation activation;
 
-  public Activation getActivation() {
+  public Profile() {
+    super();
+  }
+
+  public Profile(Profile src) {
+    this.id = src.id;
+    if (null == src.activation) {
+      this.activation = null;
+    } else {
+      this.activation = new Activation(src.activation);
+    }
+  }
+
+  public IActivation getActivation() {
     return activation;
   }
 

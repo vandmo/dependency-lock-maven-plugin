@@ -1,35 +1,31 @@
 package se.vandmo.dependencylock.maven.mojos;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Locale.ROOT;
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.inject.Inject;
-import org.apache.maven.RepositoryUtils;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.DefaultDependencyResolutionRequest;
-import org.apache.maven.project.DependencyResolutionException;
-import org.apache.maven.project.DependencyResolutionResult;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectDependenciesResolver;
 import org.eclipse.aether.RepositorySystemSession;
-import org.eclipse.aether.graph.Dependency;
 import se.vandmo.dependencylock.maven.*;
 import se.vandmo.dependencylock.maven.json.DependenciesLockFileJson;
 import se.vandmo.dependencylock.maven.json.LockfileJson;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 import se.vandmo.dependencylock.maven.pom.DependenciesLockFilePom;
 import se.vandmo.dependencylock.maven.pom.LockFilePom;
+import se.vandmo.dependencylock.maven.services.DependenciesHelper;
 import se.vandmo.dependencylock.maven.services.ProfileHandler;
 
 @Mojo(name = "lock", threadSafe = true)
@@ -38,7 +34,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   @Parameter(property = "dependencyLock.markIgnoredAsIgnored")
   private boolean markIgnoredAsIgnored = false;
 
-  private final ProjectDependenciesResolver projectDependenciesResolver;
+  private final DependenciesHelper dependenciesHelper;
 
   private final ProfileHandler profileHandler;
 
@@ -48,10 +44,11 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   @Parameter(property = "dependencyLock.lockBuild")
   private boolean lockBuild;
 
+  @Parameter private Profile[] profiles;
+
   @Inject
-  public LockMojo(
-      ProjectDependenciesResolver projectDependenciesResolver, ProfileHandler profileHandler) {
-    this.projectDependenciesResolver = projectDependenciesResolver;
+  public LockMojo(DependenciesHelper dependenciesHelper, ProfileHandler profileHandler) {
+    this.dependenciesHelper = dependenciesHelper;
     this.profileHandler = profileHandler;
   }
 
@@ -73,6 +70,20 @@ public final class LockMojo extends AbstractDependencyLockMojo {
       default:
         throw new RuntimeException("This should not happen!");
     }
+  }
+
+  private Collection<Profile> getDependenciesProfiles() throws MojoExecutionException {
+    final Profile[] configuredProfiles = this.profiles;
+    if (null == configuredProfiles) {
+      return null;
+    }
+    final List<Profile> result = unmodifiableList(asList(configuredProfiles));
+    if (result.stream().map(Profile::getId).distinct().count() != result.size()) {
+      throw new MojoExecutionException(
+          "Duplicate profile IDs found: "
+              + result.stream().map(Profile::getId).collect(Collectors.joining(", ")));
+    }
+    return result;
   }
 
   private void dumpPomLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
@@ -117,23 +128,23 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     }
   }
 
-  private Profiled<se.vandmo.dependencylock.maven.Dependency, Dependencies>
-      filteredProjectDependencies() throws MojoExecutionException {
-    Profiled<se.vandmo.dependencylock.maven.Dependency, Dependencies> projectDependencies =
-        projectDependencies();
+  private Profiled filteredProjectDependencies() throws MojoExecutionException {
+    Profiled projectDependencies = projectDependencies();
     if (!markIgnoredAsIgnored) {
       return projectDependencies;
     }
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
-    return new Profiled<>(
+    return new Profiled(
         applyFiltersToDependencies(projectDependencies.getDefaultEntities(), filters),
         projectDependencies
             .profileEntries()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    entry -> applyFiltersToDependencies(entry.getValue(), filters))));
+            .map(
+                entry ->
+                    new ProfileEntry(
+                        entry.getProfile(),
+                        applyFiltersToDependencies(entry.getDependencies(), filters)))
+            .collect(Collectors.toList()));
   }
 
   private static Dependencies applyFiltersToDependencies(
@@ -144,10 +155,13 @@ public final class LockMojo extends AbstractDependencyLockMojo {
             .collect(toList()));
   }
 
-  private Profiled<se.vandmo.dependencylock.maven.Dependency, Dependencies> projectDependencies()
-      throws MojoExecutionException {
+  private Profiled projectDependencies() throws MojoExecutionException {
     final Filters filters = filters();
-    Map<String, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions =
+    final MavenProject project = mavenProject();
+    final RepositorySystemSession repositorySession = mavenSession().getRepositorySession();
+    final Collection<se.vandmo.dependencylock.maven.Dependency> currentProjectDependencies =
+        this.dependenciesHelper.resolveDependencies(repositorySession, project, filters);
+    Map<Profile, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions =
         new HashMap<>();
     final Collection<Profile> actuallyEnabledProfiles =
         profileHandler.computeEnabledProfiles(
@@ -164,86 +178,49 @@ public final class LockMojo extends AbstractDependencyLockMojo {
               "Enabled profiles: "
                   + actuallyEnabledProfiles.stream().map(Profile::getId).collect(toList()));
     }
-    final MavenProject project = mavenProject();
-    final RepositorySystemSession repositorySession = mavenSession().getRepositorySession();
-    final Set<se.vandmo.dependencylock.maven.Dependency> currentProjectDependencies =
-        computeDependencies(project, repositorySession, filters);
     if (getLog().isDebugEnabled()) {
       getLog().debug("Current dependencies: " + currentProjectDependencies);
     }
-    Map<String, Set<se.vandmo.dependencylock.maven.Dependency>> byProfileId = new HashMap<>();
-    for (Map.Entry<String, Function<RepositorySystemSession, RepositorySystemSession>> entry :
+    Map<Profile, Collection<se.vandmo.dependencylock.maven.Dependency>> byProfile = new HashMap<>();
+    for (Map.Entry<Profile, Function<RepositorySystemSession, RepositorySystemSession>> entry :
         profilingSessions.entrySet()) {
-      final Set<se.vandmo.dependencylock.maven.Dependency> profileDependencies =
-          computeDependencies(project, entry.getValue().apply(repositorySession), filters);
-      final String profileId = entry.getKey();
+      final Collection<se.vandmo.dependencylock.maven.Dependency> profileDependencies =
+          this.dependenciesHelper.resolveDependencies(
+              entry.getValue().apply(repositorySession), project, filters);
+      final Profile profile = entry.getKey();
       if (getLog().isDebugEnabled()) {
-        getLog().debug("Profile " + profileId + " dependencies: " + profileDependencies);
+        getLog().debug("Profile " + profile.getId() + " dependencies: " + profileDependencies);
       }
-      byProfileId.put(profileId, profileDependencies);
+      byProfile.put(profile, profileDependencies);
     }
     final HashSet<se.vandmo.dependencylock.maven.Dependency> sharedDependencies =
         new HashSet<>(currentProjectDependencies);
-    byProfileId.values().forEach(sharedDependencies::retainAll);
+    byProfile.values().forEach(sharedDependencies::retainAll);
     if (getLog().isDebugEnabled()) {
       getLog().debug("Shared dependencies: " + sharedDependencies);
     }
     // clean up profile dependencies to remove shared dependencies
-    for (String profileId : profilingSessions.keySet()) {
-      Set<se.vandmo.dependencylock.maven.Dependency> profiledDependencies =
-          byProfileId.get(profileId);
+    for (Profile profile : profilingSessions.keySet()) {
+      Collection<se.vandmo.dependencylock.maven.Dependency> profiledDependencies =
+          byProfile.get(profile);
       profiledDependencies.removeAll(sharedDependencies);
     }
 
     // ensure "current project dependencies" no longer include shared dependencies
     currentProjectDependencies.removeAll(sharedDependencies);
     for (Profile enabledProfile : actuallyEnabledProfiles) {
-      byProfileId.put(enabledProfile.getId(), currentProjectDependencies);
+      byProfile.put(enabledProfile, currentProjectDependencies);
     }
 
-    return new Profiled<>(
+    return new Profiled(
         Dependencies.fromDependencies(sharedDependencies),
-        byProfileId.entrySet().stream()
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey, entry -> Dependencies.fromDependencies(entry.getValue()))));
-  }
-
-  private Set<se.vandmo.dependencylock.maven.Dependency> computeDependencies(
-      MavenProject project, RepositorySystemSession repositorySession, Filters filters)
-      throws MojoExecutionException {
-    final DefaultDependencyResolutionRequest request = new DefaultDependencyResolutionRequest();
-    request.setMavenProject(project);
-    request.setRepositorySession(repositorySession);
-    final IgnoreArtifactsWithIgnoredIntegrity resolutionFilter =
-        new IgnoreArtifactsWithIgnoredIntegrity(filters);
-    request.setResolutionFilter(resolutionFilter);
-    final DependencyResolutionResult resolutionResult;
-    try {
-      resolutionResult = projectDependenciesResolver.resolve(request);
-    } catch (DependencyResolutionException e) {
-      throw new MojoExecutionException(
-          "Failed resolving dependencies due to an unexpected internal error: " + e, e);
-    }
-    return extractDependenciesFromResult(resolutionFilter, resolutionResult);
-  }
-
-  private static Set<se.vandmo.dependencylock.maven.Dependency> extractDependenciesFromResult(
-      IgnoreArtifactsWithIgnoredIntegrity resolutionFilter,
-      DependencyResolutionResult resolutionResult) {
-    return Stream.concat(
-            resolutionFilter.collectIgnoredDependencies(),
-            resolutionResult.getDependencies().stream()
-                .map(LockMojo::mapDependency)
-                .map(se.vandmo.dependencylock.maven.Dependency::from))
-        .collect(Collectors.toSet());
-  }
-
-  private static Artifact mapDependency(Dependency dependency) {
-    final Artifact resultingArtifact = RepositoryUtils.toArtifact(dependency.getArtifact());
-    resultingArtifact.setScope(dependency.getScope());
-    resultingArtifact.setOptional(dependency.isOptional());
-    return resultingArtifact;
+        byProfile.entrySet().stream()
+            .sorted(Comparator.comparing(entry -> entry.getKey().getId()))
+            .map(
+                entry ->
+                    new ProfileEntry(
+                        entry.getKey(), Dependencies.fromDependencies(entry.getValue())))
+            .collect(toList()));
   }
 
   private Plugins filteredProjectPlugins() {

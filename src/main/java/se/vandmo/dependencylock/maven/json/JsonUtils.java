@@ -15,7 +15,9 @@ import java.io.Reader;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +30,14 @@ import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
+import se.vandmo.dependencylock.maven.ProfileEntry;
+import se.vandmo.dependencylock.maven.mojos.model.Activation;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationProperty;
+import se.vandmo.dependencylock.maven.mojos.model.IActivation;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
+import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 public final class JsonUtils {
   private JsonUtils() {}
@@ -123,16 +133,55 @@ public final class JsonUtils {
     return new TreeMap<>(artifactsMap);
   }
 
-  static ObjectNode buildProfilesJson(
-      Stream<Map.Entry<String, Dependencies>> profiles, JsonNodeFactory jsonNodeFactory) {
-    ObjectNode result = jsonNodeFactory.objectNode();
-    profiles.forEach(
-        profile -> {
-          ObjectNode profileNode = jsonNodeFactory.objectNode();
-          profileNode.set(
-              "dependencies", buildDependenciesJson(profile.getValue(), jsonNodeFactory));
-          result.set(profile.getKey(), profileNode);
-        });
+  static JsonNode buildProfilesJson(
+      Stream<ProfileEntry> profiles, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode result = jsonNodeFactory.arrayNode();
+    profiles
+        .sorted(Comparator.comparing(entry -> entry.getProfile().getId()))
+        .forEach(
+            profile -> {
+              ObjectNode profileNode = jsonNodeFactory.objectNode();
+              profileNode.put("id", profile.getProfile().getId());
+              profileNode.set(
+                  "activation",
+                  buildActivationNode(profile.getProfile().getActivation(), jsonNodeFactory));
+              profileNode.set(
+                  "dependencies",
+                  buildDependenciesJson(profile.getDependencies(), jsonNodeFactory));
+              result.add(profileNode);
+            });
+    return result;
+  }
+
+  private static JsonNode buildActivationNode(
+      IActivation activation, JsonNodeFactory jsonNodeFactory) {
+    final ObjectNode result = jsonNodeFactory.objectNode();
+    result.set("os", buildActivationOsNode(activation.getOs(), jsonNodeFactory));
+    result.set("property", buildActivationPropertyNode(activation.getProperty(), jsonNodeFactory));
+    return result;
+  }
+
+  private static JsonNode buildActivationOsNode(
+      IActivationOS activationOS, JsonNodeFactory jsonNodeFactory) {
+    if (activationOS == null) {
+      return jsonNodeFactory.nullNode();
+    }
+    final ObjectNode result = jsonNodeFactory.objectNode();
+    result.put("family", activationOS.getFamily());
+    result.put("name", activationOS.getName());
+    result.put("arch", activationOS.getArch());
+    result.put("version", activationOS.getVersion());
+    return result;
+  }
+
+  private static JsonNode buildActivationPropertyNode(
+      IActivationProperty activationProperty, JsonNodeFactory jsonNodeFactory) {
+    if (activationProperty == null) {
+      return jsonNodeFactory.nullNode();
+    }
+    final ObjectNode result = jsonNodeFactory.objectNode();
+    result.put("name", activationProperty.getName());
+    result.put("value", activationProperty.getValue());
     return result;
   }
 
@@ -172,24 +221,57 @@ public final class JsonUtils {
         .build();
   }
 
-  static Map<String, Dependencies> loadProfilesFromJson(
+  static Collection<ProfileEntry> loadProfilesFromJson(
       JsonNode json, Map<String, Artifact> artifactMap) {
-    final Map<String, Dependencies> dependenciesByProfileId;
     JsonNode profilesNode = json.get("profiles");
     if (profilesNode.isEmpty()) {
-      dependenciesByProfileId = Collections.emptyMap();
-    } else {
-      dependenciesByProfileId = new HashMap<>(profilesNode.size());
-      for (Iterator<Map.Entry<String, JsonNode>> it = profilesNode.fields(); it.hasNext(); ) {
-        Map.Entry<String, JsonNode> currentEntry = it.next();
-        final String profileId = currentEntry.getKey();
-        final JsonNode profileNode = currentEntry.getValue();
-        final Dependencies profileDependencies =
-            loadDependenciesFromJson(getDependencies(profileNode), artifactMap);
-        dependenciesByProfileId.put(profileId, profileDependencies);
-      }
+      return Collections.emptyList();
     }
-    return dependenciesByProfileId;
+    Collection<ProfileEntry> profileEntries = new ArrayList<>(profilesNode.size());
+    for (Iterator<JsonNode> it = profilesNode.elements(); it.hasNext(); ) {
+      JsonNode profileNode = it.next();
+      final String profileId = profileNode.get("id").asText();
+      final Activation activation = buildActivation(profileNode.get("activation"));
+      final Dependencies profileDependencies =
+          loadDependenciesFromJson(getDependencies(profileNode), artifactMap);
+      Profile result = new Profile();
+      result.setId(profileId);
+      result.setActivation(activation);
+      profileEntries.add(new ProfileEntry(result, profileDependencies));
+    }
+    return profileEntries;
+  }
+
+  private static Activation buildActivation(JsonNode activationNode) {
+    if (activationNode == null || activationNode.isNull()) {
+      return null;
+    }
+    Activation result = new Activation();
+    result.setOs(buildActivationOS(activationNode.get("os")));
+    result.setProperty(buildActivationProperty(activationNode.get("property")));
+    return result;
+  }
+
+  private static ActivationProperty buildActivationProperty(JsonNode activationPropertyNode) {
+    if (activationPropertyNode == null || activationPropertyNode.isNull()) {
+      return null;
+    }
+    ActivationProperty result = new ActivationProperty();
+    result.setName(activationPropertyNode.get("name").asText(null));
+    result.setValue(activationPropertyNode.get("value").asText(null));
+    return result;
+  }
+
+  private static ActivationOS buildActivationOS(JsonNode activationOSNode) {
+    if (activationOSNode == null || activationOSNode.isNull()) {
+      return null;
+    }
+    ActivationOS result = new ActivationOS();
+    result.setFamily(activationOSNode.get("family").asText(null));
+    result.setName(activationOSNode.get("name").asText(null));
+    result.setArch(activationOSNode.get("arch").asText(null));
+    result.setVersion(activationOSNode.get("version").asText(null));
+    return result;
   }
 
   static JsonNode getDependencies(JsonNode json) {

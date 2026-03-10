@@ -11,11 +11,10 @@ import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.PomMinimums;
 import se.vandmo.dependencylock.maven.Profiled;
@@ -38,7 +37,7 @@ public final class DependenciesLockFilePom {
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
-  public void write(Profiled<Dependency, Dependencies> projectDependencies) {
+  public void write(Profiled projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -51,7 +50,7 @@ public final class DependenciesLockFilePom {
   }
 
   private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums, Profiled<Dependency, Dependencies> projectDependencies) {
+      PomMinimums pomMinimums, Profiled projectDependencies) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
     dataModel.put("dependencies", projectDependencies.getDefaultEntities());
@@ -59,11 +58,13 @@ public final class DependenciesLockFilePom {
         "profiles",
         projectDependencies
             .profileEntries()
+            .sorted(Comparator.comparing(entry -> entry.getProfile().getId()))
             .map(
                 entry -> {
                   Map<String, Object> profile = new HashMap<>();
-                  profile.put("id", entry.getKey());
-                  profile.put("dependencies", entry.getValue());
+                  profile.put("id", entry.getProfile().getId());
+                  profile.put("activation", entry.getProfile().getActivation());
+                  profile.put("dependencies", entry.getDependencies());
                   return profile;
                 })
             .collect(Collectors.toList()));

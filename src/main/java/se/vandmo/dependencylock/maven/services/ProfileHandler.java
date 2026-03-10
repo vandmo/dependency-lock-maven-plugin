@@ -46,6 +46,6 @@ public interface ProfileHandler {
   Collection<Profile> computeEnabledProfiles(
       MavenSession mavenSession,
       Collection<Profile> profiles,
-      Map<String, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions)
+      Map<Profile, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions)
       throws MojoExecutionException;
 }
