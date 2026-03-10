@@ -11,38 +11,33 @@ import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.maven.plugin.logging.Log;
-import se.vandmo.dependencylock.maven.Dependencies;
-import se.vandmo.dependencylock.maven.DependenciesLockFile;
+import java.util.stream.Collectors;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedDependencies;
 import se.vandmo.dependencylock.maven.PomMinimums;
+import se.vandmo.dependencylock.maven.Profiled;
 
-public final class DependenciesLockFilePom implements DependenciesLockFile {
+public final class DependenciesLockFilePom {
 
   private static final Version VERSION = Configuration.VERSION_2_3_31;
 
   private final LockFileAccessor dependenciesLockFile;
   private final PomMinimums pomMinimums;
-  private final Log log;
 
-  private DependenciesLockFilePom(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+  private DependenciesLockFilePom(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
-    this.log = log;
   }
 
   public static DependenciesLockFilePom from(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
     return new DependenciesLockFilePom(
-        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
+        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
-  @Override
-  public void write(Dependencies projectDependencies) {
+  public void write(Profiled projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -55,10 +50,24 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
   }
 
   private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums, Dependencies artifacts) {
+      PomMinimums pomMinimums, Profiled projectDependencies) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", artifacts);
+    dataModel.put("dependencies", projectDependencies.getDefaultEntities());
+    dataModel.put(
+        "profiles",
+        projectDependencies
+            .profileEntries()
+            .sorted(Comparator.comparing(entry -> entry.getProfile().getId()))
+            .map(
+                entry -> {
+                  Map<String, Object> profile = new HashMap<>();
+                  profile.put("id", entry.getProfile().getId());
+                  profile.put("activation", entry.getProfile().getActivation());
+                  profile.put("dependencies", entry.getDependencies());
+                  return profile;
+                })
+            .collect(Collectors.toList()));
     return dataModel;
   }
 
@@ -78,15 +87,5 @@ public final class DependenciesLockFilePom implements DependenciesLockFile {
     builder.setExposeFields(true);
     builder.setIterableSupport(true);
     return builder.build();
-  }
-
-  @Override
-  public LockedDependencies read() {
-    Dependencies artifacts =
-        Dependencies.fromDependencies(
-            PomLockFile.read(dependenciesLockFile.file, true)
-                .dependencies
-                .orElseThrow(() -> new InvalidPomLockFile("Missing 'dependencies' element")));
-    return LockedDependencies.from(artifacts, log);
   }
 }

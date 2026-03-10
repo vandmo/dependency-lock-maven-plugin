@@ -7,66 +7,58 @@ import java.util.stream.Stream;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedProject {
-  public final Dependencies dependencies;
+  public final Profiled dependencies;
   public final Optional<Parents> parents;
   public final Optional<Plugins> plugins;
   public final Optional<Extensions> extensions;
-  private final Log log;
 
   private LockedProject(
-      Dependencies dependencies,
+      Profiled dependencies,
       Optional<Parents> parents,
       Optional<Plugins> plugins,
-      Optional<Extensions> extensions,
-      Log log) {
-    this.parents = parents;
+      Optional<Extensions> extensions) {
     this.dependencies = dependencies;
+    this.parents = parents;
     this.plugins = plugins;
     this.extensions = extensions;
-    this.log = log;
   }
 
-  public static LockedProject from(Project project, Log log) {
+  public static LockedProject from(Project project) {
     return new LockedProject(
-        project.dependencies, project.parents, project.plugins, project.extensions, log);
+        project.dependencies, project.parents, project.plugins, project.extensions);
   }
 
   public static LockedProject from(
       Dependencies dependencies,
       Optional<Parents> parents,
       Optional<Plugins> plugins,
-      Optional<Extensions> extensions,
-      Log log) {
+      Optional<Extensions> extensions) {
+    return from(
+        new Profiled(requireNonNull(dependencies)),
+        requireNonNull(parents),
+        requireNonNull(plugins),
+        requireNonNull(extensions));
+  }
+
+  public static LockedProject from(
+      Profiled dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions) {
     return new LockedProject(
         requireNonNull(dependencies),
         requireNonNull(parents),
         requireNonNull(plugins),
-        requireNonNull(extensions),
-        log);
+        requireNonNull(extensions));
   }
 
-  public static LockedProject from(Dependencies dependencies, Log log) {
+  public static LockedProject from(Dependencies dependencies) {
+    return from(new Profiled(dependencies));
+  }
+
+  public static LockedProject from(Profiled dependencies) {
     return new LockedProject(
-        requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty(), log);
-  }
-
-  public Diff compareWith(Project project, Filters filters) {
-    final DiffReport dependenciesDiff =
-        LockedDependencies.from(dependencies, log)
-            .compareWith(project.dependencies, filters)
-            .getReport();
-    return new Diff(
-        dependenciesDiff,
-        project.parents.map(
-            parents ->
-                LockedParents.from(parents, log)
-                    .compareWith(this.parents.get(), filters)), // TODO avoid .get? how?
-        project.plugins.map(
-            plugins -> LockedPlugins.from(plugins, log).compareWith(this.plugins.get(), filters)),
-        project.extensions.map(
-            extensions ->
-                LockedExtensions.from(extensions, log)
-                    .compareWith(this.extensions.get(), filters)));
+        requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty());
   }
 
   public static final class Diff {

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>se.vandmo.tests</groupId>
+  <artifactId>pom-lock-with-profiles</artifactId>
+  <version>0-SNAPSHOT</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.testing</groupId>
+      <artifactId>with-profiled-dependency</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>se.vandmo</groupId>
+        <artifactId>dependency-lock-maven-plugin</artifactId>
+        <version>@project.version@</version>
+        <configuration>
+          <format>pom</format>
+          <markIgnoredAsIgnored>true</markIgnoredAsIgnored>
+          <profiles>
+            <profile>
+              <id>mac</id>
+              <activation>
+                <os>
+                  <family>mac</family>
+                </os>
+              </activation>
+            </profile>
+            <profile>
+              <id>windows</id>
+              <activation>
+                <os>
+                  <family>windows</family>
+                </os>
+              </activation>
+            </profile>
+          </profiles>
+          <dependencySets>
+            <dependencySet>
+              <includes>
+                <include>se.vandmo:dependency-lock-maven-plugin</include>
+              </includes>
+              <integrity>ignore</integrity>
+              <version>ignore</version>
+            </dependencySet>
+          </dependencySets>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

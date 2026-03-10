@@ -5,13 +5,16 @@ import static java.util.Locale.ROOT;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import org.apache.maven.plugin.logging.Log;
 
 public class LockedEntities<EntityType extends LockableEntity<EntityType>>
-    extends AbstractLockedEntries<EntityType> {
+    extends AbstractLockedEntries<EntityType> implements Iterable<EntityType> {
   public final LockableEntities<EntityType> lockedEntities;
 
   LockedEntities(LockableEntities<EntityType> lockedEntities, Log log) {
@@ -50,5 +53,20 @@ public class LockedEntities<EntityType extends LockableEntity<EntityType>>
         }
       }
     }
+  }
+
+  @Override
+  public final void forEach(Consumer<? super EntityType> action) {
+    this.lockedEntities.forEach(action);
+  }
+
+  @Override
+  public final Spliterator<EntityType> spliterator() {
+    return this.lockedEntities.spliterator();
+  }
+
+  @Override
+  public final Iterator<EntityType> iterator() {
+    return this.lockedEntities.iterator();
   }
 }
