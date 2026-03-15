@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
@@ -36,18 +35,14 @@ public final class LockFilePom implements Lockfile {
 
   private final LockFileAccessor dependenciesLockFile;
   private final PomMinimums pomMinimums;
-  private final Log log;
 
-  private LockFilePom(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
+  private LockFilePom(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
     this.dependenciesLockFile = dependenciesLockFile;
     this.pomMinimums = pomMinimums;
-    this.log = log;
   }
 
-  public static LockFilePom from(
-      LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums, Log log) {
-    return new LockFilePom(
-        requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums), requireNonNull(log));
+  public static LockFilePom from(LockFileAccessor dependenciesLockFile, PomMinimums pomMinimums) {
+    return new LockFilePom(requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
   private void writeFromTemplate(Configuration cfg, Map<String, Object> dataModel, String name)
@@ -160,7 +155,7 @@ public final class LockFilePom implements Lockfile {
                             () ->
                                 new InvalidPomLockFile(
                                     "Missing extensions section in extensions lock file")));
-    return LockedProject.from(artifacts, parents, plugins, extensions, log);
+    return LockedProject.from(artifacts, parents, plugins, extensions);
   }
 
   private Optional<PomLockFile.Contents> maybeReadContents(File file, boolean requireScope)
