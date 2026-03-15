@@ -2,7 +2,6 @@ package se.vandmo.dependencylock.maven.mojos.model;
 
 import java.util.Objects;
 
-/** */
 public class ActivationProperty implements IActivationProperty {
   private String name;
   private String value;

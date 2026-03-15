@@ -1,6 +1,5 @@
 package se.vandmo.dependencylock.maven.mojos.model;
 
-/** */
 public class ActivationOS implements IActivationOS {
   private String family;
   private String arch;
