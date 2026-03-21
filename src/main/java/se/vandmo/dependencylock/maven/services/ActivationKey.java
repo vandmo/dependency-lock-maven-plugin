@@ -8,9 +8,7 @@ import se.vandmo.dependencylock.maven.mojos.model.IActivation;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 
-/**
- * Materialization of the activation configuration which can be used as a key object in a map.
- */
+/** Materialization of the activation configuration which can be used as a key object in a map. */
 final class ActivationKey implements IActivation {
   private final ActivationOSKey os;
   private final ActivationPropertyKey property;

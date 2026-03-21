@@ -57,6 +57,5 @@ public interface ProfileHandler {
    * @param dependencies the dependencies to analyze
    * @return a stream containing all the profiles which may be involved in the given dependencies
    */
-  Stream<Profile> lookupAvailableProfiles(
-      MavenSession mavenSession, Dependencies dependencies);
+  Stream<Profile> lookupAvailableProfiles(MavenSession mavenSession, Dependencies dependencies);
 }

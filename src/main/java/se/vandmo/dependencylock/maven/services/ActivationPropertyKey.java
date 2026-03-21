@@ -4,7 +4,8 @@ import org.apache.maven.model.ActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 
 /**
- * Materialization of the activation property configuration which can be used as a key object in a map.
+ * Materialization of the activation property configuration which can be used as a key object in a
+ * map.
  */
 final class ActivationPropertyKey implements IActivationProperty {
   private final String name;

@@ -39,6 +39,7 @@ import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
+import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.ProfileUtils;
 import se.vandmo.dependencylock.maven.mojos.model.Activation;
@@ -116,28 +117,30 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
         .filter(Objects::nonNull);
   }
 
+  private void onSkippedProfile(
+      String artifactKey, String reason, org.apache.maven.model.Profile profile) {
+    getLogger()
+        .info(
+            "["
+                + artifactKey
+                + "] Skipping profile "
+                + reason
+                + ": "
+                + profile.getId()
+                + " ("
+                + profile.getLocation("")
+                + ")");
+  }
+
   @Override
   public Stream<Profile> lookupAvailableProfiles(
       MavenSession mavenSession, Dependencies dependencies) {
-    final ArtifactHandler pomArtifacthandler = artifactHandlerManager.getArtifactHandler("pom");
     getLogger().debug("Collecting project artifacts...");
-    Collection<? extends Artifact> projectArtifacts =
-        dependencies.stream()
-            .map(
-                d ->
-                    new DefaultArtifact(
-                        d.getArtifactIdentifier().groupId,
-                        d.getArtifactIdentifier().artifactId,
-                        d.getVersion(),
-                        null,
-                        "pom",
-                        null,
-                        pomArtifacthandler))
-            .collect(Collectors.toMap(ArtifactUtils::key, a -> a, (a, b) -> a))
-            .values();
+    final Collection<? extends Artifact> projectArtifacts = gatherProjectArtifacts(dependencies);
     Map<ActivationKey, Profile> resultProfiles = new HashMap<>();
     for (Artifact artifact : projectArtifacts) {
-      getLogger().debug("Collecting profiles for artifact " + ArtifactUtils.key(artifact) + "...");
+      final String projectArtifactKey = ArtifactUtils.key(artifact);
+      getLogger().debug("[" + projectArtifactKey + "] Collecting profiles...");
       try {
         ProjectBuildingRequest projectBuildingRequest =
             new DefaultProjectBuildingRequest(mavenSession.getProjectBuildingRequest());
@@ -150,16 +153,16 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
               final org.apache.maven.model.Activation profileActivation = profile.getActivation();
               if (profileActivation != null) {
                 if (profileActivation.getJdk() != null) {
-                  getLogger().info("Skipping profile JDK dependent (unsupported)");
+                  onSkippedProfile(projectArtifactKey, "JDK dependent (unsupported)", profile);
                   continue;
                 }
                 if (profileActivation.getFile() != null) {
-                  getLogger().info("Skipping profile file dependent (unsupported)");
+                  onSkippedProfile(projectArtifactKey, "file dependent (unsupported)", profile);
                   continue;
                 }
                 ActivationKey activationKey = new ActivationKey(profileActivation);
                 if (activationKey.isEmpty()) {
-                  getLogger().info("Skipping empty activation profile.");
+                  onSkippedProfile(projectArtifactKey, "with empty activation", profile);
                   continue;
                 }
                 if (resultProfiles.containsKey(activationKey)) { // already known
@@ -175,10 +178,31 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
           project = project.getParent();
         }
       } catch (ProjectBuildingException e) {
-        getLogger().error("Failed to build project for artifact " + artifact + ". Ignoring.", e);
+        getLogger().error("[" + projectArtifactKey + "] Failed to build project. Ignoring.", e);
       }
     }
     return resultProfiles.values().stream();
+  }
+
+  private Collection<? extends Artifact> gatherProjectArtifacts(Dependencies dependencies) {
+    final ArtifactHandler pomArtifacthandler = artifactHandlerManager.getArtifactHandler("pom");
+    return dependencies.stream()
+        .map(
+            d -> {
+              final ArtifactIdentifier artifactIdentifier = d.getArtifactIdentifier();
+              return new DefaultArtifact(
+                  artifactIdentifier.groupId,
+                  artifactIdentifier.artifactId,
+                  d.getVersion(),
+                  null,
+                  "pom",
+                  null,
+                  pomArtifacthandler);
+            })
+        // there may be duplicate project entries so we must use the overload which allows to select
+        // which to keep
+        .collect(Collectors.toMap(ArtifactUtils::key, a -> a, (a, b) -> a))
+        .values();
   }
 
   @Override
