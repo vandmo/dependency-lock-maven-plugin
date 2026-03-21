@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelProblemCollector;
@@ -21,13 +28,20 @@ import org.apache.maven.model.profile.DefaultProfileActivationContext;
 import org.apache.maven.model.profile.ProfileActivationContext;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.DefaultProjectBuildingRequest;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuilder;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.rtinfo.RuntimeInformation;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystemSession;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.ProfileUtils;
+import se.vandmo.dependencylock.maven.mojos.model.Activation;
 import se.vandmo.dependencylock.maven.mojos.model.IActivation;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
@@ -41,11 +55,20 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
 
   private final RuntimeInformation runtimeInformation;
 
+  private final ProjectBuilder projectBuilder;
+
+  private final ArtifactHandlerManager artifactHandlerManager;
+
   @Inject
   public ProfileHandlerImpl(
-      ProfileSelector profileSelector, RuntimeInformation runtimeInformation) {
+      ProfileSelector profileSelector,
+      RuntimeInformation runtimeInformation,
+      ProjectBuilder projectBuilder,
+      ArtifactHandlerManager artifactHandlerManager) {
     this.profileSelector = profileSelector;
     this.runtimeInformation = runtimeInformation;
+    this.projectBuilder = projectBuilder;
+    this.artifactHandlerManager = artifactHandlerManager;
   }
 
   private ProfileActivationContext buildProfileAcivationContext(
@@ -91,6 +114,71 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
               return result;
             })
         .filter(Objects::nonNull);
+  }
+
+  @Override
+  public Stream<Profile> lookupAvailableProfiles(
+      MavenSession mavenSession, Dependencies dependencies) {
+    final ArtifactHandler pomArtifacthandler = artifactHandlerManager.getArtifactHandler("pom");
+    getLogger().debug("Collecting project artifacts...");
+    Collection<? extends Artifact> projectArtifacts =
+        dependencies.stream()
+            .map(
+                d ->
+                    new DefaultArtifact(
+                        d.getArtifactIdentifier().groupId,
+                        d.getArtifactIdentifier().artifactId,
+                        d.getVersion(),
+                        null,
+                        "pom",
+                        null,
+                        pomArtifacthandler))
+            .collect(Collectors.toMap(ArtifactUtils::key, a -> a, (a, b) -> a))
+            .values();
+    Map<ActivationKey, Profile> resultProfiles = new HashMap<>();
+    for (Artifact artifact : projectArtifacts) {
+      getLogger().debug("Collecting profiles for artifact " + ArtifactUtils.key(artifact) + "...");
+      try {
+        ProjectBuildingRequest projectBuildingRequest =
+            new DefaultProjectBuildingRequest(mavenSession.getProjectBuildingRequest());
+        ProjectBuildingResult result = projectBuilder.build(artifact, true, projectBuildingRequest);
+        MavenProject project = result.getProject();
+        while (project != null) {
+          final List<org.apache.maven.model.Profile> profiles = project.getModel().getProfiles();
+          if (profiles != null && !profiles.isEmpty()) {
+            for (org.apache.maven.model.Profile profile : profiles) {
+              final org.apache.maven.model.Activation profileActivation = profile.getActivation();
+              if (profileActivation != null) {
+                if (profileActivation.getJdk() != null) {
+                  getLogger().info("Skipping profile JDK dependent (unsupported)");
+                  continue;
+                }
+                if (profileActivation.getFile() != null) {
+                  getLogger().info("Skipping profile file dependent (unsupported)");
+                  continue;
+                }
+                ActivationKey activationKey = new ActivationKey(profileActivation);
+                if (activationKey.isEmpty()) {
+                  getLogger().info("Skipping empty activation profile.");
+                  continue;
+                }
+                if (resultProfiles.containsKey(activationKey)) { // already known
+                  continue;
+                }
+                Profile profileEntry = new Profile();
+                profileEntry.setId(profile.getId());
+                profileEntry.setActivation(new Activation(activationKey));
+                resultProfiles.put(activationKey, profileEntry);
+              }
+            }
+          }
+          project = project.getParent();
+        }
+      } catch (ProjectBuildingException e) {
+        getLogger().error("Failed to build project for artifact " + artifact + ". Ignoring.", e);
+      }
+    }
+    return resultProfiles.values().stream();
   }
 
   @Override

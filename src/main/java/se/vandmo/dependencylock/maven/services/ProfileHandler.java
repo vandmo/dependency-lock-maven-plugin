@@ -9,6 +9,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystemSession;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 /** Implementations of this interface shall be able to handle all profile-related logics. */
@@ -48,4 +49,14 @@ public interface ProfileHandler {
       Collection<Profile> profiles,
       Map<Profile, Function<RepositorySystemSession, RepositorySystemSession>> profilingSessions)
       throws MojoExecutionException;
+
+  /**
+   * Extracts from all the given dependencies all the profiles which may be emulated.
+   *
+   * @param mavenSession the current maven session
+   * @param dependencies the dependencies to analyze
+   * @return a stream containing all the profiles which may be involved in the given dependencies
+   */
+  Stream<Profile> lookupAvailableProfiles(
+      MavenSession mavenSession, Dependencies dependencies);
 }

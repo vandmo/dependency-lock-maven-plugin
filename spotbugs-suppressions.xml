@@ -67,4 +67,9 @@
     <Method name="getProfile" />
     <Bug pattern="EI_EXPOSE_REP" />
   </Match>
+  <Match>
+    <Class name="se.vandmo.dependencylock.maven.services.ProfileHandlerImpl" />
+    <Method name="&lt;init&gt;" />
+    <Bug pattern="EI_EXPOSE_REP2" />
+  </Match>
 </FindBugsFilter>

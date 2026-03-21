@@ -147,6 +147,12 @@ Skips the check. Also available as user property `dependencyLock.skipLock`.
 #### lockBuild
 Locks the build artifacts. Parents, plugins and extensions. Also available as user property `dependencyLock.lockBuild`.
 
+#### profiles
+Configures the maven profiles which are to be taken into account for dependencies sets.
+
+### list-profiles
+Dumps the list of available profiles which could be used based on current project dependencies.
+
 Notes
 -----
 ### Dependabot Updates won't work
