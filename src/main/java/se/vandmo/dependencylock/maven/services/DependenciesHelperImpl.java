@@ -19,6 +19,7 @@ import org.eclipse.aether.RepositorySystemSession;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Filters;
 
+/** Implementation of {@link DependenciesHelper} injected via Guice framework. */
 @Named
 @Singleton
 public class DependenciesHelperImpl implements DependenciesHelper {

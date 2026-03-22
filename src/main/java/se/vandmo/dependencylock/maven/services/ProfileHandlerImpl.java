@@ -48,6 +48,11 @@ import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
+/**
+ * Implementation of {@link ProfileHandler} injected via Guice framework.
+ *
+ * @since 1.4.0
+ */
 @Named
 @Singleton
 public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHandler {

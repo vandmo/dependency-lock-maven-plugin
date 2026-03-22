@@ -12,7 +12,11 @@ import org.eclipse.aether.RepositorySystemSession;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
-/** Implementations of this interface shall be able to handle all profile-related logics. */
+/**
+ * Implementations of this interface shall be able to handle all profile-related logics.
+ *
+ * @since 1.4.0
+ */
 public interface ProfileHandler {
 
   /**

@@ -9,12 +9,19 @@ import org.apache.maven.shared.utils.Os;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 
-/** */
+/** Helper class for profile related logics. */
 public final class ProfileUtils {
   private ProfileUtils() {
     super();
   }
 
+  /**
+   * Computes a map of the system properties to enforce to fulfill the given os activation clause.
+   *
+   * @param os the activation clause to emulate, must never be <code>null</code>
+   * @return the corresponding map of properties to enforce
+   * @throws MojoExecutionException if one of the specified os parameter's clauses is not supported
+   */
   public static Map<String, String> emulateSystemProperties(IActivationOS os)
       throws MojoExecutionException {
     Map<String, String> emulatedValues = new HashMap<>();
@@ -100,6 +107,14 @@ public final class ProfileUtils {
     return emulatedValues;
   }
 
+  /**
+   * Computes a map of the system properties to enforce to fulfill the given property activation
+   * clause.
+   *
+   * @param property the activation clause to emulate, must never be <code>null</code>
+   * @return the corresponding map of properties to enforce
+   * @throws MojoExecutionException if the specified property parameter is invalid
+   */
   public static Map<String, String> emulateSystemProperties(IActivationProperty property)
       throws MojoExecutionException {
     Map<String, String> emulatedValues = new HashMap<>();
@@ -114,6 +129,12 @@ public final class ProfileUtils {
     return emulatedValues;
   }
 
+  /**
+   * Maps the given activation clause to a Maven activation object equivalent.
+   *
+   * @param src the activation clause to map, must never be <code>null</code>
+   * @return the corresponding Maven profile equivalent object
+   */
   public static Activation toMavenActivation(
       se.vandmo.dependencylock.maven.mojos.model.IActivation src) {
     final org.apache.maven.model.Activation emulatedActivation =

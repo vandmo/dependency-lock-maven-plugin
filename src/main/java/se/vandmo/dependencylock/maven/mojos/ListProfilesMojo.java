@@ -19,6 +19,12 @@ import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
 import se.vandmo.dependencylock.maven.services.ProfileHandler;
 
+/**
+ * List all available profiles for the current project's dependencies based on their existing
+ * profiles.
+ *
+ * @since 1.4.0
+ */
 @Mojo(name = "list-profiles", requiresDependencyResolution = TEST, threadSafe = true)
 public class ListProfilesMojo extends AbstractMojo {
   private final ProfileHandler profileHandler;
