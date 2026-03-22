@@ -32,7 +32,7 @@ import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
 import se.vandmo.dependencylock.maven.ProfileEntry;
-import se.vandmo.dependencylock.maven.Profiled;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class LockFilePom implements Lockfile {
 
@@ -79,7 +79,7 @@ public final class LockFilePom implements Lockfile {
       PomMinimums pomMinimums, LockedProject lockedProject) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", lockedProject.dependencies.getDefaultEntities());
+    dataModel.put("dependencies", lockedProject.dependencies.getSharedDependencies());
     lockedProject.parents.ifPresent(parents -> dataModel.put("parents", parents));
     lockedProject.plugins.ifPresent(plugins -> dataModel.put("plugins", plugins));
     lockedProject.extensions.ifPresent(extensions -> dataModel.put("extensions", extensions));
@@ -176,7 +176,8 @@ public final class LockFilePom implements Lockfile {
                             () ->
                                 new InvalidPomLockFile(
                                     "Missing extensions section in extensions lock file")));
-    return LockedProject.from(new Profiled(dependencies, profiled), parents, plugins, extensions);
+    return LockedProject.from(
+        new ProfiledDependencies(dependencies, profiled), parents, plugins, extensions);
   }
 
   private Optional<PomLockFile.Contents> maybeReadContents(File file, boolean requireScope)

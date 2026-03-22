@@ -8,25 +8,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Instances of this class shall represent entries which are profiled based on a given platform
- * identifier.
+ * Instances of this class shall represent dependencies which are profiled based on a given platform
+ * activation logic.
  */
-public class Profiled {
-  private final Dependencies defaultEntities;
+public class ProfiledDependencies {
+  private final Dependencies sharedDependencies;
   private final Collection<ProfileEntry> profileEntries;
 
-  public Profiled(Dependencies defaultEntities) {
-    this(defaultEntities, Collections.emptyList());
+  public ProfiledDependencies(Dependencies sharedDependencies) {
+    this(sharedDependencies, Collections.emptyList());
   }
 
-  public Profiled(Dependencies defaultEntities, Collection<ProfileEntry> profileEntries) {
-    this.defaultEntities = Objects.requireNonNull(defaultEntities, "defaultArtifacts == null");
+  public ProfiledDependencies(
+      Dependencies sharedDependencies, Collection<ProfileEntry> profileEntries) {
+    this.sharedDependencies =
+        Objects.requireNonNull(sharedDependencies, "defaultArtifacts == null");
     this.profileEntries =
         new ArrayList<>(Objects.requireNonNull(profileEntries, "profileEntries == null"));
   }
 
-  public Dependencies getDefaultEntities() {
-    return this.defaultEntities;
+  public Dependencies getSharedDependencies() {
+    return this.sharedDependencies;
   }
 
   public Stream<ProfileEntry> profileEntries() {
@@ -35,7 +37,7 @@ public class Profiled {
 
   public Stream<Artifact> artifacts() {
     return Stream.concat(
-            defaultEntities.artifacts(),
+            sharedDependencies.artifacts(),
             profileEntries.stream()
                 .map(ProfileEntry::getDependencies)
                 .flatMap(LockableEntitiesWithArtifact::artifacts))
@@ -49,7 +51,7 @@ public class Profiled {
    * @return a stream of all entities set which should be managed
    */
   public Stream<Dependencies> forProfiles(String[] profileIds) {
-    Stream<Dependencies> result = Stream.of(this.defaultEntities);
+    Stream<Dependencies> result = Stream.of(this.sharedDependencies);
     if (profileIds.length != 0) {
       Collection<String> profileIdsSet = Stream.of(profileIds).collect(Collectors.toSet());
       result =

@@ -78,7 +78,7 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
         LockedDependencies.from(
                 Dependencies.merge(
                     Stream.concat(
-                        Stream.of(lockedProject.dependencies.getDefaultEntities()),
+                        Stream.of(lockedProject.dependencies.getSharedDependencies()),
                         lockedProject
                             .dependencies
                             .profileEntries()

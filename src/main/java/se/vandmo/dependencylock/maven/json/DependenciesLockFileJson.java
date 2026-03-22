@@ -10,12 +10,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import java.util.stream.Stream;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.Profiled;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class DependenciesLockFileJson {
   private static final String V3 = "3";
@@ -40,22 +39,14 @@ public final class DependenciesLockFileJson {
     }
   }
 
-  public void write(Profiled dependencies) {
+  public void write(ProfiledDependencies dependencies) {
     JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
     ObjectNode json = jsonNodeFactory.objectNode();
     json.put("version", V3);
-    json.set(
-        "artifacts",
-        JsonUtils.buildArtifactsJson(
-            Stream.concat(
-                dependencies.getDefaultEntities().artifacts(),
-                dependencies
-                    .profileEntries()
-                    .flatMap(entry -> entry.getDependencies().artifacts())),
-            jsonNodeFactory));
+    json.set("artifacts", JsonUtils.buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
     json.set(
         "dependencies",
-        JsonUtils.buildDependenciesJson(dependencies.getDefaultEntities(), jsonNodeFactory));
+        JsonUtils.buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
     json.set(
         "profiles", JsonUtils.buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
     try (Writer writer = dependenciesLockFile.writer()) {

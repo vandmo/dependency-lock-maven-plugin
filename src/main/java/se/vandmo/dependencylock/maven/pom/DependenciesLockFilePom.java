@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.PomMinimums;
-import se.vandmo.dependencylock.maven.Profiled;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class DependenciesLockFilePom {
 
@@ -37,7 +37,7 @@ public final class DependenciesLockFilePom {
         requireNonNull(dependenciesLockFile), requireNonNull(pomMinimums));
   }
 
-  public void write(Profiled projectDependencies) {
+  public void write(ProfiledDependencies projectDependencies) {
     Configuration cfg = createConfiguration();
     try {
       Template template = cfg.getTemplate("pom.ftlx");
@@ -50,10 +50,10 @@ public final class DependenciesLockFilePom {
   }
 
   private static Map<String, Object> makeDataModel(
-      PomMinimums pomMinimums, Profiled projectDependencies) {
+      PomMinimums pomMinimums, ProfiledDependencies projectDependencies) {
     Map<String, Object> dataModel = new HashMap<>();
     dataModel.put("pom", pomMinimums);
-    dataModel.put("dependencies", projectDependencies.getDefaultEntities());
+    dataModel.put("dependencies", projectDependencies.getSharedDependencies());
     dataModel.put(
         "profiles",
         projectDependencies

@@ -121,22 +121,22 @@ public final class LockMojo extends AbstractDependencyLockMojo {
       Collection<Profile> profiles = getDependenciesProfiles();
       DependenciesLockFileJson lockFileJson = DependenciesLockFileJson.from(lockFile);
       if (null == profiles || profiles.isEmpty()) {
-        lockFileJson.write(filteredProjectDependencies().getDefaultEntities());
+        lockFileJson.write(filteredProjectDependencies().getSharedDependencies());
       } else {
         lockFileJson.write(filteredProjectDependencies());
       }
     }
   }
 
-  private Profiled filteredProjectDependencies() throws MojoExecutionException {
-    Profiled projectDependencies = projectDependencies();
+  private ProfiledDependencies filteredProjectDependencies() throws MojoExecutionException {
+    ProfiledDependencies projectDependencies = projectDependencies();
     if (!markIgnoredAsIgnored) {
       return projectDependencies;
     }
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
-    return new Profiled(
-        applyFiltersToDependencies(projectDependencies.getDefaultEntities(), filters),
+    return new ProfiledDependencies(
+        applyFiltersToDependencies(projectDependencies.getSharedDependencies(), filters),
         projectDependencies
             .profileEntries()
             .map(
@@ -155,7 +155,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
             .collect(toList()));
   }
 
-  private Profiled projectDependencies() throws MojoExecutionException {
+  private ProfiledDependencies projectDependencies() throws MojoExecutionException {
     final Filters filters = filters();
     final MavenProject project = mavenProject();
     final RepositorySystemSession repositorySession = mavenSession().getRepositorySession();
@@ -212,7 +212,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
       byProfile.put(enabledProfile, currentProjectDependencies);
     }
 
-    return new Profiled(
+    return new ProfiledDependencies(
         Dependencies.fromDependencies(sharedDependencies),
         byProfile.entrySet().stream()
             .sorted(Comparator.comparing(entry -> entry.getKey().getId()))

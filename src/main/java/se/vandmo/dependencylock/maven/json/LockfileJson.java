@@ -39,7 +39,7 @@ import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.ProfileEntry;
-import se.vandmo.dependencylock.maven.Profiled;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class LockfileJson implements Lockfile {
 
@@ -84,7 +84,8 @@ public final class LockfileJson implements Lockfile {
           JsonUtils.loadDependenciesFromJson(JsonUtils.getDependencies(json), artifactMap);
       final Collection<ProfileEntry> dependenciesByProfileId =
           JsonUtils.loadProfilesFromJson(json, artifactMap);
-      final Profiled dependencies = new Profiled(projectDependencies, dependenciesByProfileId);
+      final ProfiledDependencies dependencies =
+          new ProfiledDependencies(projectDependencies, dependenciesByProfileId);
       return LockedProject.from(dependencies, parents, plugins, extensions);
 
     } else {
@@ -245,7 +246,7 @@ public final class LockfileJson implements Lockfile {
     json.set(
         "dependencies",
         JsonUtils.buildDependenciesJson(
-            contents.dependencies.getDefaultEntities(), jsonNodeFactory));
+            contents.dependencies.getSharedDependencies(), jsonNodeFactory));
     json.set(
         "profiles",
         JsonUtils.buildProfilesJson(contents.dependencies.profileEntries(), jsonNodeFactory));
