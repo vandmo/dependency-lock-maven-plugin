@@ -2,6 +2,7 @@ package se.vandmo.dependencylock.maven.services;
 
 import java.util.Objects;
 import org.apache.maven.model.ActivationOS;
+import se.vandmo.dependencylock.maven.lang.Strings;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 
 /**
@@ -25,11 +26,10 @@ final class ActivationOSKey implements IActivationOS {
   }
 
   boolean isEmpty() {
-    return isEmpty(family) && isEmpty(arch) && isEmpty(version) && isEmpty(name);
-  }
-
-  private static boolean isEmpty(String value) {
-    return value == null || value.isEmpty();
+    return Strings.isBlank(family)
+        && Strings.isBlank(arch)
+        && Strings.isBlank(version)
+        && Strings.isBlank(name);
   }
 
   @Override
