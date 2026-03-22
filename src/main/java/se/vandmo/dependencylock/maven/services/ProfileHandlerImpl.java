@@ -129,12 +129,11 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
             "["
                 + artifactKey
                 + "] Skipping profile "
-                + reason
-                + ": "
                 + profile.getId()
                 + " ("
                 + profile.getLocation("")
-                + ")");
+                + "): "
+                + reason);
   }
 
   @Override
