@@ -753,6 +753,7 @@
           <artifactId>maven-invoker-plugin</artifactId>
           <version>${maven-invoker-plugin.version}</version>
           <configuration>
+            <addTestClassPath>true</addTestClassPath>
             <setupIncludes>
               <setupInclude>setup/*/pom.xml</setupInclude>
             </setupIncludes>
