@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    concurrency:
+      group: ${{ github.ref }}-${{ github.sha }}-maven
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
