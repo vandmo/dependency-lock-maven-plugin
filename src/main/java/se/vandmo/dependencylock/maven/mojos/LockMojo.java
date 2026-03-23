@@ -30,6 +30,9 @@ import se.vandmo.dependencylock.maven.pom.LockFilePom;
 @Mojo(name = "lock", threadSafe = true)
 public final class LockMojo extends AbstractDependencyLockMojo {
 
+  /**
+   * If true, entries which are ignored according to the filters parameter will have their integrity flagged as ignored.
+   */
   @Parameter(property = "dependencyLock.markIgnoredAsIgnored")
   private boolean markIgnoredAsIgnored = false;
 
@@ -85,7 +88,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     if (isLockBuild()) {
       return Project.from(
           filteredProjectDependencies(),
-          Parents.from(mavenProject()),
+          filteredParents(),
           filteredProjectPlugins(),
           filteredProjectExtensions());
     }
@@ -168,6 +171,18 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     resultingArtifact.setScope(dependency.getScope());
     resultingArtifact.setOptional(dependency.isOptional());
     return resultingArtifact;
+  }
+  
+  private Parents filteredParents() {
+    Parents parents = Parents.from(mavenProject());
+    if (!markIgnoredAsIgnored) {
+      return parents;
+    }
+    getLog().info("Marking ignored version and integrity as ignored in lock file");
+    Filters filters = filters();
+    return new Parents(
+        parents.stream().map(parent -> modify(parent, filters)).collect(toList())
+    );
   }
 
   private Plugins filteredProjectPlugins() {
