@@ -16,7 +16,7 @@ jobs:
           cache: 'maven'
 
       - run: >
-          mvn --batch-mode
+          ./mvnw --batch-mode
           --update-snapshots
           --activate-profiles analyze,its
           verify
@@ -56,7 +56,7 @@ jobs:
             core.setOutput('no-dash', no_dash)
 
       - run: >
-          mvn --batch-mode
+          ./mvnw --batch-mode
           versions:set
           --define newVersion=${{ steps.find-version.outputs.no-dash }}
 
