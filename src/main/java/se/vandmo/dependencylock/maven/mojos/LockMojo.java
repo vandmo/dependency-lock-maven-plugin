@@ -1,7 +1,6 @@
 package se.vandmo.dependencylock.maven.mojos;
 
 import static java.util.Locale.ROOT;
-import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +30,8 @@ import se.vandmo.dependencylock.maven.pom.LockFilePom;
 public final class LockMojo extends AbstractDependencyLockMojo {
 
   /**
-   * If true, entries which are ignored according to the filters parameter will have their integrity flagged as ignored.
+   * If true, entries which are ignored according to the filters parameter will have their integrity
+   * flagged as ignored.
    */
   @Parameter(property = "dependencyLock.markIgnoredAsIgnored")
   private boolean markIgnoredAsIgnored = false;
@@ -85,14 +85,22 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   }
 
   Project project() throws MojoExecutionException {
+    Project result;
     if (isLockBuild()) {
-      return Project.from(
-          filteredProjectDependencies(),
-          filteredParents(),
-          filteredProjectPlugins(),
-          filteredProjectExtensions());
+      result =
+          Project.from(
+              projectDependencies(),
+              Parents.from(mavenProject()),
+              projectPlugins(),
+              projectExtensions());
+    } else {
+      result = Project.from(projectDependencies());
     }
-    return Project.from(filteredProjectDependencies());
+    if (!markIgnoredAsIgnored) {
+      return result;
+    }
+    getLog().info("Marking ignored version and integrity as ignored in lock file");
+    return FilterUtils.apply(filters(), result);
   }
 
   private void dumpJsonLockfile(LockFileAccessor lockFile) throws MojoExecutionException {
@@ -115,8 +123,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     }
     getLog().info("Marking ignored version and integrity as ignored in lock file");
     Filters filters = filters();
-    return Dependencies.fromDependencies(
-        projectDependencies.stream().map(artifact -> modify(artifact, filters)).collect(toList()));
+    return FilterUtils.apply(filters, projectDependencies);
   }
 
   Dependencies projectDependencies() throws MojoExecutionException {
@@ -172,79 +179,5 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     resultingArtifact.setOptional(dependency.isOptional());
     return resultingArtifact;
   }
-  
-  private Parents filteredParents() {
-    Parents parents = Parents.from(mavenProject());
-    if (!markIgnoredAsIgnored) {
-      return parents;
-    }
-    getLog().info("Marking ignored version and integrity as ignored in lock file");
-    Filters filters = filters();
-    return new Parents(
-        parents.stream().map(parent -> modify(parent, filters)).collect(toList())
-    );
-  }
 
-  private Plugins filteredProjectPlugins() {
-    Plugins projectPlugins = projectPlugins();
-    if (!markIgnoredAsIgnored) {
-      return projectPlugins;
-    }
-    getLog().info("Marking ignored version and integrity as ignored in lock file");
-    Filters filters = filters();
-    return Plugins.from(
-        projectPlugins.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
-  }
-
-  private Extensions filteredProjectExtensions() {
-    Extensions projectExtensions = projectExtensions();
-    if (!markIgnoredAsIgnored) {
-      return projectExtensions;
-    }
-    getLog().info("Marking ignored version and integrity as ignored in lock file");
-    Filters filters = filters();
-    return Extensions.from(
-        projectExtensions.stream().map(plugin -> modify(plugin, filters)).collect(toList()));
-  }
-
-  private static <T extends LockableEntity<T>> T modify(T lockableEntity, Filters filters) {
-    T result = lockableEntity;
-    result = ignoreVersionIfRelevant(result, filters);
-    result = ignoreIntegrityIfRelevant(result, filters);
-    return result;
-  }
-
-  private static <T extends LockableEntity<T>> T ignoreIntegrityIfRelevant(
-      T lockableEntity, Filters filters) {
-    if (filters
-        .integrityConfiguration(lockableEntity)
-        .equals(DependencySetConfiguration.Integrity.ignore)) {
-      return lockableEntity.withIntegrity(Integrity.Ignored());
-    }
-    return lockableEntity;
-  }
-
-  private static <T extends LockableEntity<T>> T ignoreVersionIfRelevant(
-      T lockableEntity, Filters filters) {
-    if (filters
-        .versionConfiguration(lockableEntity)
-        .type
-        .equals(DependencySetConfiguration.Version.ignore)) {
-      return lockableEntity.withVersion("ignored");
-    }
-    return lockableEntity;
-  }
-
-  private Plugin modify(Plugin plugin, Filters filters) {
-    Plugin result = plugin;
-    result = ignoreVersionIfRelevant(result, filters);
-    result = ignoreIntegrityIfRelevant(result, filters);
-    result =
-        result.withDependencies(
-            Artifacts.fromArtifacts(
-                result.dependencies.stream()
-                    .map(artifact -> modify(artifact, filters))
-                    .collect(toList())));
-    return result;
-  }
 }
