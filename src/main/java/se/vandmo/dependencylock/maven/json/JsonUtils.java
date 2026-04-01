@@ -2,6 +2,8 @@ package se.vandmo.dependencylock.maven.json;
 
 import static java.lang.String.format;
 import static java.util.Locale.ROOT;
+
+import se.vandmo.dependencylock.maven.lang.Strings;
 import static se.vandmo.dependencylock.maven.lang.Strings.isBlank;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
@@ -156,9 +158,17 @@ public final class JsonUtils {
   private static JsonNode buildActivationNode(
       IActivation activation, JsonNodeFactory jsonNodeFactory) {
     final ObjectNode result = jsonNodeFactory.objectNode();
-    result.set("os", buildActivationOsNode(activation.getOs(), jsonNodeFactory));
-    result.set("property", buildActivationPropertyNode(activation.getProperty(), jsonNodeFactory));
+    addNodeIfNotNull(result, "os", buildActivationOsNode(activation.getOs(), jsonNodeFactory));
+    addNodeIfNotNull(
+        result, "property", buildActivationPropertyNode(activation.getProperty(), jsonNodeFactory));
     return result;
+  }
+
+  private static void addNodeIfNotNull(ObjectNode node, String key, JsonNode value) {
+    if (value == null || value.isNull()) {
+      return;
+    }
+    node.set(key, value);
   }
 
   private static JsonNode buildActivationOsNode(
@@ -167,11 +177,18 @@ public final class JsonUtils {
       return jsonNodeFactory.nullNode();
     }
     final ObjectNode result = jsonNodeFactory.objectNode();
-    result.put("family", activationOS.getFamily());
-    result.put("name", activationOS.getName());
-    result.put("arch", activationOS.getArch());
-    result.put("version", activationOS.getVersion());
+    setPropertyIfNotBlank(result, "family", activationOS.getFamily());
+    setPropertyIfNotBlank(result, "name", activationOS.getName());
+    setPropertyIfNotBlank(result, "arch", activationOS.getArch());
+    setPropertyIfNotBlank(result, "version", activationOS.getVersion());
     return result;
+  }
+
+  private static void setPropertyIfNotBlank(ObjectNode node, String key, String value) {
+    if (Strings.isBlank(value)) {
+      return;
+    }
+    node.put(key, value);
   }
 
   private static JsonNode buildActivationPropertyNode(
@@ -180,8 +197,8 @@ public final class JsonUtils {
       return jsonNodeFactory.nullNode();
     }
     final ObjectNode result = jsonNodeFactory.objectNode();
-    result.put("name", activationProperty.getName());
-    result.put("value", activationProperty.getValue());
+    setPropertyIfNotBlank(result, "name", activationProperty.getName());
+    setPropertyIfNotBlank(result, "value", activationProperty.getValue());
     return result;
   }
 
@@ -257,8 +274,8 @@ public final class JsonUtils {
       return null;
     }
     ActivationProperty result = new ActivationProperty();
-    result.setName(activationPropertyNode.get("name").asText(null));
-    result.setValue(activationPropertyNode.get("value").asText(null));
+    result.setName(possiblyGetStringValue(activationPropertyNode, "name").orElse(null));
+    result.setValue(possiblyGetStringValue(activationPropertyNode, "value").orElse(null));
     return result;
   }
 
@@ -267,10 +284,10 @@ public final class JsonUtils {
       return null;
     }
     ActivationOS result = new ActivationOS();
-    result.setFamily(activationOSNode.get("family").asText(null));
-    result.setName(activationOSNode.get("name").asText(null));
-    result.setArch(activationOSNode.get("arch").asText(null));
-    result.setVersion(activationOSNode.get("version").asText(null));
+    result.setFamily(possiblyGetStringValue(activationOSNode, "family").orElse(null));
+    result.setName(possiblyGetStringValue(activationOSNode, "name").orElse(null));
+    result.setArch(possiblyGetStringValue(activationOSNode, "arch").orElse(null));
+    result.setVersion(possiblyGetStringValue(activationOSNode, "version").orElse(null));
     return result;
   }
 

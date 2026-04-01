@@ -45,12 +45,8 @@
     "id" : "mac",
     "activation" : {
       "os" : {
-        "family" : "mac",
-        "name" : null,
-        "arch" : null,
-        "version" : null
-      },
-      "property" : null
+        "family" : "mac"
+      }
     },
     "dependencies" : [ {
       "artifact" : "se.vandmo.testing:with-profiled-dependency:mac:jar:1.0",
@@ -61,12 +57,8 @@
     "id" : "windows",
     "activation" : {
       "os" : {
-        "family" : "windows",
-        "name" : null,
-        "arch" : null,
-        "version" : null
-      },
-      "property" : null
+        "family" : "windows"
+      }
     },
     "dependencies" : [ {
       "artifact" : "se.vandmo.testing:with-profiled-dependency:windows:jar:1.0",
