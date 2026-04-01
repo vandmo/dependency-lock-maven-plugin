@@ -7,18 +7,18 @@ import java.util.stream.Stream;
 import org.apache.maven.plugin.logging.Log;
 
 public final class LockedProject {
-  public final Dependencies dependencies;
+  public final ProfiledDependencies dependencies;
   public final Optional<Parents> parents;
   public final Optional<Plugins> plugins;
   public final Optional<Extensions> extensions;
 
   private LockedProject(
-      Dependencies dependencies,
+      ProfiledDependencies dependencies,
       Optional<Parents> parents,
       Optional<Plugins> plugins,
       Optional<Extensions> extensions) {
-    this.parents = parents;
     this.dependencies = dependencies;
+    this.parents = parents;
     this.plugins = plugins;
     this.extensions = extensions;
   }
@@ -33,6 +33,18 @@ public final class LockedProject {
       Optional<Parents> parents,
       Optional<Plugins> plugins,
       Optional<Extensions> extensions) {
+    return from(
+        new ProfiledDependencies(requireNonNull(dependencies)),
+        requireNonNull(parents),
+        requireNonNull(plugins),
+        requireNonNull(extensions));
+  }
+
+  public static LockedProject from(
+      ProfiledDependencies dependencies,
+      Optional<Parents> parents,
+      Optional<Plugins> plugins,
+      Optional<Extensions> extensions) {
     return new LockedProject(
         requireNonNull(dependencies),
         requireNonNull(parents),
@@ -41,6 +53,10 @@ public final class LockedProject {
   }
 
   public static LockedProject from(Dependencies dependencies) {
+    return from(new ProfiledDependencies(dependencies));
+  }
+
+  public static LockedProject from(ProfiledDependencies dependencies) {
     return new LockedProject(
         requireNonNull(dependencies), Optional.empty(), Optional.empty(), Optional.empty());
   }

@@ -2,6 +2,8 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.stream.Collectors.toList;
 
+import java.util.stream.Collectors;
+
 /** Helper methods for applying filters. */
 public final class FilterUtils {
   private FilterUtils() {}
@@ -21,6 +23,16 @@ public final class FilterUtils {
         src.parents.map(parents -> apply(filters, parents)),
         src.plugins.map(plugins -> apply(filters, plugins)),
         src.extensions.map(extensions -> apply(filters, extensions)));
+  }
+
+  public static ProfiledDependencies apply(Filters filters, ProfiledDependencies src) {
+    return new ProfiledDependencies(
+        apply(filters, src.getSharedDependencies()),
+        src.profileEntries()
+            .map(
+                entry ->
+                    new ProfileEntry(entry.getProfile(), apply(filters, entry.getDependencies())))
+            .collect(Collectors.toList()));
   }
 
   private static Plugins apply(Filters filters, Plugins src) {

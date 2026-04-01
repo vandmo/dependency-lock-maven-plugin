@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.xml.namespace.QName;
@@ -26,30 +28,40 @@ import org.codehaus.stax2.XMLEventReader2;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Artifacts;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
 import se.vandmo.dependencylock.maven.Plugin;
+import se.vandmo.dependencylock.maven.ProfileEntry;
+import se.vandmo.dependencylock.maven.mojos.model.Activation;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationProperty;
+import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 public final class PomLockFile {
 
   private static final String V2 = "2";
+  private static final String V3 = "3";
 
   public static final class Contents {
     public final Optional<List<Dependency>> dependencies;
+    public final Optional<Collection<ProfileEntry>> profiles;
     public final Optional<List<Plugin>> plugins;
     public final Optional<List<Extension>> extensions;
 
-    public Contents(List<Dependency> dependencies) {
-      this(Optional.of(dependencies), Optional.empty(), Optional.empty());
+    public Contents(List<Dependency> dependencies, Collection<ProfileEntry> profiles) {
+      this(Optional.of(dependencies), Optional.empty(), Optional.empty(), Optional.of(profiles));
     }
 
     public Contents(
         Optional<List<Dependency>> dependencies,
         Optional<List<Plugin>> plugins,
-        Optional<List<Extension>> extensions) {
+        Optional<List<Extension>> extensions,
+        Optional<Collection<ProfileEntry>> profiles) {
       this.dependencies = dependencies.map(d -> unmodifiableList(new ArrayList<>(d)));
       this.plugins = plugins;
       this.extensions = extensions;
+      this.profiles = profiles;
     }
   }
 
@@ -58,6 +70,16 @@ public final class PomLockFile {
   private static final QName LOCKFILE_VERSION = new QName(DEPENDENCY_LOCK_NS, "version");
   private static final QName PROJECT = new QName(POM_NS, "project");
   private static final QName DEPENDENCIES = new QName(POM_NS, "dependencies");
+  private static final QName ACTIVATION = new QName(POM_NS, "activation");
+  private static final QName OS = new QName(POM_NS, "os");
+  private static final QName ARCH = new QName(POM_NS, "arch");
+  private static final QName FAMILY = new QName(POM_NS, "family");
+  private static final QName PROPERTY = new QName(POM_NS, "property");
+  private static final QName NAME = new QName(POM_NS, "name");
+  private static final QName VALUE = new QName(POM_NS, "value");
+  private static final QName PROFILES = new QName(POM_NS, "profiles");
+  private static final QName PROFILE = new QName(POM_NS, "profile");
+  private static final QName ID = new QName(POM_NS, "id");
   private static final QName DEPENDENCY = new QName(POM_NS, "dependency");
   private static final QName EXTENSIONS = new QName(POM_NS, "extensions");
   private static final QName BUILD = new QName(POM_NS, "build");
@@ -143,7 +165,7 @@ public final class PomLockFile {
     if (null == dependencies) {
       throw new InvalidPomLockFile("Missing 'dependencies' element");
     }
-    return new Contents(dependencies);
+    return new Contents(dependencies, Collections.emptyList());
   }
 
   private static Contents fromProjectV2(XMLEventReader2 reader, boolean requireScope)
@@ -151,7 +173,9 @@ public final class PomLockFile {
     List<Dependency> dependencies = null;
     List<Plugin> plugins = null;
     List<Extension> extensions = null;
+    Collection<ProfileEntry> profiles = new ArrayList<>();
     boolean inBuild = false;
+    boolean inProfiles = false;
     boolean buildFound = false;
     while (reader.hasNextEvent()) {
       XMLEvent event = reader.nextEvent();
@@ -159,31 +183,41 @@ public final class PomLockFile {
         QName name = event.asStartElement().getName();
         if (name.equals(DEPENDENCIES)) {
           if (null != dependencies) {
-            throw new InvalidPomLockFile("Duplicate 'dependencies' element");
+            throw new InvalidPomLockFile(
+                "Unexpected 'dependencies' element found", event.getLocation());
           }
           dependencies = fromDependencies(reader, requireScope);
         } else if (name.equals(BUILD)) {
-          if (buildFound) {
-            throw new InvalidPomLockFile("Duplicate 'build' element");
+          if (inProfiles || buildFound) {
+            throw new InvalidPomLockFile("Unexpected 'build' element found.");
           }
           buildFound = true;
           inBuild = true;
-        } else if (inBuild && name.equals(EXTENSIONS)) {
-          if (null != extensions) {
-            throw new InvalidPomLockFile("Duplicate 'extensions' element");
+        } else if (name.equals(EXTENSIONS)) {
+          if (!inBuild || null != extensions) {
+            throw new InvalidPomLockFile("Unexpected 'extensions' element", event.getLocation());
           }
           extensions = fromExtensions(reader);
-        } else if (inBuild && name.equals(PLUGINS)) {
-          if (null != plugins) {
-            throw new InvalidPomLockFile("Duplicate 'plugins' element");
+        } else if (name.equals(PLUGINS)) {
+          if (!inBuild || null != plugins) {
+            throw new InvalidPomLockFile("Unexpected 'plugins' element", event.getLocation());
           }
           plugins = fromPlugins(reader);
+        } else if (name.equals(PROFILE)) {
+          if (!inProfiles) {
+            throw new InvalidPomLockFile("Unexpected 'profile' element", event.getLocation());
+          }
+          profiles.add(fromProfile(reader, requireScope));
+        } else if (name.equals(PROFILES)) {
+          inProfiles = true;
         } else {
           skipElement(reader);
         }
       } else if (event.isEndElement()) {
         if (event.asEndElement().getName().equals(BUILD)) {
           inBuild = false;
+        } else if (event.asEndElement().getName().equals(PROFILES)) {
+          inProfiles = false;
         }
       }
     }
@@ -191,9 +225,176 @@ public final class PomLockFile {
       return new Contents(
           Optional.ofNullable(dependencies),
           Optional.ofNullable(plugins),
-          Optional.ofNullable(extensions));
+          Optional.ofNullable(extensions),
+          Optional.of(profiles));
     }
-    return new Contents(dependencies);
+    return new Contents(dependencies, profiles);
+  }
+
+  private static ActivationOS fromActivationOs(XMLEventReader2 reader) throws XMLStreamException {
+    String arch = null;
+    String family = null;
+    String name = null;
+    String version = null;
+
+    while (reader.hasNextEvent()) {
+      XMLEvent event = reader.nextEvent();
+      if (event.isStartElement()) {
+        QName nodeName = event.asStartElement().getName();
+        if (nodeName.equals(ARCH)) {
+          if (arch != null) {
+            throw new InvalidPomLockFile("Duplicate arch node found");
+          }
+          arch = readSingleTextElement(reader);
+        } else if (nodeName.equals(FAMILY)) {
+          if (family != null) {
+            throw new InvalidPomLockFile("Duplicate family node found");
+          }
+          family = readSingleTextElement(reader);
+        } else if (nodeName.equals(NAME)) {
+          if (name != null) {
+            throw new InvalidPomLockFile("Duplicate name node found");
+          }
+          name = readSingleTextElement(reader);
+        } else if (nodeName.equals(VERSION)) {
+          if (version != null) {
+            throw new InvalidPomLockFile("Duplicate version node found");
+          }
+          version = readSingleTextElement(reader);
+        } else {
+          skipElement(reader);
+        }
+      } else if (event.isEndElement()) {
+        if (event.asEndElement().getName().equals(OS)) {
+          ActivationOS activationOs = new ActivationOS();
+          activationOs.setArch(arch);
+          activationOs.setFamily(family);
+          activationOs.setName(name);
+          activationOs.setVersion(version);
+          return activationOs;
+        }
+      }
+    }
+    throw new InvalidPomLockFile("Ended prematurely");
+  }
+
+  private static ActivationProperty fromActivationProperty(XMLEventReader2 reader)
+      throws XMLStreamException {
+    String name = null;
+    String value = null;
+    while (reader.hasNextEvent()) {
+      XMLEvent event = reader.nextEvent();
+      if (event.isStartElement()) {
+        QName nodeName = event.asStartElement().getName();
+        if (nodeName.equals(NAME)) {
+          if (name != null) {
+            throw new InvalidPomLockFile("Duplicate name node found");
+          }
+          name = readSingleTextElement(reader);
+        } else if (nodeName.equals(VALUE)) {
+          if (value != null) {
+            throw new InvalidPomLockFile("Duplicate value node found");
+          }
+          value = readSingleTextElement(reader);
+        } else {
+          skipElement(reader);
+        }
+      } else if (event.isEndElement()) {
+        if (event.asEndElement().getName().equals(PROPERTY)) {
+          if (name == null) {
+            throw new InvalidPomLockFile("Missing name node found", event.getLocation());
+          }
+          ActivationProperty result = new ActivationProperty();
+          result.setName(name);
+          result.setValue(value);
+          return result;
+        }
+      }
+    }
+    throw new InvalidPomLockFile("Ended prematurely");
+  }
+
+  private static Activation fromActivation(XMLEventReader2 reader) throws XMLStreamException {
+    ActivationOS os = null;
+    ActivationProperty property = null;
+    while (reader.hasNextEvent()) {
+      XMLEvent event = reader.nextEvent();
+      if (event.isStartElement()) {
+        QName nodeName = event.asStartElement().getName();
+        if (nodeName.equals(OS)) {
+          if (os != null) {
+            throw new InvalidPomLockFile("Duplicate os node found");
+          }
+          os = fromActivationOs(reader);
+        } else if (nodeName.equals(PROPERTY)) {
+          if (property != null) {
+            throw new InvalidPomLockFile("Duplicate property node found");
+          }
+          property = fromActivationProperty(reader);
+        } else {
+          skipElement(reader);
+        }
+      } else if (event.isEndElement()) {
+        if (event.asEndElement().getName().equals(ACTIVATION)) {
+          Activation result = new Activation();
+          result.setOs(os);
+          result.setProperty(property);
+          return result;
+        }
+      }
+    }
+    throw new InvalidPomLockFile("Ended prematurely");
+  }
+
+  private static ProfileEntry fromProfile(XMLEventReader2 reader, boolean requireScope)
+      throws XMLStreamException {
+    List<Dependency> dependencies = null;
+    String id = null;
+    Activation activation = null;
+
+    while (reader.hasNextEvent()) {
+      XMLEvent event = reader.nextEvent();
+      if (event.isStartElement()) {
+        QName name = event.asStartElement().getName();
+        if (name.equals(DEPENDENCIES)) {
+          if (null != dependencies) {
+            throw new InvalidPomLockFile(
+                "Unexpected 'dependencies' element found", event.getLocation());
+          }
+          dependencies = fromDependencies(reader, requireScope);
+        } else if (name.equals(ACTIVATION)) {
+          if (null != activation) {
+            throw new InvalidPomLockFile(
+                "Unexpected 'activation' element found", event.getLocation());
+          }
+          activation = fromActivation(reader);
+        } else if (name.equals(ID)) {
+          if (id != null) {
+            throw new InvalidPomLockFile("Unexpected profile id tag found.", event.getLocation());
+          }
+          id = readSingleTextElement(reader);
+        } else {
+          skipElement(reader);
+        }
+      } else if (event.isEndElement()) {
+        if (event.asEndElement().getName().equals(PROFILE)) {
+          if (null == activation) {
+            throw new InvalidPomLockFile("Missing activation element", event.getLocation());
+          }
+          if (null == id) {
+            throw new InvalidPomLockFile("Missing id element", event.getLocation());
+          }
+          if (null == dependencies) {
+            throw new InvalidPomLockFile("Missing dependencies", event.getLocation());
+          }
+          Profile profile = new Profile();
+          profile.setId(id);
+          profile.setActivation(activation);
+          return new ProfileEntry(profile, Dependencies.fromDependencies(dependencies));
+        }
+      }
+    }
+    throw new InvalidPomLockFile("Ended prematurely");
   }
 
   private static List<Dependency> fromDependencies(XMLEventReader2 rdr, boolean requireScope)

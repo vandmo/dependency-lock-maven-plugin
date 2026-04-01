@@ -11,11 +11,13 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class DependenciesLockFileJson {
+  private static final String V3 = "3";
 
   private final LockFileAccessor dependenciesLockFile;
 
@@ -27,9 +29,9 @@ public final class DependenciesLockFileJson {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile));
   }
 
-  public void write(LockedDependencies lockedDependencies) {
+  public void write(Dependencies projectDependencies) {
     ObjectNode json = JsonNodeFactory.instance.objectNode();
-    json.set("dependencies", asJson(lockedDependencies));
+    json.set("dependencies", asJson(projectDependencies, JsonNodeFactory.instance));
     try (Writer writer = dependenciesLockFile.writer()) {
       writeJson(writer, json);
     } catch (IOException e) {
@@ -37,16 +39,34 @@ public final class DependenciesLockFileJson {
     }
   }
 
-  private JsonNode asJson(LockedDependencies lockedDependencies) {
-    ArrayNode json = JsonNodeFactory.instance.arrayNode();
-    for (Dependency lockedDependency : lockedDependencies.lockedEntities) {
-      json.add(asJson(lockedDependency));
+  public void write(ProfiledDependencies dependencies) {
+    JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.put("version", V3);
+    json.set("artifacts", JsonUtils.buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
+    json.set(
+        "dependencies",
+        JsonUtils.buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
+    json.set(
+        "profiles", JsonUtils.buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
+    try (Writer writer = dependenciesLockFile.writer()) {
+      writeJson(writer, json);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private JsonNode asJson(
+      Iterable<Dependency> lockedDependencies, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode json = jsonNodeFactory.arrayNode();
+    for (Dependency lockedDependency : lockedDependencies) {
+      json.add(asJson(lockedDependency, jsonNodeFactory));
     }
     return json;
   }
 
-  private JsonNode asJson(Dependency lockedDependency) {
-    ObjectNode json = JsonNodeFactory.instance.objectNode();
+  private JsonNode asJson(Dependency lockedDependency, JsonNodeFactory jsonNodeFactory) {
+    ObjectNode json = jsonNodeFactory.objectNode();
     final ArtifactIdentifier artifactIdentifier = lockedDependency.getArtifactIdentifier();
     json.put("groupId", artifactIdentifier.groupId);
     json.put("artifactId", artifactIdentifier.artifactId);
