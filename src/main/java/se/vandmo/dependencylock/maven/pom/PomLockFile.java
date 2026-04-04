@@ -29,6 +29,8 @@ import se.vandmo.dependencylock.maven.Artifacts;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
 import se.vandmo.dependencylock.maven.Plugin;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class PomLockFile {
 
@@ -286,7 +288,7 @@ public final class PomLockFile {
       throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
-    String version = null;
+    VersionConstraint version = null;
     String type = null;
     String scope = null;
     String classifier = null;
@@ -302,7 +304,7 @@ public final class PomLockFile {
         } else if (name.equals(ARTIFACT_ID)) {
           artifactId = readSingleTextElement(rdr);
         } else if (name.equals(VERSION)) {
-          version = readSingleTextElement(rdr);
+          version = readVersionConstraint(rdr);
         } else if (name.equals(TYPE)) {
           type = readSingleTextElement(rdr);
         } else if (name.equals(SCOPE)) {
@@ -374,7 +376,7 @@ public final class PomLockFile {
   private static Artifact fromPluginDependency(XMLEventReader2 rdr) throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
-    String version = null;
+    VersionConstraint version = null;
     String type = null;
     String classifier = null;
     String integrity = null;
@@ -387,7 +389,7 @@ public final class PomLockFile {
         } else if (name.equals(ARTIFACT_ID)) {
           artifactId = readSingleTextElement(rdr);
         } else if (name.equals(VERSION)) {
-          version = readSingleTextElement(rdr);
+          version = readVersionConstraint(rdr);
         } else if (name.equals(TYPE)) {
           type = readSingleTextElement(rdr);
         } else if (name.equals(CLASSIFIER)) {
@@ -427,7 +429,7 @@ public final class PomLockFile {
   private static Extension fromExtension(XMLEventReader2 rdr) throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
-    String version = null;
+    VersionConstraint version = null;
     String integrity = null;
     while (rdr.hasNextEvent()) {
       XMLEvent event = rdr.nextEvent();
@@ -438,7 +440,7 @@ public final class PomLockFile {
         } else if (name.equals(ARTIFACT_ID)) {
           artifactId = readSingleTextElement(rdr);
         } else if (name.equals(VERSION)) {
-          version = readSingleTextElement(rdr);
+          version = readVersionConstraint(rdr);
         } else if (name.equals(INTEGRITY)) {
           integrity = readSingleTextElement(rdr);
         } else {
@@ -465,7 +467,11 @@ public final class PomLockFile {
   }
 
   private static void validateArtifactWithIntegrity(
-      String groupId, String artifactId, String version, String integrity, XMLEvent event) {
+      String groupId,
+      String artifactId,
+      VersionConstraint version,
+      String integrity,
+      XMLEvent event) {
     validateArtifact(groupId, artifactId, version, event);
     if (integrity == null) {
       throw new InvalidPomLockFile("Missing integrity", event.getLocation());
@@ -473,7 +479,7 @@ public final class PomLockFile {
   }
 
   private static void validateArtifact(
-      String groupId, String artifactId, String version, XMLEvent event) {
+      String groupId, String artifactId, VersionConstraint version, XMLEvent event) {
     if (groupId == null) {
       throw new InvalidPomLockFile("Missing groupId", event.getLocation());
     }
@@ -488,7 +494,7 @@ public final class PomLockFile {
   private static Plugin fromPlugin(XMLEventReader2 rdr) throws XMLStreamException {
     String groupId = null;
     String artifactId = null;
-    String version = null;
+    VersionConstraint version = null;
     String integrity = null;
     List<Artifact> artifacts = emptyList();
     while (rdr.hasNextEvent()) {
@@ -500,7 +506,7 @@ public final class PomLockFile {
         } else if (name.equals(ARTIFACT_ID)) {
           artifactId = readSingleTextElement(rdr);
         } else if (name.equals(VERSION)) {
-          version = readSingleTextElement(rdr);
+          version = readVersionConstraint(rdr);
         } else if (name.equals(INTEGRITY)) {
           integrity = readSingleTextElement(rdr);
         } else if (name.equals(DEPENDENCIES)) {
@@ -527,6 +533,18 @@ public final class PomLockFile {
       }
     }
     throw new InvalidPomLockFile("Ended prematurely");
+  }
+
+  private static VersionConstraint readVersionConstraint(XMLEventReader2 reader)
+      throws XMLStreamException {
+    String versionConstraint = readSingleTextElement(reader);
+    if ("${project.version}".equals(versionConstraint)) {
+      return VersionConstraints.useProjectVersion();
+    } else if ("ignored".equals(versionConstraint)) {
+      return VersionConstraints.ignoreVersion();
+    } else {
+      return VersionConstraints.version(versionConstraint);
+    }
   }
 
   private static String readSingleTextElement(XMLEventReader2 reader) throws XMLStreamException {

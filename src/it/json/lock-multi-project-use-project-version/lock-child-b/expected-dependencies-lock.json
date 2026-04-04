@@ -27,7 +27,7 @@
   }, {
     "groupId" : "se.vandmo.tests",
     "artifactId" : "lock-child-a",
-    "version" : "use-project-version",
+    "version" : "${project.version}",
     "scope" : "compile",
     "type" : "jar",
     "optional" : false,

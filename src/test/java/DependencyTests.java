@@ -4,6 +4,7 @@ import org.junit.Test;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Integrity;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
 
 public final class DependencyTests {
 
@@ -19,7 +20,14 @@ public final class DependencyTests {
 
   @Test(expected = NullPointerException.class)
   public void builder_version_null() {
-    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version(null);
+    Dependency.builder().artifactIdentifier(anArtifactIdentifier()).version((String) null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void builder_version_null_versionConstraint() {
+    Dependency.builder()
+        .artifactIdentifier(anArtifactIdentifier())
+        .version((VersionConstraint) null);
   }
 
   @Test(expected = NullPointerException.class)

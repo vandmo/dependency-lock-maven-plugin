@@ -45,7 +45,7 @@
     <dependency>
       <groupId>se.vandmo.tests</groupId>
       <artifactId>lock-child-a</artifactId>
-      <version>project-version</version>
+      <version>${project.version}</version>
       <type>jar</type>
       <scope>compile</scope>
       <optional>false</optional>

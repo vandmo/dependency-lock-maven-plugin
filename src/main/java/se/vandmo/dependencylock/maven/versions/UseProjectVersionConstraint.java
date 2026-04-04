@@ -27,7 +27,7 @@ final class UseProjectVersionConstraint extends VersionConstraint {
 
   @Override
   public String toString() {
-    return "project-version";
+    return "${project.version}";
   }
 
   private static final class ProjectVersionCompliancyChecker
