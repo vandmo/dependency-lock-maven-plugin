@@ -1,5 +1,9 @@
 package se.vandmo.dependencylock.maven;
 
+import java.util.Objects;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
+
 /**
  * Instances of this class shall represent a versioned entity which can be checked for integrity.
  */
@@ -9,13 +13,18 @@ public abstract class LockableEntity<T extends LockableEntity<T>> {
     super();
   }
 
-  public abstract T withVersion(String version);
+  public T withVersion(String version) {
+    return withVersion(
+        VersionConstraints.version(Objects.requireNonNull(version, "version == null")));
+  }
+
+  public abstract T withVersion(VersionConstraint version);
 
   public abstract T withIntegrity(Integrity integrity);
 
   public abstract Integrity getIntegrity();
 
-  public abstract String getVersion();
+  public abstract VersionConstraint getVersion();
 
   public abstract String getArtifactKey();
 

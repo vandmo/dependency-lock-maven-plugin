@@ -2,6 +2,8 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
 
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+
 /** Instances of this class shall represent a lockable entity which is attached to an artifact. */
 public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArtifact<T>>
     extends LockableEntity<T> {
@@ -17,7 +19,7 @@ public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArt
   public abstract T withIntegrity(Integrity integrity);
 
   @Override
-  public abstract T withVersion(String version);
+  public abstract T withVersion(VersionConstraint version);
 
   @Override
   public final Integrity getIntegrity() {
@@ -25,7 +27,7 @@ public abstract class LockableEntityWithArtifact<T extends LockableEntityWithArt
   }
 
   @Override
-  public final String getVersion() {
+  public final VersionConstraint getVersion() {
     return this.artifact.version;
   }
 

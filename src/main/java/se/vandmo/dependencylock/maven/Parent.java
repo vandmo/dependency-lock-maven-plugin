@@ -1,6 +1,8 @@
 package se.vandmo.dependencylock.maven;
 
 import java.util.Objects;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class Parent extends LockableEntityWithArtifact<Parent> implements Comparable<Parent> {
   private Parent(Artifact artifact) {
@@ -28,7 +30,8 @@ public final class Parent extends LockableEntityWithArtifact<Parent> implements 
     return Objects.hash(artifact);
   }
 
-  public Parent withVersion(String version) {
+  @Override
+  public Parent withVersion(VersionConstraint version) {
     return new Parent(this.artifact.withVersion(version));
   }
 
@@ -52,6 +55,10 @@ public final class Parent extends LockableEntityWithArtifact<Parent> implements 
     }
 
     public IntegrityBuilderStage version(String version) {
+      return version(VersionConstraints.version(version));
+    }
+
+    public IntegrityBuilderStage version(VersionConstraint version) {
       return new IntegrityBuilderStage(artifactBuilderStage.version(version));
     }
   }
