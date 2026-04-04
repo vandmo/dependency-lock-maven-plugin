@@ -10,8 +10,8 @@ import org.apache.commons.io.FileUtils
 
 projectDirs = [basedir, new File(basedir, "lock-child-a"), new File(basedir, "lock-child-b")]
 projectDirs.forEach {projectDir -> {
-    lockFile = new File(basedir, "dependencies-lock.json")
-    expectedLockFile = new File(basedir, "expected-dependencies-lock.json")
+    lockFile = new File(projectDir, "dependencies-lock.json")
+    expectedLockFile = new File(projectDir, "expected-dependencies-lock.json")
 
     assertTrue("Lock file missing", lockFile.isFile())
     assertTrue("Lock file content not as expected", FileUtils.contentEquals(expectedLockFile, lockFile))
