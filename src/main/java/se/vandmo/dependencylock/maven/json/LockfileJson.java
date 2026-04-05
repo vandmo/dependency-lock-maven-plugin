@@ -39,14 +39,18 @@ import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class LockfileJson implements Lockfile {
 
   private static final String V2 = "2";
   private final LockFileAccessor dependenciesLockFile;
+  private final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   private LockfileJson(LockFileAccessor dependenciesLockFile) {
     this.dependenciesLockFile = dependenciesLockFile;
+    this.versionConstraintJsonSerializer = new VersionConstraintJsonSerializer();
   }
 
   public static LockfileJson from(LockFileAccessor dependenciesLockFile) {
@@ -123,9 +127,20 @@ public final class LockfileJson implements Lockfile {
                 .classifier(possiblyGetStringValue(json, "classifier"))
                 .type(possiblyGetStringValue(json, "type"))
                 .build())
-        .version(getNonBlankStringValue(json, "version"))
+        .version(parseVersionConstraint(getNonBlankStringValue(json, "version")))
         .integrity(getNonBlankStringValue(json, "integrity"))
         .build();
+  }
+
+  private static VersionConstraint parseVersionConstraint(String versionConstraint) {
+    switch (versionConstraint) {
+      case JsonConstants.USE_PROJECT_VERSION:
+        return VersionConstraints.useProjectVersion();
+      case JsonConstants.IGNORED:
+        return VersionConstraints.ignoreVersion();
+      default:
+        return VersionConstraints.version(versionConstraint);
+    }
   }
 
   private static Parents loadParentsFromJson(JsonNode json) {
@@ -278,7 +293,7 @@ public final class LockfileJson implements Lockfile {
     final ArtifactIdentifier artifactIdentifier = artifact.identifier;
     output.put("groupId", artifactIdentifier.groupId);
     output.put("artifactId", artifactIdentifier.artifactId);
-    output.put("version", artifact.version);
+    output.set("version", artifact.version.accept(this.versionConstraintJsonSerializer, factory));
     artifactIdentifier.classifier.ifPresent(
         actualClassifier -> output.put("classifier", actualClassifier));
     output.put("type", artifactIdentifier.type);
@@ -353,7 +368,9 @@ public final class LockfileJson implements Lockfile {
       final ArtifactIdentifier artifactIdentifier = lockedParent.getArtifactIdentifier();
       json.put("groupId", artifactIdentifier.groupId);
       json.put("artifactId", artifactIdentifier.artifactId);
-      json.put("version", lockedParent.getVersion());
+      json.set(
+          "version",
+          lockedParent.getVersion().accept(versionConstraintJsonSerializer, jsonNodeFactory));
       json.put("type", artifactIdentifier.type);
       json.put("integrity", lockedParent.getIntegrityForLockFile());
       jsonParentsArray.add(json);

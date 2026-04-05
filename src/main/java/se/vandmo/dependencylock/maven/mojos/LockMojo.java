@@ -179,5 +179,4 @@ public final class LockMojo extends AbstractDependencyLockMojo {
     resultingArtifact.setOptional(dependency.isOptional());
     return resultingArtifact;
   }
-
 }
