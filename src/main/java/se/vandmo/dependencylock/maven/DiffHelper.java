@@ -62,7 +62,7 @@ final class DiffHelper {
   <EntityType extends LockableEntity<EntityType>> List<String> diffVersion(
       AtomicReference<EntityType> lockedEntityRef,
       EntityType actualEntity,
-      BiFunction<EntityType, String, EntityType> versionUpdater,
+      BiFunction<EntityType, VersionConstraint, EntityType> versionUpdater,
       Filters filters) {
     EntityType lockedDependency = lockedEntityRef.get();
     Filters.VersionConfiguration versionConfiguration =
@@ -77,7 +77,7 @@ final class DiffHelper {
       case useProjectVersion:
         log.info(format(ROOT, "Using project version for %s", lockedDependency));
         lockedEntityRef.set(
-            versionUpdater.apply(lockedDependency, versionConfiguration.projectVersion));
+            versionUpdater.apply(lockedDependency, VersionConstraints.version(versionConfiguration.projectVersion)));
         if (VersionConstraints.useProjectVersion()
             .compliantWith(actualEntity.getVersion(), filters)) {
           return emptyList();
