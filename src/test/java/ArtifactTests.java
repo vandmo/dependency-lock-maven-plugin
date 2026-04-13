@@ -3,6 +3,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import se.vandmo.dependencylock.maven.Artifact;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
 
 public final class ArtifactTests {
 
@@ -18,7 +19,12 @@ public final class ArtifactTests {
 
   @Test(expected = NullPointerException.class)
   public void builder_version_null() {
-    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version(null);
+    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version((String) null);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void builder_version_constraint_null() {
+    Artifact.builder().artifactIdentifier(anArtifactIdentifier()).version((VersionConstraint) null);
   }
 
   @Test(expected = NullPointerException.class)

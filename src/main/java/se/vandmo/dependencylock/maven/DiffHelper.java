@@ -11,12 +11,18 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintContext;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintVisitor;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 final class DiffHelper {
   private final Log log;
+  private final VersionConstraintWithSnapshotConstraintRelaxed withSnapshotConstraintRelaxed;
 
   DiffHelper(Log log) {
     this.log = log;
+    this.withSnapshotConstraintRelaxed = new VersionConstraintWithSnapshotConstraintRelaxed();
   }
 
   <T extends LockableEntity<T>> List<String> diffIntegrity(
@@ -56,14 +62,14 @@ final class DiffHelper {
   <EntityType extends LockableEntity<EntityType>> List<String> diffVersion(
       AtomicReference<EntityType> lockedEntityRef,
       EntityType actualEntity,
-      BiFunction<EntityType, String, EntityType> versionUpdater,
+      BiFunction<EntityType, VersionConstraint, EntityType> versionUpdater,
       Filters filters) {
     EntityType lockedDependency = lockedEntityRef.get();
     Filters.VersionConfiguration versionConfiguration =
         filters.versionConfiguration(lockedDependency);
     switch (versionConfiguration.type) {
       case check:
-        if (lockedDependency.getVersion().equals(actualEntity.getVersion())) {
+        if (lockedDependency.getVersion().compliantWith(actualEntity.getVersion(), filters)) {
           return emptyList();
         } else {
           return singletonList("version");
@@ -71,15 +77,21 @@ final class DiffHelper {
       case useProjectVersion:
         log.info(format(ROOT, "Using project version for %s", lockedDependency));
         lockedEntityRef.set(
-            versionUpdater.apply(lockedDependency, versionConfiguration.projectVersion));
-        if (versionConfiguration.projectVersion.equals(actualEntity.getVersion())) {
+            versionUpdater.apply(lockedDependency, VersionConstraints.version(versionConfiguration.projectVersion)));
+        if (VersionConstraints.useProjectVersion()
+            .compliantWith(actualEntity.getVersion(), filters)) {
           return emptyList();
         } else {
           return singletonList("version (expected project version)");
         }
       case snapshot:
         log.info(format(ROOT, "Allowing snapshot version for %s", lockedDependency));
-        if (VersionUtils.snapshotMatch(lockedDependency.getVersion(), actualEntity.getVersion())) {
+        if (lockedDependency
+            .getVersion()
+            .accept(withSnapshotConstraintRelaxed, filters)
+            .compliantWith(
+                actualEntity.getVersion().accept(withSnapshotConstraintRelaxed, filters),
+                filters)) {
           return emptyList();
         } else {
           return singletonList("version (allowing snapshot version)");
@@ -89,6 +101,28 @@ final class DiffHelper {
         return emptyList();
       default:
         throw new RuntimeException("Unsupported enum value");
+    }
+  }
+
+  /**
+   * Instances of this class shall be used to "downgrade" constraints on a given version to ignore
+   * -SNAPSHOT suffixes.
+   */
+  private static final class VersionConstraintWithSnapshotConstraintRelaxed
+      implements VersionConstraintVisitor<VersionConstraint, VersionConstraintContext> {
+    @Override
+    public VersionConstraint onVersion(String version, VersionConstraintContext context) {
+      return VersionConstraints.version(VersionUtils.stripSnapshot(version));
+    }
+
+    @Override
+    public VersionConstraint onProjectVersion(VersionConstraintContext context) {
+      return onVersion(context.getProjectVersion(), context);
+    }
+
+    @Override
+    public VersionConstraint onIgnoreVersion(VersionConstraintContext context) {
+      return VersionConstraints.ignoreVersion();
     }
   }
 }

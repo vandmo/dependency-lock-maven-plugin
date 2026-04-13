@@ -6,11 +6,14 @@ import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 
 import java.util.Objects;
 import se.vandmo.dependencylock.maven.lang.Strings;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintVisitor;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class Artifact extends LockableEntity<Artifact> implements Comparable<Artifact> {
 
   public final ArtifactIdentifier identifier;
-  public final String version;
+  public final VersionConstraint version;
   public final Integrity integrity;
   private org.apache.maven.artifact.Artifact mavenArtifact;
 
@@ -34,15 +37,20 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
     }
 
     public IntegrityBuilderStage version(String version) {
+      return version(VersionConstraints.version(version));
+    }
+
+    public IntegrityBuilderStage version(VersionConstraint version) {
       return new IntegrityBuilderStage(artifactIdentifier, requireNonNull(version));
     }
   }
 
   public static final class IntegrityBuilderStage {
     private final ArtifactIdentifier artifactIdentifier;
-    private final String version;
+    private final VersionConstraint version;
 
-    private IntegrityBuilderStage(ArtifactIdentifier artifactIdentifier, String version) {
+    private IntegrityBuilderStage(
+        ArtifactIdentifier artifactIdentifier, VersionConstraint version) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
     }
@@ -68,11 +76,11 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
 
   public static final class FinalBuilderStage {
     private final ArtifactIdentifier artifactIdentifier;
-    private final String version;
+    private final VersionConstraint version;
     private final Integrity integrity;
 
     private FinalBuilderStage(
-        ArtifactIdentifier artifactIdentifier, String version, Integrity integrity) {
+        ArtifactIdentifier artifactIdentifier, VersionConstraint version, Integrity integrity) {
       this.artifactIdentifier = artifactIdentifier;
       this.version = version;
       this.integrity = integrity;
@@ -95,7 +103,7 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
             .classifier(ofNullable(artifact.getClassifier()))
             .type(ofNullable(artifact.getType()))
             .build(),
-        artifact.getVersion(),
+        VersionConstraints.version(artifact.getVersion()),
         integrity);
   }
 
@@ -108,13 +116,14 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
     return result;
   }
 
-  private Artifact(ArtifactIdentifier identifier, String version, Integrity integrity) {
+  private Artifact(ArtifactIdentifier identifier, VersionConstraint version, Integrity integrity) {
     this.identifier = requireNonNull(identifier);
     this.version = requireNonNull(version);
     this.integrity = integrity;
   }
 
-  public Artifact withVersion(String version) {
+  @Override
+  public Artifact withVersion(VersionConstraint version) {
     return new Artifact(identifier, version, integrity);
   }
 
@@ -189,7 +198,7 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
   }
 
   @Override
-  public String getVersion() {
+  public VersionConstraint getVersion() {
     return version;
   }
 
@@ -234,5 +243,22 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
       return false;
     }
     return true;
+  }
+
+  private static class VersionToString implements VersionConstraintVisitor<String, Void> {
+    @Override
+    public String onVersion(String version, Void context) {
+      return version;
+    }
+
+    @Override
+    public String onProjectVersion(Void context) {
+      return "project-version";
+    }
+
+    @Override
+    public String onIgnoreVersion(Void context) {
+      return "ignored";
+    }
   }
 }

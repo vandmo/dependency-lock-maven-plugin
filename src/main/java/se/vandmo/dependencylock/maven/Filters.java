@@ -8,8 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import org.apache.maven.artifact.Artifact;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintContext;
 
-public final class Filters {
+public final class Filters implements VersionConstraintContext {
 
   private final List<DependencySetConfiguration> dependencySetConfigurations;
   private final String projectVersion;
@@ -56,6 +57,11 @@ public final class Filters {
 
   public boolean allowMissing(LockableEntity<?> entity) {
     return configurationFor(entity, d -> d.allowMissing, Boolean.FALSE);
+  }
+
+  @Override
+  public String getProjectVersion() {
+    return this.projectVersion;
   }
 
   public static final class VersionConfiguration {

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import org.apache.maven.plugin.logging.Log;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
 
 /**
  * Base class for entires in charge of performing diff checks.
@@ -27,7 +28,7 @@ public class AbstractLockedEntries<EntityType extends LockableEntity<EntityType>
   final List<String> diffVersion(
       AtomicReference<EntityType> lockedEntityRef,
       EntityType actualEntity,
-      BiFunction<EntityType, String, EntityType> versionUpdater,
+      BiFunction<EntityType, VersionConstraint, EntityType> versionUpdater,
       Filters filters) {
     return diffHelper.diffVersion(lockedEntityRef, actualEntity, versionUpdater, filters);
   }

@@ -20,9 +20,11 @@ public final class DependenciesLockFileJson {
   private static final String V3 = "3";
 
   private final LockFileAccessor dependenciesLockFile;
+  private final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   private DependenciesLockFileJson(LockFileAccessor dependenciesLockFile) {
     this.dependenciesLockFile = dependenciesLockFile;
+    this.versionConstraintJsonSerializer = new VersionConstraintJsonSerializer();
   }
 
   public static DependenciesLockFileJson from(LockFileAccessor dependenciesLockFile) {
@@ -30,8 +32,7 @@ public final class DependenciesLockFileJson {
   }
 
   public void write(Dependencies projectDependencies) {
-    ObjectNode json = JsonNodeFactory.instance.objectNode();
-    json.set("dependencies", asJson(projectDependencies, JsonNodeFactory.instance));
+    JsonNode json = toJson(projectDependencies, JsonNodeFactory.instance);
     try (Writer writer = dependenciesLockFile.writer()) {
       writeJson(writer, json);
     } catch (IOException e) {
@@ -39,38 +40,54 @@ public final class DependenciesLockFileJson {
     }
   }
 
-  public void write(ProfiledDependencies dependencies) {
-    JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
-    ObjectNode json = jsonNodeFactory.objectNode();
-    json.put("version", V3);
-    json.set("artifacts", JsonUtils.buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
-    json.set(
-        "dependencies",
-        JsonUtils.buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
-    json.set(
-        "profiles", JsonUtils.buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
-    try (Writer writer = dependenciesLockFile.writer()) {
-      writeJson(writer, json);
-    } catch (IOException e) {
-      throw new UncheckedIOException(e);
-    }
+   public void write(ProfiledDependencies dependencies) {
+        JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
+        ObjectNode json = jsonNodeFactory.objectNode();
+        json.put("version", V3);
+        json.set("artifacts", JsonUtils.buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
+        json.set(
+                "dependencies",
+                JsonUtils.buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
+        json.set(
+                "profiles", JsonUtils.buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
+        try (Writer writer = dependenciesLockFile.writer()) {
+            writeJson(writer, json);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
   }
 
-  private JsonNode asJson(
-      Iterable<Dependency> lockedDependencies, JsonNodeFactory jsonNodeFactory) {
-    ArrayNode json = jsonNodeFactory.arrayNode();
-    for (Dependency lockedDependency : lockedDependencies) {
-      json.add(asJson(lockedDependency, jsonNodeFactory));
+    private JsonNode toJson(LockedDependencies lockedDependencies, JsonNodeFactory nodeFactory) {
+    ObjectNode json = nodeFactory.objectNode();
+    json.set("dependencies", asJson(lockedDependencies, nodeFactory));
+    return json;
+  }
+
+  private JsonNode asJson(LockedDependencies lockedDependencies, JsonNodeFactory nodeFactory) {
+    ArrayNode json = nodeFactory.arrayNode();
+    for (Dependency lockedDependency : lockedDependencies.lockedEntities) {
+      json.add(asJson(lockedDependency, nodeFactory));
     }
     return json;
   }
+
+private JsonNode asJson(
+        Iterable<Dependency> lockedDependencies, JsonNodeFactory jsonNodeFactory) {
+    ArrayNode json = jsonNodeFactory.arrayNode();
+    for (Dependency lockedDependency : lockedDependencies) {
+        json.add(asJson(lockedDependency, jsonNodeFactory));
+    }
+    return json;
+}
 
   private JsonNode asJson(Dependency lockedDependency, JsonNodeFactory jsonNodeFactory) {
     ObjectNode json = jsonNodeFactory.objectNode();
     final ArtifactIdentifier artifactIdentifier = lockedDependency.getArtifactIdentifier();
     json.put("groupId", artifactIdentifier.groupId);
     json.put("artifactId", artifactIdentifier.artifactId);
-    json.put("version", lockedDependency.getVersion());
+    json.set(
+        "version",
+        lockedDependency.getVersion().accept(versionConstraintJsonSerializer, nodeFactory));
     json.put("scope", lockedDependency.scope);
     json.put("type", artifactIdentifier.type);
     json.put("optional", lockedDependency.optional);

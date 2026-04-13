@@ -38,6 +38,8 @@ import se.vandmo.dependencylock.maven.Parent;
 import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 import se.vandmo.dependencylock.maven.ProfileEntry;
 import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
@@ -46,9 +48,11 @@ public final class LockfileJson implements Lockfile {
   private static final String V2 = "2";
   private static final String V3 = "3";
   private final LockFileAccessor dependenciesLockFile;
+  private final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   private LockfileJson(LockFileAccessor dependenciesLockFile) {
     this.dependenciesLockFile = dependenciesLockFile;
+    this.versionConstraintJsonSerializer = new VersionConstraintJsonSerializer();
   }
 
   public static LockfileJson from(LockFileAccessor dependenciesLockFile) {
@@ -252,7 +256,7 @@ public final class LockfileJson implements Lockfile {
         JsonUtils.buildProfilesJson(contents.dependencies.profileEntries(), jsonNodeFactory));
     return json;
   }
-
+  
   private Stream<Artifact> collectArtifacts(LockedProject contents) {
     Stream<Artifact> result = contents.dependencies.artifacts();
     result = Stream.concat(result, contents.plugins.map(Plugins::artifacts).orElse(Stream.empty()));
@@ -306,7 +310,9 @@ public final class LockfileJson implements Lockfile {
       final ArtifactIdentifier artifactIdentifier = lockedParent.getArtifactIdentifier();
       json.put("groupId", artifactIdentifier.groupId);
       json.put("artifactId", artifactIdentifier.artifactId);
-      json.put("version", lockedParent.getVersion());
+      json.set(
+          "version",
+          lockedParent.getVersion().accept(versionConstraintJsonSerializer, jsonNodeFactory));
       json.put("type", artifactIdentifier.type);
       json.put("integrity", lockedParent.getIntegrityForLockFile());
       jsonParentsArray.add(json);

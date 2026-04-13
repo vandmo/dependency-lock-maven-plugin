@@ -12,6 +12,7 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintVisitor;
 
 public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
 
@@ -31,7 +32,8 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
   private MavenArtifact(se.vandmo.dependencylock.maven.Artifact delegate, String scope) {
     this.delegate = delegate;
     this.scope = scope;
-    this.baseVersion = ArtifactUtils.toSnapshotVersion(delegate.version);
+    this.baseVersion =
+        ArtifactUtils.toSnapshotVersion(delegate.version.accept(new ToPseudoVersion(), null));
   }
 
   @Override
@@ -46,7 +48,7 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
 
   @Override
   public String getVersion() {
-    return delegate.version;
+    return delegate.version.accept(new ToPseudoVersion(), null);
   }
 
   @Override
@@ -279,5 +281,22 @@ public final class MavenArtifact implements org.apache.maven.artifact.Artifact {
   @Override
   public int hashCode() {
     return Objects.hash(delegate);
+  }
+
+  private static class ToPseudoVersion implements VersionConstraintVisitor<String, Void> {
+    @Override
+    public String onVersion(String version, Void context) {
+      return version;
+    }
+
+    @Override
+    public String onProjectVersion(Void context) {
+      return "project-version";
+    }
+
+    @Override
+    public String onIgnoreVersion(Void context) {
+      return "ignored";
+    }
   }
 }

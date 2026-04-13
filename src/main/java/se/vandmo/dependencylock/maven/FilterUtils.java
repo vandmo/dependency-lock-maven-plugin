@@ -2,6 +2,8 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.stream.Collectors.toList;
 
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
+
 import java.util.stream.Collectors;
 
 /** Helper methods for applying filters. */
@@ -45,7 +47,7 @@ public final class FilterUtils {
 
   private static <T extends LockableEntity<T>> T modify(T lockableEntity, Filters filters) {
     T result = lockableEntity;
-    result = ignoreVersionIfRelevant(result, filters);
+    result = applyFilterConfiguration(result, filters);
     result = ignoreIntegrityIfRelevant(result, filters);
     return result;
   }
@@ -62,7 +64,7 @@ public final class FilterUtils {
 
   private static Plugin modify(Plugin plugin, Filters filters) {
     Plugin result = plugin;
-    result = ignoreVersionIfRelevant(result, filters);
+    result = applyFilterConfiguration(result, filters);
     result = ignoreIntegrityIfRelevant(result, filters);
     result =
         result.withDependencies(
@@ -73,13 +75,15 @@ public final class FilterUtils {
     return result;
   }
 
-  private static <T extends LockableEntity<T>> T ignoreVersionIfRelevant(
+  private static <T extends LockableEntity<T>> T applyFilterConfiguration(
       T lockableEntity, Filters filters) {
-    if (filters
-        .versionConfiguration(lockableEntity)
-        .type
-        .equals(DependencySetConfiguration.Version.ignore)) {
-      return lockableEntity.withVersion("ignored");
+    final DependencySetConfiguration.Version filteredConfiguration =
+        filters.versionConfiguration(lockableEntity).type;
+    if (filteredConfiguration.equals(DependencySetConfiguration.Version.ignore)) {
+      return lockableEntity.withVersion(VersionConstraints.ignoreVersion());
+    }
+    if (filteredConfiguration.equals(DependencySetConfiguration.Version.useProjectVersion)) {
+      return lockableEntity.withVersion(VersionConstraints.useProjectVersion());
     }
     return lockableEntity;
   }

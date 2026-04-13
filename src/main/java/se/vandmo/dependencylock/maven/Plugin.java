@@ -2,6 +2,9 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
 
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
+
 public final class Plugin extends LockableEntityWithArtifact<Plugin> {
   public final Artifacts dependencies;
 
@@ -37,6 +40,10 @@ public final class Plugin extends LockableEntityWithArtifact<Plugin> {
     }
 
     public IntegrityBuilderStage version(String version) {
+      return version(VersionConstraints.version(version));
+    }
+
+    public IntegrityBuilderStage version(VersionConstraint version) {
       return new IntegrityBuilderStage(versionBuilder.version(version));
     }
   }
@@ -84,7 +91,8 @@ public final class Plugin extends LockableEntityWithArtifact<Plugin> {
     this.dependencies = requireNonNull(dependencies);
   }
 
-  public Plugin withVersion(String version) {
+  @Override
+  public Plugin withVersion(VersionConstraint version) {
     return new Plugin(artifact.withVersion(version), dependencies);
   }
 }
