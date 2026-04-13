@@ -47,6 +47,7 @@ import se.vandmo.dependencylock.maven.mojos.model.IActivation;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
+import se.vandmo.dependencylock.maven.versions.VersionConstraintVisitor;
 
 /**
  * Implementation of {@link ProfileHandler} injected via Guice framework.
@@ -190,6 +191,7 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
 
   private Collection<? extends Artifact> gatherProjectArtifacts(Dependencies dependencies) {
     final ArtifactHandler pomArtifacthandler = artifactHandlerManager.getArtifactHandler("pom");
+    final ToMavenVersionVisitor toMavenVersionVisitor = new ToMavenVersionVisitor();
     return dependencies.stream()
         .map(
             d -> {
@@ -197,7 +199,7 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
               return new DefaultArtifact(
                   artifactIdentifier.groupId,
                   artifactIdentifier.artifactId,
-                  d.getVersion(),
+                  d.getVersion().accept(toMavenVersionVisitor, null),
                   null,
                   "pom",
                   null,
@@ -357,6 +359,23 @@ public class ProfileHandlerImpl extends AbstractLogEnabled implements ProfileHan
     @Override
     public void add(ModelProblemCollectorRequest req) {
       this.logger.warn(req.toString());
+    }
+  }
+
+  private static class ToMavenVersionVisitor implements VersionConstraintVisitor<String, Void> {
+    @Override
+    public String onVersion(String version, Void context) {
+      return version;
+    }
+
+    @Override
+    public String onProjectVersion(Void context) {
+      throw new IllegalArgumentException("Project version is not allowed here.");
+    }
+
+    @Override
+    public String onIgnoreVersion(Void context) {
+      throw new IllegalArgumentException("Project version is not allowed here.");
     }
   }
 }

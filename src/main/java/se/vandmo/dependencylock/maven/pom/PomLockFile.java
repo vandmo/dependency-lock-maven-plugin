@@ -32,13 +32,13 @@ import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.Extension;
 import se.vandmo.dependencylock.maven.Plugin;
-import se.vandmo.dependencylock.maven.versions.VersionConstraint;
-import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 import se.vandmo.dependencylock.maven.ProfileEntry;
 import se.vandmo.dependencylock.maven.mojos.model.Activation;
 import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.ActivationProperty;
 import se.vandmo.dependencylock.maven.mojos.model.Profile;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class PomLockFile {
 

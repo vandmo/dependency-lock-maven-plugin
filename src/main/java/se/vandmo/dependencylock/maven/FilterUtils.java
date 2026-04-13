@@ -2,9 +2,8 @@ package se.vandmo.dependencylock.maven;
 
 import static java.util.stream.Collectors.toList;
 
-import se.vandmo.dependencylock.maven.versions.VersionConstraints;
-
 import java.util.stream.Collectors;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 /** Helper methods for applying filters. */
 public final class FilterUtils {
