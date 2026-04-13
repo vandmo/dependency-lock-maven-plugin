@@ -19,12 +19,25 @@ import se.vandmo.dependencylock.maven.lang.Strings;
 import se.vandmo.dependencylock.maven.mojos.model.IActivation;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationOS;
 import se.vandmo.dependencylock.maven.mojos.model.IActivationProperty;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 class WithJsonHelper {
   final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   WithJsonHelper() {
     this.versionConstraintJsonSerializer = new VersionConstraintJsonSerializer();
+  }
+
+  final VersionConstraint parseVersionConstraint(String versionConstraint) {
+    switch (versionConstraint) {
+      case JsonConstants.USE_PROJECT_VERSION:
+        return VersionConstraints.useProjectVersion();
+      case JsonConstants.IGNORED:
+        return VersionConstraints.ignoreVersion();
+      default:
+        return VersionConstraints.version(versionConstraint);
+    }
   }
 
   final JsonNode buildArtifactJson(Artifact artifact, JsonNodeFactory factory) {

@@ -14,13 +14,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import se.vandmo.dependencylock.maven.Artifact;
-import se.vandmo.dependencylock.maven.ArtifactIdentifier;
 import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.ProfileEntry;
@@ -84,33 +82,6 @@ public final class JsonUtils {
     } catch (IOException ex) {
       throw new UncheckedIOException(ex);
     }
-  }
-
-  static Map<String, Artifact> loadArtifactsFromJson(JsonNode json) {
-    if (null == json) {
-      return Collections.emptyMap();
-    }
-    Iterator<Map.Entry<String, JsonNode>> entries = json.fields();
-    Map<String, Artifact> artifacts = new HashMap<>();
-    while (entries.hasNext()) {
-      final Map.Entry<String, JsonNode> entry = entries.next();
-      artifacts.put(entry.getKey(), parseArtifact(entry.getValue()));
-    }
-    return artifacts;
-  }
-
-  static Artifact parseArtifact(JsonNode json) {
-    return Artifact.builder()
-        .artifactIdentifier(
-            ArtifactIdentifier.builder()
-                .groupId(getNonBlankStringValue(json, "groupId"))
-                .artifactId(getNonBlankStringValue(json, "artifactId"))
-                .classifier(possiblyGetStringValue(json, "classifier"))
-                .type(possiblyGetStringValue(json, "type"))
-                .build())
-        .version(getNonBlankStringValue(json, "version"))
-        .integrity(getNonBlankStringValue(json, "integrity"))
-        .build();
   }
 
   static Collection<ProfileEntry> loadProfilesFromJson(

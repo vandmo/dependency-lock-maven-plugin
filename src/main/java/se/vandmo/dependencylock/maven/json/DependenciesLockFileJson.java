@@ -60,23 +60,22 @@ public final class DependenciesLockFileJson extends WithJsonHelper {
     return json;
   }
 
-  private JsonNode asJson(
-      Iterable<Dependency> lockedDependencies, JsonNodeFactory jsonNodeFactory) {
-    ArrayNode json = jsonNodeFactory.arrayNode();
+  private JsonNode asJson(Iterable<Dependency> lockedDependencies, JsonNodeFactory nodeFactory) {
+    ArrayNode json = nodeFactory.arrayNode();
     for (Dependency lockedDependency : lockedDependencies) {
-      json.add(asJson(lockedDependency, jsonNodeFactory));
+      json.add(asJson(lockedDependency, nodeFactory));
     }
     return json;
   }
 
-  private JsonNode asJson(Dependency lockedDependency, JsonNodeFactory jsonNodeFactory) {
-    ObjectNode json = jsonNodeFactory.objectNode();
+  private JsonNode asJson(Dependency lockedDependency, JsonNodeFactory nodeFactory) {
+    ObjectNode json = nodeFactory.objectNode();
     final ArtifactIdentifier artifactIdentifier = lockedDependency.getArtifactIdentifier();
     json.put("groupId", artifactIdentifier.groupId);
     json.put("artifactId", artifactIdentifier.artifactId);
     json.set(
         "version",
-        lockedDependency.getVersion().accept(versionConstraintJsonSerializer, jsonNodeFactory));
+        lockedDependency.getVersion().accept(versionConstraintJsonSerializer, nodeFactory));
     json.put("scope", lockedDependency.scope);
     json.put("type", artifactIdentifier.type);
     json.put("optional", lockedDependency.optional);

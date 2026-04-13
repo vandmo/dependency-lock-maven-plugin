@@ -18,6 +18,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,12 +65,25 @@ public final class LockfileJson extends WithJsonHelper implements Lockfile {
     return fromJson(json);
   }
 
-  private static LockedProject fromJson(JsonNode json) throws MojoExecutionException {
+  private Map<String, Artifact> loadArtifactsFromJson(JsonNode json) {
+    if (null == json) {
+      return Collections.emptyMap();
+    }
+    Iterator<Map.Entry<String, JsonNode>> entries = json.fields();
+    Map<String, Artifact> artifacts = new HashMap<>();
+    while (entries.hasNext()) {
+      final Map.Entry<String, JsonNode> entry = entries.next();
+      artifacts.put(entry.getKey(), parseArtifact(entry.getValue()));
+    }
+    return artifacts;
+  }
+
+  private LockedProject fromJson(JsonNode json) throws MojoExecutionException {
     final JsonNode version = json.get("version");
     if (version == null) {
       return LockedProject.from(loadDependenciesFromJson(JsonUtils.getDependencies(json)));
     } else if (V2.equals(version.asText())) {
-      final Map<String, Artifact> artifactMap = JsonUtils.loadArtifactsFromJson(getArtifacts(json));
+      final Map<String, Artifact> artifactMap = loadArtifactsFromJson(getArtifacts(json));
       final Optional<Plugins> plugins = loadPluginsIfPresent(json, artifactMap);
       Optional<Extensions> extensions = loadExtensionsIfPresent(json, artifactMap);
       final Dependencies projectDependencies =
@@ -76,7 +91,7 @@ public final class LockfileJson extends WithJsonHelper implements Lockfile {
       Optional<Parents> parents = loadParentsIfPresent(json);
       return LockedProject.from(projectDependencies, parents, plugins, extensions);
     } else if (V3.equals(version.asText())) {
-      final Map<String, Artifact> artifactMap = JsonUtils.loadArtifactsFromJson(getArtifacts(json));
+      final Map<String, Artifact> artifactMap = loadArtifactsFromJson(getArtifacts(json));
       final Optional<Plugins> plugins = loadPluginsIfPresent(json, artifactMap);
       Optional<Extensions> extensions = loadExtensionsIfPresent(json, artifactMap);
       Optional<Parents> parents = loadParentsIfPresent(json);
@@ -144,18 +159,32 @@ public final class LockfileJson extends WithJsonHelper implements Lockfile {
     return new Parents(parents);
   }
 
-  private static Dependencies loadDependenciesFromJson(JsonNode json) {
+  private Dependencies loadDependenciesFromJson(JsonNode json) {
     if (!json.isArray()) {
       throw new IllegalStateException("Needs to be an array");
     }
     final List<Dependency> dependencies = new ArrayList<>(json.size());
     for (JsonNode dependency : json) {
-      final Artifact artifact = JsonUtils.parseArtifact(dependency);
+      final Artifact artifact = parseArtifact(dependency);
       final String scope = possiblyGetStringValue(dependency, "scope").orElse(null);
       final boolean optional = dependency.get("optional").asBoolean();
       dependencies.add(Dependency.forArtifact(artifact).scope(scope).optional(optional).build());
     }
     return Dependencies.fromDependencies(dependencies);
+  }
+
+  private Artifact parseArtifact(JsonNode json) {
+    return Artifact.builder()
+        .artifactIdentifier(
+            ArtifactIdentifier.builder()
+                .groupId(getNonBlankStringValue(json, "groupId"))
+                .artifactId(getNonBlankStringValue(json, "artifactId"))
+                .classifier(possiblyGetStringValue(json, "classifier"))
+                .type(possiblyGetStringValue(json, "type"))
+                .build())
+        .version(parseVersionConstraint(getNonBlankStringValue(json, "version")))
+        .integrity(getNonBlankStringValue(json, "integrity"))
+        .build();
   }
 
   private static Plugins loadPluginsFromJson(JsonNode json, Map<String, Artifact> artifacts) {
