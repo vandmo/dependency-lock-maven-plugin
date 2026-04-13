@@ -57,22 +57,22 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
         lockedProject.parents.map(
             lockedParents -> {
               log.info("Checking parents");
-              return LockedParents.from(Parents.from(mavenProject()), getLog())
-                  .compareWith(lockedParents, filters);
+              return LockedParents.from(lockedParents, getLog())
+                  .compareWith(Parents.from(mavenProject()), filters);
             });
     Optional<DiffReport> pluginsDiff =
         lockedProject.plugins.map(
             lockedPlugins -> {
               log.info("Checking plugins");
-              return LockedPlugins.from(projectPlugins(), getLog())
-                  .compareWith(lockedPlugins, filters);
+              return LockedPlugins.from(lockedPlugins, getLog())
+                  .compareWith(projectPlugins(), filters);
             });
     Optional<DiffReport> extensionsDiff =
         lockedProject.extensions.map(
             lockedExtensions -> {
               log.info("Checking extensions");
-              return LockedExtensions.from(projectExtensions(), getLog())
-                  .compareWith(lockedExtensions, filters);
+              return LockedExtensions.from(lockedExtensions, getLog())
+                  .compareWith(projectExtensions(), filters);
             });
     LockedProject.Diff diff =
         new LockedProject.Diff(dependenciesDiff, parentsDiff, pluginsDiff, extensionsDiff);
