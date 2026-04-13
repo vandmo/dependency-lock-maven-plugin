@@ -3,6 +3,8 @@ package se.vandmo.dependencylock.maven;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
+import se.vandmo.dependencylock.maven.versions.VersionConstraint;
+import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 public final class Dependency extends LockableEntityWithArtifact<Dependency>
     implements Comparable<Dependency> {
@@ -33,6 +35,10 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
     }
 
     public IntegrityBuilderStage version(String version) {
+      return version(VersionConstraints.version(version));
+    }
+
+    public IntegrityBuilderStage version(VersionConstraint version) {
       return new IntegrityBuilderStage(artifactBuilder.version(version));
     }
   }
@@ -114,7 +120,8 @@ public final class Dependency extends LockableEntityWithArtifact<Dependency>
     this.optional = optional;
   }
 
-  public Dependency withVersion(String version) {
+  @Override
+  public Dependency withVersion(VersionConstraint version) {
     return new Dependency(this.artifact.withVersion(version), scope, optional);
   }
 

@@ -18,6 +18,6 @@ projectDirs.forEach {projectDir -> {
 }}
 
 buildLog = FileUtils.readLines(new File(basedir, "build.log"), UTF_8)
-assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project/dependencies-lock.json"))))
-assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project/lock-child-a/dependencies-lock.json"))))
-assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project/lock-child-b/dependencies-lock.json"))))
+assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project-use-project-version/dependencies-lock.json"))))
+assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project-use-project-version/lock-child-a/dependencies-lock.json"))))
+assertThat(buildLog, hasItem(both(startsWith("[INFO] Creating ")).and(endsWith("/dependency-lock-maven-plugin/target/its/json/lock-multi-project-use-project-version/lock-child-b/dependencies-lock.json"))))
