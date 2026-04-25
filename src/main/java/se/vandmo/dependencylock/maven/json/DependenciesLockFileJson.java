@@ -11,26 +11,26 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 import se.vandmo.dependencylock.maven.ArtifactIdentifier;
+import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.Dependency;
 import se.vandmo.dependencylock.maven.LockFileAccessor;
-import se.vandmo.dependencylock.maven.LockedDependencies;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
-public final class DependenciesLockFileJson {
+public final class DependenciesLockFileJson extends WithJsonHelper {
+  private static final String V3 = "3";
 
   private final LockFileAccessor dependenciesLockFile;
-  private final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   private DependenciesLockFileJson(LockFileAccessor dependenciesLockFile) {
     this.dependenciesLockFile = dependenciesLockFile;
-    this.versionConstraintJsonSerializer = new VersionConstraintJsonSerializer();
   }
 
   public static DependenciesLockFileJson from(LockFileAccessor dependenciesLockFile) {
     return new DependenciesLockFileJson(requireNonNull(dependenciesLockFile));
   }
 
-  public void write(LockedDependencies lockedDependencies) {
-    JsonNode json = toJson(lockedDependencies, JsonNodeFactory.instance);
+  public void write(Dependencies projectDependencies) {
+    JsonNode json = toJson(projectDependencies, JsonNodeFactory.instance);
     try (Writer writer = dependenciesLockFile.writer()) {
       writeJson(writer, json);
     } catch (IOException e) {
@@ -38,15 +38,31 @@ public final class DependenciesLockFileJson {
     }
   }
 
-  private JsonNode toJson(LockedDependencies lockedDependencies, JsonNodeFactory nodeFactory) {
+  public void write(ProfiledDependencies dependencies) {
+    JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
+    ObjectNode json = jsonNodeFactory.objectNode();
+    json.put("version", V3);
+    json.set("artifacts", buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
+    json.set(
+        "dependencies",
+        buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
+    json.set("profiles", buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
+    try (Writer writer = dependenciesLockFile.writer()) {
+      writeJson(writer, json);
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+
+  private JsonNode toJson(Dependencies lockedDependencies, JsonNodeFactory nodeFactory) {
     ObjectNode json = nodeFactory.objectNode();
     json.set("dependencies", asJson(lockedDependencies, nodeFactory));
     return json;
   }
 
-  private JsonNode asJson(LockedDependencies lockedDependencies, JsonNodeFactory nodeFactory) {
+  private JsonNode asJson(Iterable<Dependency> lockedDependencies, JsonNodeFactory nodeFactory) {
     ArrayNode json = nodeFactory.arrayNode();
-    for (Dependency lockedDependency : lockedDependencies.lockedEntities) {
+    for (Dependency lockedDependency : lockedDependencies) {
       json.add(asJson(lockedDependency, nodeFactory));
     }
     return json;

@@ -77,7 +77,8 @@ final class DiffHelper {
       case useProjectVersion:
         log.info(format(ROOT, "Using project version for %s", lockedDependency));
         lockedEntityRef.set(
-            versionUpdater.apply(lockedDependency, VersionConstraints.version(versionConfiguration.projectVersion)));
+            versionUpdater.apply(
+                lockedDependency, VersionConstraints.version(versionConfiguration.projectVersion)));
         if (VersionConstraints.useProjectVersion()
             .compliantWith(actualEntity.getVersion(), filters)) {
           return emptyList();

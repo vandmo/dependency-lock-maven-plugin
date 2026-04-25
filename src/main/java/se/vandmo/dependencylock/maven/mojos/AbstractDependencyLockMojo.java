@@ -15,13 +15,11 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.ExtensionRealmCache;
 import org.apache.maven.plugin.MavenPluginManager;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
-import se.vandmo.dependencylock.maven.Dependencies;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
@@ -55,8 +53,6 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   LockFileAccessor lockFile() {
     return format.dependenciesLockFileAccessor_fromBasedirAndFilename(basedir, filename);
   }
-
-  abstract Dependencies projectDependencies() throws MojoExecutionException;
 
   final MavenSession mavenSession() {
     return mavenSession;
