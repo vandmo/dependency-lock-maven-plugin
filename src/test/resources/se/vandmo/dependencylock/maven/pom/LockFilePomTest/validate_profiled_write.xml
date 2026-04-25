@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 https://vandmo.github.io/dependency-lock-maven-plugin/maven-4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>unknown</groupId>
+  <artifactId>empty-project-dependency-lock</artifactId>
+  <version>0</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.tests</groupId>
+      <artifactId>a</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <classifier>leaf</classifier>
+      <optional>true</optional>
+      <dependency-lock:integrity>sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==</dependency-lock:integrity>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>test</id>
+      <activation>
+        <os>
+          <family>mac</family>
+          <name>darwin</name>
+          <arch>x86_64</arch>
+          <version>10.15.7</version>
+        </os>
+        <property>
+          <name>os.arch</name>
+          <value>x86_64</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>se.vandmo.tests</groupId>
+          <artifactId>a</artifactId>
+          <version>1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+          <classifier>another-leaf</classifier>
+          <optional>true</optional>
+          <dependency-lock:integrity>sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==</dependency-lock:integrity>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>

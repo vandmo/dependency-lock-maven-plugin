@@ -17,7 +17,9 @@ ${baseIndent}${indent}${indent}<classifier>${dependency.artifactIdentifier.class
 ${baseIndent}${indent}${indent}<optional>${dependency.optional?c}</optional>
 ${baseIndent}${indent}${indent}<dependency-lock:integrity>${dependency.getIntegrityForLockFile()}</dependency-lock:integrity>
 ${baseIndent}${indent}</dependency></#list>
-${baseIndent}</dependencies></#macro>
+${baseIndent}</dependencies></#macro><#macro render_profile_entry name value="" indent=""><#if value?has_content>
+${indent}<${name}>${value}</${name}>
+</#if></#macro>
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -30,24 +32,20 @@ ${baseIndent}</dependencies></#macro>
 <#if profiles?has_content>
   <profiles><#list profiles as profile>
     <profile>
-      <id>${profile.id}</id>
+      <id>${profile.id}</id><#if profile.activation?has_content>
       <activation>
-      <#if profile.activation?has_content>
-          <#if profile.activation.os?has_content><os><#if profile.activation.os.family?has_content>
-            <family>${profile.activation.os.family}</family>
-</#if><#if profile.activation.os.name?has_content>
-            <name>${profile.activation.os.name}</name>
-</#if><#if profile.activation.os.arch?has_content>
-            <arch>${profile.activation.os.arch}</arch>
-</#if><#if profile.activation.os.version?has_content>
-            <version>${profile.activation.os.version}</version>
-</#if>
-          </os></#if><#if profile.activation.property?has_content>
-          <property>
-            <name>${profile.activation.property.name}</name><#if profile.activation.property.value?has_content>
-            <value>${profile.activation.property.value}</value></#if>
-          </property></#if></#if>
-      </activation>
+        <#if profile.activation.os?has_content>
+        <os>
+<@render_profile_entry name="family" value=profile.activation.os.family indent="          "/> 
+<@render_profile_entry name="name" value=profile.activation.os.name indent="          "/> 
+<@render_profile_entry name="arch" value=profile.activation.os.arch indent="          "/> 
+<@render_profile_entry name="version" value=profile.activation.os.version indent="          "/> 
+        </os></#if><#if profile.activation.property?has_content>
+        <property>
+          <name>${profile.activation.property.name}</name>
+<@render_profile_entry name="value" value=profile.activation.property.value indent="          "/> 
+        </property></#if>
+      </activation></#if>
       <@render_dependencies dependencies=profile.dependencies baseIndent="      "  indent="  " />
 
     </profile></#list>

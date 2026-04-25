@@ -4,18 +4,18 @@ import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import org.apache.maven.monitor.logging.DefaultLog;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -37,6 +37,12 @@ import se.vandmo.dependencylock.maven.Parents;
 import se.vandmo.dependencylock.maven.Plugin;
 import se.vandmo.dependencylock.maven.Plugins;
 import se.vandmo.dependencylock.maven.PomMinimums;
+import se.vandmo.dependencylock.maven.ProfileEntry;
+import se.vandmo.dependencylock.maven.ProfiledDependencies;
+import se.vandmo.dependencylock.maven.mojos.model.Activation;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationOS;
+import se.vandmo.dependencylock.maven.mojos.model.ActivationProperty;
+import se.vandmo.dependencylock.maven.mojos.model.Profile;
 
 public class LockFilePomTest {
 
@@ -51,8 +57,7 @@ public class LockFilePomTest {
   }
 
   @Test
-  public void write_generates_a_xsd_compliant_resource_according_to_xerces()
-      throws IOException, SAXException, XMLStreamException {
+  public void write_generates_a_xsd_compliant_resource_according_to_xerces() throws SAXException {
     final LockFileAccessor lockfileAccessor = generateLockFile();
     final Validator schema = loadXsdValidator();
     Throwable thrownError = null;
@@ -65,13 +70,163 @@ public class LockFilePomTest {
     Assert.assertNull("No validation error should have been thrown", thrownError);
   }
 
+  @Test
+  public void write_profiled_generates_a_xsd_compliant_resource_according_to_xerces()
+      throws SAXException {
+    final LockFileAccessor lockfileAccessor = generateLockFileWithProfiledDependencies();
+    final Validator schema = loadXsdValidator();
+    Throwable thrownError = null;
+    try {
+      schema.validate(new StreamSource(lockfileAccessor.file));
+    } catch (Exception e) {
+      thrownError = e;
+      e.printStackTrace();
+    }
+    Assert.assertNull("No validation error should have been thrown", thrownError);
+  }
+
+  @Test
+  public void validate_write() throws IOException, URISyntaxException {
+    final LockFileAccessor lockfileAccessor = generateLockFile();
+    Assert.assertArrayEquals(
+        "Unexpected contents generated.",
+        Files.readAllLines(
+                Paths.get(getClass().getResource("LockFilePomTest/validate_write.xml").toURI()))
+            .toArray(new String[0]),
+        Files.readAllLines(lockfileAccessor.file.toPath()).toArray(new String[0]));
+  }
+
+  @Test
+  public void validate_profiled_write() throws IOException, URISyntaxException {
+    final LockFileAccessor lockfileAccessor = generateLockFileWithProfiledDependencies();
+    Assert.assertArrayEquals(
+        "Unexpected contents generated.",
+        Files.readAllLines(
+                Paths.get(
+                    getClass().getResource("LockFilePomTest/validate_profiled_write.xml").toURI()))
+            .toArray(new String[0]),
+        Files.readAllLines(lockfileAccessor.file.toPath()).toArray(new String[0]));
+  }
+
+  @Test
+  public void validate_partially_profiled_write() throws IOException, URISyntaxException {
+    final LockFileAccessor lockfileAccessor =
+        generateLockFileWithProfiledDependencies(
+            profile("another-test", activation(os(null, "x", null, "5"), property("os.t", null))));
+    Assert.assertArrayEquals(
+        "Unexpected contents generated.",
+        Files.readAllLines(
+                Paths.get(
+                    getClass()
+                        .getResource("LockFilePomTest/validate_partially_profiled_write.xml")
+                        .toURI()))
+            .toArray(new String[0]),
+        Files.readAllLines(lockfileAccessor.file.toPath()).toArray(new String[0]));
+  }
+
   private LockFileAccessor generateLockFile() {
     final MavenProject mavenProject = new MavenProject();
-    final Log log = new DefaultLog(new ConsoleLogger());
     final LockFileAccessor lockfileAccessor =
         LockFileAccessor.fromBasedir(lockfiles, "whatever.xml");
     final LockFilePom lockFilePom =
         LockFilePom.from(lockfileAccessor, PomMinimums.from(mavenProject));
+    final Dependencies dependencies = dependencies();
+    final Extensions extensions = extensions();
+    final Plugins plugins = plugins();
+    final Parents parents = parents();
+    lockFilePom.write(
+        LockedProject.from(
+            dependencies, Optional.of(parents), Optional.of(plugins), Optional.of(extensions)));
+    return lockfileAccessor;
+  }
+
+  private LockFileAccessor generateLockFileWithProfiledDependencies() {
+    return generateLockFileWithProfiledDependencies(profile());
+  }
+
+  private LockFileAccessor generateLockFileWithProfiledDependencies(Profile profile) {
+    final MavenProject mavenProject = new MavenProject();
+    final LockFileAccessor lockfileAccessor =
+        LockFileAccessor.fromBasedir(lockfiles, "whatever.xml");
+    final LockFilePom lockFilePom =
+        LockFilePom.from(lockfileAccessor, PomMinimums.from(mavenProject));
+    final Extensions extensions = extensions();
+    final Plugins plugins = plugins();
+    final Parents parents = parents();
+    lockFilePom.write(
+        LockedProject.from(
+            profiledDependencies(profile),
+            Optional.of(parents),
+            Optional.of(plugins),
+            Optional.of(extensions)));
+    return lockfileAccessor;
+  }
+
+  private static Profile profile(String id, Activation activation) {
+    Profile profile = new Profile();
+    profile.setId(id);
+    profile.setActivation(activation);
+    return profile;
+  }
+
+  private static Activation activation(ActivationOS os, ActivationProperty property) {
+    Activation activation = new Activation();
+    activation.setOs(os);
+    activation.setProperty(property);
+    return activation;
+  }
+
+  private static ActivationOS os() {
+    return os("darwin", "x86_64", "10.15.7", "mac");
+  }
+
+  private static ActivationOS os(String name, String arch, String version, String family) {
+    ActivationOS os = new ActivationOS();
+    os.setName(name);
+    os.setArch(arch);
+    os.setVersion(version);
+    os.setFamily(family);
+    return os;
+  }
+
+  private static ActivationProperty property() {
+    return property("os.arch", "x86_64");
+  }
+
+  private static ActivationProperty property(String name, String value) {
+    ActivationProperty property = new ActivationProperty();
+    property.setName(name);
+    property.setValue(value);
+    return property;
+  }
+
+  private static Profile profile() {
+    return profile("test", activation(os(), property()));
+  }
+
+  private static ProfiledDependencies profiledDependencies(Profile profile) {
+    final Dependency leafTestArtifact =
+        Dependency.builder()
+            .artifactIdentifier(
+                ArtifactIdentifier.builder()
+                    .groupId("se.vandmo.tests")
+                    .artifactId("a")
+                    .classifier("another-leaf")
+                    .type("jar")
+                    .build())
+            .version("1.0")
+            .integrity(
+                "sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==")
+            .scope("compile")
+            .optional(true)
+            .build();
+    final Dependencies profiledDependencies =
+        Dependencies.fromDependencies(Collections.singletonList(leafTestArtifact));
+    return new ProfiledDependencies(
+        dependencies(), Arrays.asList(new ProfileEntry(profile, profiledDependencies)));
+  }
+
+  private static Dependencies dependencies() {
     final Dependency leafTestArtifact =
         Dependency.builder()
             .artifactIdentifier(
@@ -87,8 +242,10 @@ public class LockFilePomTest {
             .scope("test")
             .optional(true)
             .build();
-    final Dependencies dependencies =
-        Dependencies.fromDependencies(Collections.singletonList(leafTestArtifact));
+    return Dependencies.fromDependencies(Collections.singletonList(leafTestArtifact));
+  }
+
+  private static Extensions extensions() {
     final Extension mavenEnforcerExtension =
         Extension.builder()
             .artifactIdentifier(
@@ -100,8 +257,10 @@ public class LockFilePomTest {
             .integrity(
                 "sha512:wnRrq40de1k0a5eIA174WhJ5iWAd5f2rOcLwwMjaCBJ5327oDm5aN0rRtIfSkK+Z2HYJcOnmbjQNmIaZd3IoVA==")
             .build();
-    final Extensions extensions =
-        Extensions.from(Collections.singletonList(mavenEnforcerExtension));
+    return Extensions.from(Collections.singletonList(mavenEnforcerExtension));
+  }
+
+  private static Plugins plugins() {
     final Plugin compilerPlugin =
         Plugin.builder()
             .artifactIdentifier(
@@ -128,46 +287,44 @@ public class LockFilePomTest {
                                 "sha512:8YRMGhdSxqt76kgyc28slGG8HTbi5lE48ok+SAVw8fyEy4Wl9ynPWPOmOi2Bp1PfcAf3Hr4rpFakjNxR2Fecyw==")
                             .build())))
             .build();
-    final Plugins plugins = Plugins.from(Collections.singletonList(compilerPlugin));
-    final Parents parents =
-        new Parents(
-            asList(
-                Parent.builder()
-                    .artifactIdentifier(
-                        ArtifactIdentifier.builder()
-                            .groupId("org.apache.maven.plugins")
-                            .artifactId("maven-plugins")
-                            .type("pom")
-                            .build())
-                    .version("43")
-                    .integrity(
-                        "sha512:0d6a975da79ab1fe489edc6df27057185d598b246ec4bce41694eb81cb571a53f4839c3bf96ead68580f314398b19d902ea07be129756d207cc0043803bf22d5")
-                    .build(),
-                Parent.builder()
-                    .artifactIdentifier(
-                        ArtifactIdentifier.builder()
-                            .groupId("org.apache.maven")
-                            .artifactId("maven-parent")
-                            .build())
-                    .version("44")
-                    .integrity(
-                        "sha512:806b8a36939ed7b6f81770ef48648a7bde6c4f87bd0cd73b8ffce0fec317ab3adf40617d91b840c40c58c2a2fd448f696032a60da845256661d28986e4fa055e")
-                    .build(),
-                Parent.builder()
-                    .artifactIdentifier(
-                        ArtifactIdentifier.builder()
-                            .groupId("org.apache")
-                            .artifactId("apache")
-                            .type("pom")
-                            .build())
-                    .version("34")
-                    .integrity(
-                        "sha512:29b34e91977d3490bca8ab046d67f71e336599b2ef3af87d757784e05d6fd2091704d3b8879e11a53fdaccd3d949dfa4d66af2db5fec0d7158e958102a79461a")
-                    .build()));
-    lockFilePom.write(
-        LockedProject.from(
-            dependencies, Optional.of(parents), Optional.of(plugins), Optional.of(extensions)));
-    return lockfileAccessor;
+    return Plugins.from(Collections.singletonList(compilerPlugin));
+  }
+
+  private static Parents parents() {
+    return new Parents(
+        asList(
+            Parent.builder()
+                .artifactIdentifier(
+                    ArtifactIdentifier.builder()
+                        .groupId("org.apache.maven.plugins")
+                        .artifactId("maven-plugins")
+                        .type("pom")
+                        .build())
+                .version("43")
+                .integrity(
+                    "sha512:0d6a975da79ab1fe489edc6df27057185d598b246ec4bce41694eb81cb571a53f4839c3bf96ead68580f314398b19d902ea07be129756d207cc0043803bf22d5")
+                .build(),
+            Parent.builder()
+                .artifactIdentifier(
+                    ArtifactIdentifier.builder()
+                        .groupId("org.apache.maven")
+                        .artifactId("maven-parent")
+                        .build())
+                .version("44")
+                .integrity(
+                    "sha512:806b8a36939ed7b6f81770ef48648a7bde6c4f87bd0cd73b8ffce0fec317ab3adf40617d91b840c40c58c2a2fd448f696032a60da845256661d28986e4fa055e")
+                .build(),
+            Parent.builder()
+                .artifactIdentifier(
+                    ArtifactIdentifier.builder()
+                        .groupId("org.apache")
+                        .artifactId("apache")
+                        .type("pom")
+                        .build())
+                .version("34")
+                .integrity(
+                    "sha512:29b34e91977d3490bca8ab046d67f71e336599b2ef3af87d757784e05d6fd2091704d3b8879e11a53fdaccd3d949dfa4d66af2db5fec0d7158e958102a79461a")
+                .build()));
   }
 
   private Validator loadXsdValidator() throws SAXException {
