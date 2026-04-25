@@ -23,6 +23,9 @@ import se.vandmo.dependencylock.maven.versions.VersionConstraint;
 import se.vandmo.dependencylock.maven.versions.VersionConstraints;
 
 class WithJsonHelper {
+  static final String V3 = "3";
+  static final String V2 = "2";
+
   final VersionConstraintJsonSerializer versionConstraintJsonSerializer;
 
   WithJsonHelper() {

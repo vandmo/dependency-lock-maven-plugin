@@ -17,7 +17,6 @@ import se.vandmo.dependencylock.maven.LockFileAccessor;
 import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class DependenciesLockFileJson extends WithJsonHelper {
-  private static final String V3 = "3";
 
   private final LockFileAccessor dependenciesLockFile;
 
@@ -41,12 +40,19 @@ public final class DependenciesLockFileJson extends WithJsonHelper {
   public void write(ProfiledDependencies dependencies) {
     JsonNodeFactory jsonNodeFactory = JsonNodeFactory.instance;
     ObjectNode json = jsonNodeFactory.objectNode();
-    json.put("version", V3);
+    final JsonNode profilesJson = buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory);
+    if (profilesJson.isEmpty()) {
+      json.put("version", V2);
+    } else {
+      json.put("version", V3);
+    }
     json.set("artifacts", buildArtifactsJson(dependencies.artifacts(), jsonNodeFactory));
     json.set(
         "dependencies",
         buildDependenciesJson(dependencies.getSharedDependencies(), jsonNodeFactory));
-    json.set("profiles", buildProfilesJson(dependencies.profileEntries(), jsonNodeFactory));
+    if (!profilesJson.isEmpty()) {
+      json.set("profiles", profilesJson);
+    }
     try (Writer writer = dependenciesLockFile.writer()) {
       writeJson(writer, json);
     } catch (IOException e) {

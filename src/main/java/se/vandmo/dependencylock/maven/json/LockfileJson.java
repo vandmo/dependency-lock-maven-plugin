@@ -44,9 +44,6 @@ import se.vandmo.dependencylock.maven.ProfileEntry;
 import se.vandmo.dependencylock.maven.ProfiledDependencies;
 
 public final class LockfileJson extends WithJsonHelper implements Lockfile {
-
-  private static final String V2 = "2";
-  private static final String V3 = "3";
   private final LockFileAccessor dependenciesLockFile;
 
   private LockfileJson(LockFileAccessor dependenciesLockFile) {
@@ -265,7 +262,13 @@ public final class LockfileJson extends WithJsonHelper implements Lockfile {
 
   private JsonNode write(LockedProject contents, JsonNodeFactory jsonNodeFactory) {
     ObjectNode json = jsonNodeFactory.objectNode();
-    json.put("version", V3);
+    final JsonNode profilesNode =
+        buildProfilesJson(contents.dependencies.profileEntries(), jsonNodeFactory);
+    if (profilesNode.isEmpty()) {
+      json.put("version", V2);
+    } else {
+      json.put("version", V3);
+    }
     json.set("artifacts", buildArtifactsJson(collectArtifacts(contents), jsonNodeFactory));
     contents.parents.ifPresent(parents -> json.set("parents", toJson(parents, jsonNodeFactory)));
     contents.plugins.ifPresent(plugins -> json.set("plugins", toJson(plugins, jsonNodeFactory)));
@@ -274,8 +277,9 @@ public final class LockfileJson extends WithJsonHelper implements Lockfile {
     json.set(
         "dependencies",
         buildDependenciesJson(contents.dependencies.getSharedDependencies(), jsonNodeFactory));
-    json.set(
-        "profiles", buildProfilesJson(contents.dependencies.profileEntries(), jsonNodeFactory));
+    if (!profilesNode.isEmpty()) {
+      json.set("profiles", profilesNode);
+    }
     return json;
   }
 

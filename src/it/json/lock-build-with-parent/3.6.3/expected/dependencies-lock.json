@@ -1,5 +1,5 @@
 {
-  "version" : "3",
+  "version" : "2",
   "artifacts" : {
     "antlr:antlr:jar:2.7.2" : {
       "groupId" : "antlr",
@@ -1298,6 +1298,5 @@
     "artifact" : "se.vandmo.testing:leaf:jar:1.0",
     "scope" : "compile",
     "optional" : false
-  } ],
-  "profiles" : [ ]
+  } ]
 }
