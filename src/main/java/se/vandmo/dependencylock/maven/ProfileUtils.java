@@ -94,7 +94,7 @@ public final class ProfileUtils {
         throw new MojoExecutionException("Negated os name activation clauses are not supported");
       }
       if (alreadyEmulatedOsName == null) {
-        emulatedValues.put("os.name", "not-" + targetOsName);
+        emulatedValues.put("os.name", targetOsName);
       } else if (!targetOsName.equals(alreadyEmulatedOsName)) {
         throw new MojoExecutionException(
             "Found conflicting os name clause ("
