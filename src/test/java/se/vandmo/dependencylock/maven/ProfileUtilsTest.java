@@ -35,9 +35,19 @@ public class ProfileUtilsTest {
     Mockito.doReturn("aarch-x64").when(mockActivationOS).getArch();
     Mockito.doReturn("mac").when(mockActivationOS).getFamily();
 
-    Assert.assertThrows(
-        "",
-        MojoExecutionException.class,
-        () -> ProfileUtils.emulateSystemProperties(mockActivationOS));
+    Throwable caughtException = null;
+    try {
+      ProfileUtils.emulateSystemProperties(mockActivationOS);
+    } catch (MojoExecutionException e) {
+      caughtException = e;
+    }
+    Assert.assertNotNull(
+        "An error should have been raised since os family was conflicting with os name.",
+        caughtException);
+    Assert.assertEquals(
+        "Unexpected exception message",
+        "Found conflicting os name clause (linux) which is not compatible with existing family"
+            + " (darwin)",
+        caughtException.getMessage());
   }
 }
