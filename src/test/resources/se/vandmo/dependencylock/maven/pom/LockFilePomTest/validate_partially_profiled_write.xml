@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://maven.apache.org/POM/4.0.0 https://vandmo.github.io/dependency-lock-maven-plugin/maven-4_0_0_ext.xsd
+    urn:se.vandmo.dependencylock https://vandmo.github.io/dependency-lock-maven-plugin/dependencylock.xsd"
+  xmlns:dependency-lock="urn:se.vandmo.dependencylock"
+  dependency-lock:version="2">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>unknown</groupId>
+  <artifactId>empty-project-dependency-lock</artifactId>
+  <version>0</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>se.vandmo.tests</groupId>
+      <artifactId>a</artifactId>
+      <version>1.0</version>
+      <type>jar</type>
+      <scope>test</scope>
+      <classifier>leaf</classifier>
+      <optional>true</optional>
+      <dependency-lock:integrity>sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==</dependency-lock:integrity>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>another-test</id>
+      <activation>
+        <os>
+          <family>5</family>
+          <arch>x</arch>
+        </os>
+        <property>
+          <name>os.t</name>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>se.vandmo.tests</groupId>
+          <artifactId>a</artifactId>
+          <version>1.0</version>
+          <type>jar</type>
+          <scope>compile</scope>
+          <classifier>another-leaf</classifier>
+          <optional>true</optional>
+          <dependency-lock:integrity>sha512:KDKGxTrNHDhrGZEGDSX2KVkn/2S0u1EBJ1B0jMfeZXZm4yeiNIvUnFdFb9W4X1w5HF7ce9ZqeQCnmHdGfTyk2w==</dependency-lock:integrity>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+</project>
