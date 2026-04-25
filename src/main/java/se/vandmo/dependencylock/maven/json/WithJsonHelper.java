@@ -110,6 +110,7 @@ class WithJsonHelper {
   JsonNode buildProfilesJson(Stream<ProfileEntry> profiles, JsonNodeFactory jsonNodeFactory) {
     ArrayNode result = jsonNodeFactory.arrayNode();
     profiles
+        .filter(entry -> !entry.isEmpty())
         .sorted(Comparator.comparing(entry -> entry.getProfile().getId()))
         .forEach(
             profile -> {
