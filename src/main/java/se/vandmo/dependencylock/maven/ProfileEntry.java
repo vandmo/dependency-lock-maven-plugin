@@ -21,6 +21,10 @@ public final class ProfileEntry {
     return dependencies;
   }
 
+  public boolean isEmpty() {
+    return getDependencies().size() == 0;
+  }
+
   public Profile getProfile() {
     return profile;
   }
