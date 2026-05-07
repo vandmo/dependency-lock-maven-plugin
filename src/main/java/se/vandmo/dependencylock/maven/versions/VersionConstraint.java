@@ -31,4 +31,10 @@ public abstract class VersionConstraint {
   public abstract boolean compliantWith(VersionConstraint other, VersionConstraintContext context);
 
   public abstract String toString();
+
+  /**
+   * Returns <code>true</code> if this version constraint is a fixed Maven coordinate (e.g. is a
+   * dynamic version like a SNAPSHOT/LATEST/RELEASE).
+   */
+  public abstract boolean isDynamic();
 }

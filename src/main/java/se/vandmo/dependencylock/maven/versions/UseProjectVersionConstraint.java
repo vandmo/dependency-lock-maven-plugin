@@ -30,6 +30,11 @@ final class UseProjectVersionConstraint extends VersionConstraint {
     return "${project.version}";
   }
 
+  @Override
+  public boolean isDynamic() {
+    return true;
+  }
+
   private static final class ProjectVersionCompliancyChecker
       implements VersionConstraintVisitor<Boolean, VersionConstraintContext> {
     static final ProjectVersionCompliancyChecker INSTANCE = new ProjectVersionCompliancyChecker();

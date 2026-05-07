@@ -3,7 +3,9 @@ package se.vandmo.dependencylock.maven;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Stream;
 import org.apache.maven.execution.MavenSession;
+
 /** A caching decorator over a checksum calculator. */
 public class CachingChecksumCalculator implements Checksum.ChecksumCalculator {
 
@@ -55,5 +57,32 @@ public class CachingChecksumCalculator implements Checksum.ChecksumCalculator {
       }
       Checksum.setCalculator(new CachingChecksumCalculator(calculator, sessionChecksumCache));
     }
+  }
+
+  /**
+   * Pre-warms the currently registered caching checksum calculator with checksums from an existing
+   * locked project.
+   */
+  public static void prewarmCache(LockedProject project) {
+    Checksum.ChecksumCalculator calculator = Checksum.getCalculator();
+    if (calculator instanceof CachingChecksumCalculator) {
+      ((CachingChecksumCalculator) calculator).prewarm(project);
+    }
+  }
+
+  private void prewarm(LockedProject project) {
+    prewarm(project.dependencies.artifacts());
+    prewarm(project.parents.map(LockableEntitiesWithArtifact::artifacts).orElse(Stream.empty()));
+    prewarm(project.plugins.map(LockableEntitiesWithArtifact::artifacts).orElse(Stream.empty()));
+    prewarm(project.extensions.map(LockableEntitiesWithArtifact::artifacts).orElse(Stream.empty()));
+  }
+
+  private void prewarm(Stream<Artifact> dependencies) {
+    dependencies
+        .filter(d -> !d.getVersion().isDynamic())
+        .forEach(
+            dependency ->
+                checksumCache.put(
+                    dependency.getArtifactKey(), dependency.getIntegrityForLockFile()));
   }
 }
