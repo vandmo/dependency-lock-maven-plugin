@@ -15,20 +15,8 @@ public final class ChecksumTests {
   @Rule public final TemporaryFolder folder = new TemporaryFolder();
 
   @Test(expected = NullPointerException.class)
-  public void calculateFor_byteArrayNull() {
-    Checksum.calculateFor((byte[]) null);
-  }
-
-  @Test(expected = NullPointerException.class)
   public void calculateFor_fileNull() {
-    Checksum.calculateFor((File) null);
-  }
-
-  @Test
-  public void calculateFor() {
-    assertEquals(
-        "sha512:23I/NBoELY3hqoE+/V4C/BdFzL4llIYldRSATi7EvOuypG8eStRCFUlD+el+G8R8OuDt2rfeDAGpxR8VNCpbGQ==",
-        Checksum.calculateFor("abcdefghijklmno".getBytes(UTF_8)));
+    Checksum.calculateFor(null, null);
   }
 
   @Test
@@ -37,6 +25,6 @@ public final class ChecksumTests {
     Files.write(file.toPath(), "abcdefghijklmno".getBytes(UTF_8));
     assertEquals(
         "sha512:23I/NBoELY3hqoE+/V4C/BdFzL4llIYldRSATi7EvOuypG8eStRCFUlD+el+G8R8OuDt2rfeDAGpxR8VNCpbGQ==",
-        Checksum.calculateFor(file));
+        Checksum.calculateFor(null, file));
   }
 }

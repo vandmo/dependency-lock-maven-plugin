@@ -15,11 +15,13 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.ExtensionRealmCache;
 import org.apache.maven.plugin.MavenPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.PluginManagerException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
+import se.vandmo.dependencylock.maven.CachingChecksumCalculator;
 import se.vandmo.dependencylock.maven.DependencySetConfiguration;
 import se.vandmo.dependencylock.maven.Extensions;
 import se.vandmo.dependencylock.maven.Filters;
@@ -61,6 +63,18 @@ public abstract class AbstractDependencyLockMojo extends AbstractMojo {
   final MavenProject mavenProject() {
     return this.project;
   }
+
+  @Override
+  public final void execute() throws MojoExecutionException {
+    try {
+      CachingChecksumCalculator.register(mavenSession);
+      doExecute();
+    } catch (MojoExecutionRuntimeException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
+    }
+  }
+
+  protected abstract void doExecute() throws MojoExecutionException;
 
   Extensions projectExtensions() {
     Collection<ExtensionRealmCache.CacheRecord> extensionRealms =

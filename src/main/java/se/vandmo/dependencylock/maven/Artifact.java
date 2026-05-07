@@ -1,8 +1,6 @@
 package se.vandmo.dependencylock.maven;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static se.vandmo.dependencylock.maven.Checksum.ALGORITHM_HEADER;
 
 import java.util.Objects;
 import se.vandmo.dependencylock.maven.lang.Strings;
@@ -67,7 +65,8 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
 
   private static String checkIntegrityArgument(String integrity) {
     requireNonNull(integrity);
-    if (!Strings.startsWith(integrity, ALGORITHM_HEADER) && !"ignored".equals(integrity)) {
+    if (!Strings.startsWith(integrity, Checksum.getCalculator().getAlgorithmHeader())
+        && !"ignored".equals(integrity)) {
       throw new IllegalArgumentException(
           "Encountered unsupported checksum format, consider using a later version of this plugin");
     }
@@ -92,19 +91,12 @@ public final class Artifact extends LockableEntity<Artifact> implements Comparab
   }
 
   public static Artifact from(org.apache.maven.artifact.Artifact artifact) {
+    ArtifactReference reference = ArtifactReference.from(artifact);
     Integrity integrity =
         artifact.getFile().isDirectory()
             ? Integrity.Folder()
-            : Integrity.Calculated(Checksum.calculateFor(artifact.getFile()));
-    return new Artifact(
-        ArtifactIdentifier.builder()
-            .groupId(artifact.getGroupId())
-            .artifactId(artifact.getArtifactId())
-            .classifier(ofNullable(artifact.getClassifier()))
-            .type(ofNullable(artifact.getType()))
-            .build(),
-        VersionConstraints.version(artifact.getVersion()),
-        integrity);
+            : Integrity.Calculated(Checksum.calculateFor(reference, artifact.getFile()));
+    return new Artifact(reference.identifier, reference.version, integrity);
   }
 
   public org.apache.maven.artifact.Artifact getMavenArtifact() {

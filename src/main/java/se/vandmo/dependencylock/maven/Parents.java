@@ -85,7 +85,8 @@ public final class Parents extends LockableEntitiesWithArtifact<Parent>
         throw new MojoExecutionRuntimeException(
             "Invalid parent reference found: " + cursor.getId(), new FileNotFoundException());
       }
-      final String integrity = Checksum.calculateFor(file);
+      final String integrity =
+          Checksum.calculateFor(ArtifactReference.from(cursor.getArtifact()), file);
       parents.add(
           Parent.builder()
               .artifactIdentifier(cursor.getArtifactIdentifier())

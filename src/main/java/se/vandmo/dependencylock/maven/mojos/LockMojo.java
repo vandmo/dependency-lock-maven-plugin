@@ -57,7 +57,7 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   }
 
   @Override
-  public void execute() throws MojoExecutionException {
+  public void doExecute() throws MojoExecutionException {
     if (skip) {
       getLog().info("Skipping lock");
       return;
