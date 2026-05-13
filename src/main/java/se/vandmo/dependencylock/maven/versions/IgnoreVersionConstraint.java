@@ -19,4 +19,9 @@ final class IgnoreVersionConstraint extends VersionConstraint {
   public String toString() {
     return "ignored";
   }
+
+  @Override
+  public boolean isDynamic() {
+    return true;
+  }
 }

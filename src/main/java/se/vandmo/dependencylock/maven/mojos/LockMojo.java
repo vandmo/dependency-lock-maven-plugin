@@ -57,12 +57,18 @@ public final class LockMojo extends AbstractDependencyLockMojo {
   }
 
   @Override
-  public void execute() throws MojoExecutionException {
+  public void doExecute() throws MojoExecutionException {
     if (skip) {
       getLog().info("Skipping lock");
       return;
     }
     LockFileAccessor lockFile = lockFile();
+    if (lockFile.exists()) {
+      LockedProject lockedProject =
+          format().lockFile_from(lockFile, pomMinimums(), getLog()).read();
+      CachingChecksumCalculator.prewarmCache(lockedProject);
+    }
+
     getLog().info(String.format(ROOT, "Creating %s", lockFile.filename()));
     switch (format()) {
       case json:

@@ -48,6 +48,15 @@ final class VersionConstraintImpl extends VersionConstraint
   }
 
   @Override
+  public boolean isDynamic() {
+    return this.version.endsWith("-SNAPSHOT")
+        || this.version.equals("LATEST")
+        || this.version.equals("RELEASE")
+        || this.version.startsWith("[")
+        || this.version.startsWith("(");
+  }
+
+  @Override
   public String toString() {
     return this.version;
   }

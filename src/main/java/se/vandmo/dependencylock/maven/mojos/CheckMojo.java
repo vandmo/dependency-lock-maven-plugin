@@ -33,15 +33,6 @@ public final class CheckMojo extends AbstractDependencyLockMojo {
     this.profileHandler = profileHandler;
   }
 
-  @Override
-  public void execute() throws MojoExecutionException {
-    try {
-      doExecute();
-    } catch (MojoExecutionRuntimeException e) {
-      throw new MojoExecutionException(e.getMessage(), e);
-    }
-  }
-
   Dependencies projectDependencies() {
     return Dependencies.fromMavenArtifacts(mavenProject().getArtifacts());
   }
